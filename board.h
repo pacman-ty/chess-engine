@@ -3,14 +3,12 @@
 
 #include <vector>
 #include "subject.h"
-
-//temporary declarations:
-class Piece;
-class Position;
-class Move;
+#include "piece.h"
+#include "position.h"
+#include "move.h"
 
 class Board : public Subject {
-    Piece *pieces[8][8];
+    std::vector<Piece> pieces;
     std::vector<Move> moveHistory;
 public:
     void placePiece(Piece *piece, Position position);
