@@ -8,10 +8,10 @@ class Piece {
 protected:
     char name;
     Colour side;
-    Pos square;
+    Pos currPosition;
 public:
     getPossibleMove();
     getPossibleAttack();
-}
+};
 
 #endif 
