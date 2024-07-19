@@ -4,7 +4,8 @@
 #include "move.h"
 
 enum Colour = {white, black, empty}
-class Piece {
+
+class Piece : public Board {
 protected:
     char name;
     Colour side;
