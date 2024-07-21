@@ -1,11 +1,11 @@
 #ifndef POSITION_H
 #define POSITION_H
 
-class Pos {
+class Position {
 private: 
     int x, y;
 public:
-    Pos(int x, int y);
+    Position(int x, int y);
     int getX() const;
     int getY() const;
 };

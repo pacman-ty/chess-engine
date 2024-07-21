@@ -10,7 +10,7 @@ class Piece : public Board {
 protected:
     char name;
     Colour side;
-    Pos currPosition;
+    Position currPosition;
     Board* board;
 public:
     Piece(Board * b);
