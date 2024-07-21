@@ -11,6 +11,7 @@ private:
     Piece* target;
     Piece* capture; 
 public:
+    Move(Pos oldPos, Pos newPos, Piece target, Piece capture);
     Pos getOldPosition();
     Pos getNewPosition();
     Piece* getCapture();
