@@ -22,7 +22,7 @@ public:
     public:
         Iterator& operator++();
         Piece& operator*() const;
-        bool operator==(Iterator &) const;
+        bool operator==(const Iterator &) const;
     };
     void placePiece(Piece *piece, Pos position);
     std::vector<Move> getLegalMoves() const;
