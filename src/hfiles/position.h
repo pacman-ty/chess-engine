@@ -5,8 +5,8 @@ class Pos {
 private: 
     int x, y;
 public:
-    getX();
-    getY();
+    int getX();
+    int getY();
 };
 
 #endif

@@ -1,5 +1,6 @@
 #ifndef PIECE_H
 #define PIECE_H
+#include <vector>
 #include "position.h"
 #include "move.h"
 #include "colour.h"
@@ -10,8 +11,8 @@ protected:
     Colour side;
     Pos currPosition;
 public:
-    virtual vector<Move> getPossibleMove() = 0;
-    virtual vector<Move> getPossibleAttack() = 0;
+    virtual std::vector<Move> getPossibleMove() = 0;
+    virtual std::vector<Move> getPossibleCaptures() = 0;
 };
 
 #endif 
