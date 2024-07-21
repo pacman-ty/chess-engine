@@ -4,8 +4,8 @@
 #include "player.h"
 
 class Scoreboard {
-    std::map<Player, int> tracker;
+    std::map<Player *, int> tracker;
 public:
-    void addWin(Player p);
+    void addWin(Player * p);
 };
 #endif

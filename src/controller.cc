@@ -1,10 +1,10 @@
 #include "controller.h"
 
 void Controller::switchTurn() {
-	if (turn == Color::White) {
-		turn = Color::Black;
+	if (turn == Colour::BLACK) {
+		turn = Colour::WHITE;
 	} else {
-		turn = Color::White;
+		turn = Colour::BLACK;
 	}
 }
 
@@ -26,7 +26,7 @@ void Controller::startGame(Player *whitePlayer, Player *blackPlayer) {
 
 void Controller::resign() {
 	// TODO
-	if (turn == Color::White) {
+	if (turn == Colour::WHITE) {
 
 	} else {
 

@@ -8,11 +8,13 @@ class Move {
 private:
     Pos oldPos;
     Pos newPos;
-    Piece * target;
-    Piece * caputre; 
+    Piece* target;
+    Piece* capture; 
 public:
     Pos getOldPosition();
     Pos getNewPosition();
+    Piece* getCapture();
+    Piece* getTarget();
 };
 
 #endif

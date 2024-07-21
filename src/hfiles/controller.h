@@ -6,9 +6,9 @@
 
 class Controller {
 	bool setupMode;
-	Color turn
-	Board *board;
-	ScoreBoard *scoreboard;
+	Colour turn;
+	Board* board;
+	Scoreboard *scoreboard;
 	Player *whitePlayer;
 	Player *blackPlayer;
 
