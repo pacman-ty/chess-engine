@@ -8,11 +8,11 @@ void Controller::switchTurn() {
     }
 }
 
-bool Controller::isCheckmate() {
+bool Controller::isCheckmate() const {
     // TODO
 }
 
-bool Controller::isStalemate() {
+bool Controller::isStalemate() const {
     // TODO
 }
 

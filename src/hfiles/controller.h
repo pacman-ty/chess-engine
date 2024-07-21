@@ -13,8 +13,8 @@ class Controller {
     Player *blackPlayer;
 
     void switchTurn();
-    bool isCheckmate();
-    bool isStalemate();
+    bool isCheckmate() const;
+    bool isStalemate() const;
 
 public:
     void startGame(Player *whitePlayer, Player *blackPlayer);

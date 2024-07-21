@@ -14,6 +14,6 @@ public:
     std::vector<Move> getPossibleMove() const override;
     // return list of attacking moves (does not mean that moves are legal)
     std::vector<Move> getPossibleCaptures() const override;
-}
+};
 
 #endif 
