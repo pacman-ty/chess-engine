@@ -15,7 +15,7 @@ class Board : public Subject {
     std::vector<Move> moveHistory;
     Piece** board;
 public:
-    void placePiece(Piece *piece, Position position);
+    void placePiece(Piece *piece, Pos position);
     std::vector<Move> getLegalMoves();
     Piece*** getBoard();
 };
