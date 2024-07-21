@@ -2,7 +2,7 @@
 
 Rook::Rook(Board *board) : Piece{board} {}
 
-std::vector<Move> Rook::getPossibleMove() {
+std::vector<Move> Rook::getPossibleMove() const {
     std::vector<Move> output;
     Piece*** curBoard = board->getBoard();
     int curX = currPosition.getX();
@@ -28,7 +28,7 @@ std::vector<Move> Rook::getPossibleMove() {
     return output;
 }
 
-std::vector<Move> Rook::getPossibleMove() {
+std::vector<Move> Rook::getPossibleMove() const {
     std::vector<Move> output;
     Piece*** curBoard = board->getBoard();
     int curX = currPosition.getX();

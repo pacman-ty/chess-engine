@@ -6,8 +6,8 @@ private:
     int x, y;
 public:
     Pos(int x, int y);
-    int getX();
-    int getY();
+    int getX() const;
+    int getY() const;
 };
 
 #endif
