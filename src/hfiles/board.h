@@ -16,8 +16,8 @@ class Board : public Subject {
     Piece*** board;
 public:
     class Iterator{
+        friend class Board;
         int curIndex;
-    protected:
         Iterator(int index);
     public:
         Iterator& operator++();
