@@ -1,11 +1,11 @@
 #include "controller.h"
 
 void Controller::switchTurn() {
-	if (turn == Colour::BLACK) {
-		turn = Colour::WHITE;
+    if (turn == Colour::BLACK) {
+	    turn = Colour::WHITE;
 	} else {
-		turn = Colour::BLACK;
-	}
+	    turn = Colour::BLACK;
+    }
 }
 
 bool Controller::isCheckmate() {
