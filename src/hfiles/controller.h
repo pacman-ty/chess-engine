@@ -1,0 +1,28 @@
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
+
+#include "board.h"
+#include "scoreboard.h"
+
+class Controller {
+	bool setupMode;
+	Color turn
+	Board *board;
+	ScoreBoard *scoreboard;
+	Player *whitePlayer;
+	Player *blackPlayer;
+
+	void switchTurn();
+	bool isCheckmate();
+	bool isStalemate();
+
+public:
+	void startGame(Player *whitePlayer, Player *blackPlayer);
+	void resign();
+	void move(Move m, Piece *promotion);
+	void enterSetup();
+	void exitSetup();
+}
+
+#endif
+
