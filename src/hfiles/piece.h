@@ -2,8 +2,7 @@
 #define PIECE_H
 #include "position.h"
 #include "move.h"
-
-enum Colour = {white, black, empty}
+#include "colour.h"
 
 class Piece : public Board {
 protected:
@@ -11,8 +10,8 @@ protected:
     Colour side;
     Pos currPosition;
 public:
-    getPossibleMove();
-    getPossibleAttack();
+    virtual vector<Move> getPossibleMove() = 0;
+    virtual vector<Move> getPossibleAttack() = 0;
 };
 
 #endif 
