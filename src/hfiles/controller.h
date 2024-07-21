@@ -5,24 +5,24 @@
 #include "scoreboard.h"
 
 class Controller {
-	bool setupMode;
-	Colour turn;
-	Board* board;
-	Scoreboard *scoreboard;
-	Player *whitePlayer;
-	Player *blackPlayer;
+    bool setupMode;
+    Colour turn;
+    Board* board;
+    Scoreboard *scoreboard;
+    Player *whitePlayer;
+    Player *blackPlayer;
 
-	void switchTurn();
-	bool isCheckmate();
-	bool isStalemate();
+    void switchTurn();
+    bool isCheckmate();
+    bool isStalemate();
 
 public:
-	void startGame(Player *whitePlayer, Player *blackPlayer);
-	void resign();
-	void move(Move m, Piece *promotion);
-	void enterSetup();
-	void exitSetup();
-}
+    void startGame(Player *whitePlayer, Player *blackPlayer);
+    void resign();
+    void move(Move m, Piece *promotion);
+    void enterSetup();
+    void exitSetup();
+};
 
 #endif
 

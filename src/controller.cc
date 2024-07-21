@@ -2,45 +2,45 @@
 
 void Controller::switchTurn() {
     if (turn == Colour::BLACK) {
-	    turn = Colour::WHITE;
-	} else {
-	    turn = Colour::BLACK;
+        turn = Colour::WHITE;
+    } else {
+        turn = Colour::BLACK;
     }
 }
 
 bool Controller::isCheckmate() {
-	// TODO
+    // TODO
 }
 
 bool Controller::isStalemate() {
-	// TODO
+    // TODO
 }
 
 void Controller::startGame(Player *whitePlayer, Player *blackPlayer) {
-	delete whitePlayer;
-	delete blackPlayer;
+    delete whitePlayer;
+    delete blackPlayer;
 
-	this->whitePlayer = whitePlayer;
-	this->blackPlayer = blackPlayer;
+    this->whitePlayer = whitePlayer;
+    this->blackPlayer = blackPlayer;
 }
 
 void Controller::resign() {
-	// TODO
-	if (turn == Colour::WHITE) {
+    // TODO
+    if (turn == Colour::WHITE) {
 
-	} else {
+    } else {
 
-	}
+    }
 }
 
 void Controller::move(Move m, Piece *promotion) {
-	// TODO
+    // TODO
 }
 
 void Controller::enterSetup() {
-	setupMode = true;
+    setupMode = true;
 }
 
 void Controller::exitSetup() {
-	setupMode = true;
+    setupMode = true;
 }
