@@ -14,8 +14,8 @@ public:
     void setX(int val);
     void setY(int val);
     bool operator==(const Position rhs) const;
-
-    friend istream& operator>>(istream& cin, Position rhs);
 };
+
+std::istream& operator>>(std::istream& cin, Position& rhs);
 
 #endif
