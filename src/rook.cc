@@ -36,7 +36,7 @@ std::vector<Move> Rook::getPossibleCaptures(Board::BoardType & curBoard) const {
 
     for (int i = curX; i < BOARD_MAX_WIDTH; ++i) {
         if (curBoard[i][curY] != nullptr) {
-            if (curBoard[i][curY].getSide() != this.getSide()) { 
+            if (curBoard[i][curY]->getSide() != this->getSide()) { 
                 output.emplace_back(currPosition, Position(i, curY), this, curBoard[i][curY]);
                 break;
             }
@@ -47,7 +47,7 @@ std::vector<Move> Rook::getPossibleCaptures(Board::BoardType & curBoard) const {
     }
     for (int i = curX; i >= BOARD_MIN_WIDTH; --i) {
         if (curBoard[i][curY] != nullptr) {
-            if (curBoard[i][curY].getSide() != this.getSide()) {
+            if (curBoard[i][curY]->getSide() != this->getSide()) {
                 output.emplace_back(currPosition, Position(i, curY), this, curBoard[i][curY]);
                 break;
             }
@@ -57,8 +57,8 @@ std::vector<Move> Rook::getPossibleCaptures(Board::BoardType & curBoard) const {
         }
     }
     for (int i = curY; i < BOARD_MAX_HEIGHT; ++i) {
-        if (curBoard[CurX][i] != nullptr) {
-            if (curBoard[curX][i].getSide() != this.getSide()) {
+        if (curBoard[curX][i] != nullptr) {
+            if (curBoard[curX][i]->getSide() != this->getSide()) {
                 output.emplace_back(currPosition, Position(curX, i), this, curBoard[curX][i]);
                 break;
             }
@@ -69,7 +69,7 @@ std::vector<Move> Rook::getPossibleCaptures(Board::BoardType & curBoard) const {
     }
     for (int i = curY; i >= BOARD_MIN_HEIGHT; --i) {
         if (curBoard[curX][i] != nullptr) {
-            if (curBoard[curX][i].getSide() != this.getSide()) {
+            if (curBoard[curX][i]->getSide() != this->getSide()) {
                 output.emplace_back(currPosition, Position(curX, i), this, curBoard[curX][i]);
                 break;
             }

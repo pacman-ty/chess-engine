@@ -8,9 +8,9 @@
 class Knight : public Piece {
 public:
     // return list of possible moves (does not mean that moves are legal)
-    std::vector<Move> getPossibleMove() const override;
+    virtual std::vector<Move> getPossibleMoves(Board::BoardType &) const override;
     // return list of attacking moves (does not mean that moves are legal)
-    std::vector<Move> getPossibleCaptures() const override;
+    virtual std::vector<Move> getPossibleCaptures(Board::BoardType &) const override;
 };
 
 #endif
