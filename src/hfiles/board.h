@@ -16,14 +16,18 @@ class Board : public Subject {
     std::vector<Piece> whitePieces;
     std::vector<Piece> blackPieces;
     std::vector<Move> moveHistory;
-    Piece* board[BOARD_MAX_WIDTH][BOARD_MAX_HEIGHT]; // board[x][y]
 public:
-    void placePiece(Move & m);
-    void removePiece(Piece & p);
-    std::vector<Move> getLegalMoves() const;
-    const Piece*& getBoard() const;
-    void clear();
+    Board() = default;
     ~Board();
+    using BoardType = Piece* [BOARD_MAX_WIDTH][BOARD_MAX_HEIGHT];
+    void placePiece(Piece & piece, const Position & pos);
+    void removePiece(const Piece & p);
+    void playMove(const Move & m);
+    bool isValidMove(const Move & m) const;
+    const BoardType& getBoard() const;
+    const Piece& getItem(int x, int y) const;
+private:
+    BoardType board; // board[x][y]
 };
 
 #endif
