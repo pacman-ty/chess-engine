@@ -11,6 +11,18 @@ int Position::getY() const {
     return y;
 }
 
+void Position::setX(int val) {
+    x = val;
+}
+
+void Position::setY(int val) {
+    y = val;
+}
+
+bool Position::operator==(const Position rhs) const {
+    return x == rhs.x && y == rhs.y;
+}
+
 istream& Position::operator>>(istream& in, Position rhs) {
     char rank;
     in >> rank;
