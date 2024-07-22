@@ -1,15 +1,38 @@
 #include "board.h"
 
 Board::~Board() {
-    for (int y = BOARD_MIN_HEIGHT; y < BOARD_MAX_HEIGHT; ++y) {
-        for (int x = BOARD_MIN_WIDTH; x < BOARD_MAX_WIDTH; ++x) {
-            delete board[x][y];
-        }
+    for (auto p : whitePieces) {
+        delete p;
+    }
+    for (auto p : blackPieces) {
+        delete p;
     }
 }
 
-void Board::placePiece(Piece & piece, const Position & pos) {
-    board[pos.getX()][pos.getY()] = &piece;
+void Board::placePiece(Colour side, Type t, const Position & pos) {
+    Piece* toAdd;
+    switch (t) {
+        case Type::KING: toAdd = new King();
+        case Type::QUEEN: toAdd = new Queen();
+        case Type::ROOK: toAdd = new Rook();
+        case Type::BISHOP: toAdd = new Bishop();
+        case Type::KNIGHT: toAdd = new King();
+        case Type::PAWN: toAdd = new King();
+        default:
+            std::cerr << "Invalid type" << std::endl;
+            return;
+    }
+    if (side == Colour::BLACK) {
+        blackPieces.push_back(toAdd);
+    }
+    else if (side == Colour::WHITE) {
+        whitePieces.push_back(toAdd);
+    }
+    else {
+        std::cerr << "Invalid Side" << std::endl;
+        return;
+    }
+    board[pos.getX()][pos.getY()] = toAdd;
 }
 
 void Board::removePiece(const Piece & piece) {
@@ -25,8 +48,8 @@ void Board::removePiece(const Piece & piece) {
 }
 
 void Board::playMove(const Move & m) {
-    if (!m.isValid()) {
-        std::cerr >> "invalid move" >> std::endl;
+    if (!isValidMove(m)) {
+        std::cerr << "invalid move" << std::endl;
         return;
     }
     for (int y = BOARD_MIN_HEIGHT; y < BOARD_MAX_HEIGHT; ++y) {
@@ -50,16 +73,29 @@ void Board::playMove(const Move & m) {
     moveHistory.push_back(m);
 }
 
+void Board::cloneBoard(Board & b) {
+    for (int y = BOARD_MIN_HEIGHT; y < BOARD_MAX_HEIGHT; ++y) {
+        for (int x = BOARD_MIN_WIDTH; x < BOARD_MAX_WIDTH; ++x) {
+            const Piece* curItem = b.getItem(x, y);
+            placePiece(curItem->getSide(), curItem->getType(), curItem->getPos());     
+        }
+    }
+}
+
 bool Board::isValidMove(const Move & m) const {
-    // to fill in
+    // simulate move
+    Board *temp_board = new Board;
+    temp_board->cloneBoard(*this);
+
+    return true;
 }
 
 const Board::BoardType& Board::getBoard() const {
     return board;
 }
 
-const Piece& Board::getItem(int x, int y) const {
-    return *board[x][y];
+const Piece* Board::getItem(int x, int y) const {
+    return board[x][y];
 }
 
 

@@ -9,7 +9,6 @@ class Rook : public Piece {
     // keeps track if the rook has moved yet for castling purposes
     bool hasMoved = false;
 public:
-    Rook(Board *board);
     // return list of possible moves (does not mean that moves are legal)
     virtual std::vector<Move> getPossibleMove() const override;
     // return list of attacking moves (does not mean that moves are legal)
