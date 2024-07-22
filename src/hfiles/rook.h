@@ -11,9 +11,9 @@ class Rook : public Piece {
 public:
     Rook(Board *board);
     // return list of possible moves (does not mean that moves are legal)
-    std::vector<Move> getPossibleMove() const override;
+    virtual std::vector<Move> getPossibleMove() const override;
     // return list of attacking moves (does not mean that moves are legal)
-    std::vector<Move> getPossibleCaptures() const override;
+    virtual std::vector<Move> getPossibleCaptures() const override;
 };
 
 #endif
