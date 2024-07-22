@@ -92,14 +92,19 @@ bool Board::isValidMove(const Move & m) const {
     // check if you can go there
     bool found = false;
     for (auto p : m.getTarget()->getPossibleMoves(board)) {
-        if (p.getNewPosition == m.getNewPosition)
+        if (p.getNewPosition() == m.getNewPosition()) {
+            found = true;
+            break;
+        }
     }
     if (!found) return false;
     // simulate move and check for check
     Board *temp_board = new Board;
     temp_board->cloneBoard(*this);
     temp_board->playMove(m);
-    bool  temp_board->isCheck(m.getTarget()->getSide());
+    bool out = temp_board->isCheck(m.getTarget()->getSide());
+    delete temp_board;
+    return out;
 }
 
 bool Board::isCheck(Colour side) const {
