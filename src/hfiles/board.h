@@ -7,30 +7,23 @@
 #include "position.h"
 #include "move.h"
 
-const int BOARD_HEIGHT = 8;
-const int BOARD_WIDTH = 8;
+const int BOARD_MIN_HEIGHT = 0;
+const int BOARD_MIN_WIDTH = 0;
+const int BOARD_MAX_HEIGHT = 8;
+const int BOARD_MAX_WIDTH = 8;
 
 class Board : public Subject {
-    std::vector<Piece> pieces;
+    std::vector<Piece> whitePieces;
+    std::vector<Piece> blackPieces;
     std::vector<Move> moveHistory;
-    Piece*** board;
+    Piece* board[BOARD_MAX_WIDTH][BOARD_MAX_HEIGHT]; // board[x][y]
 public:
-    class Iterator{
-        friend class Board;
-        int curIndex;
-        Iterator(int index);
-    public:
-        Iterator& operator++();
-        Piece& operator*() const;
-        bool operator==(const Iterator &) const;
-    };
-    void placePiece(char type, Position position);
-    void removePiece(Position position);
+    void placePiece(Move & m);
+    void removePiece(Piece & p);
     std::vector<Move> getLegalMoves() const;
-    Piece*** getBoard() const;
-    Iterator begin() const;
-    Iterator end() const;
+    const Piece*& getBoard() const;
     void clear();
+    ~Board();
 };
 
 #endif
