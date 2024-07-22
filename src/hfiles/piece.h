@@ -5,18 +5,20 @@
 #include "move.h"
 #include "colour.h"
 #include "board.h"
+#include "type.h"
 
-class Piece : public Board {
+class Piece {
 protected:
-    char name;
     Colour side;
     Position currPosition;
     Board* board;
+    Type t;
 public:
-    Piece(Board * b);
     virtual std::vector<Move> getPossibleMove() const = 0;
     virtual std::vector<Move> getPossibleCaptures() const = 0;
-    Colour getSide();
+    Colour getSide() const;
+    Type getType() const;
+    Position getPos() const;
 };
 
 #endif 

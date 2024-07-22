@@ -1,6 +1,6 @@
 #include "rook.h"
 
-Rook::Rook(Board *board) : Piece{board} {}
+Rook::Rook(Board *board) : Piece{board, Type::ROOK} {}
 
 std::vector<Move> Rook::getPossibleMove() const {
     std::vector<Move> output;
