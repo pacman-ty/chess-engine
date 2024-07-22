@@ -1,5 +1,9 @@
 #include "board.h"
 
+Board::Board() {
+    std::memset(board, 0, sizeof(board));
+}
+
 Board::~Board() {
     for (auto p : whitePieces) {
         delete p;
@@ -22,6 +26,8 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
             std::cerr << "Invalid type" << std::endl;
             return;
     }
+    toAdd->setSide(side);
+    toAdd->setPos(pos);
     if (side == Colour::BLACK) {
         blackPieces.push_back(toAdd);
     }
@@ -73,7 +79,7 @@ void Board::playMove(const Move & m) {
     moveHistory.push_back(m);
 }
 
-void Board::cloneBoard(Board & b) {
+void Board::cloneBoard(const Board & b) {
     for (int y = BOARD_MIN_HEIGHT; y < BOARD_MAX_HEIGHT; ++y) {
         for (int x = BOARD_MIN_WIDTH; x < BOARD_MAX_WIDTH; ++x) {
             const Piece* curItem = b.getItem(x, y);
@@ -83,10 +89,37 @@ void Board::cloneBoard(Board & b) {
 }
 
 bool Board::isValidMove(const Move & m) const {
-    // simulate move
+    // check if you can go there
+    bool found = false;
+    for (auto p : m.getTarget()->getPossibleMoves(board)) {
+        if (p.getNewPosition == m.getNewPosition)
+    }
+    if (!found) return false;
+    // simulate move and check for check
     Board *temp_board = new Board;
     temp_board->cloneBoard(*this);
+    temp_board->playMove(m);
+    bool  temp_board->isCheck(m.getTarget()->getSide());
+}
 
+bool Board::isCheck(Colour side) const {
+    switch(side) {
+        case Colour::BLACK:
+            for (auto p : whitePieces) { // check opposing pieces
+                for (auto cap : p->getPossibleCaptures(board)) {
+                    if (cap.getCapture()->getType() == Type::KING) return false;
+                }
+            }
+        case Colour::WHITE:
+            for (auto p : blackPieces) {
+                for (auto cap : p->getPossibleCaptures(board)) {
+                    if (cap.getCapture()->getType() == Type::KING) return false;
+                }
+            }
+        default:
+            std::cerr << "Invalid Colour" << std::endl;
+            return false;
+    }
     return true;
 }
 

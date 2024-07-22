@@ -20,14 +20,17 @@ const int BOARD_MAX_HEIGHT = 8;
 const int BOARD_MAX_WIDTH = 8;
 
 class Board : public Subject {
+public:
+    using BoardType = Piece* [BOARD_MAX_WIDTH][BOARD_MAX_HEIGHT];
+private:
     std::vector<Piece *> whitePieces;
     std::vector<Piece *> blackPieces;
     std::vector<Move> moveHistory;
+    BoardType board; // board[x][y]
 public:
-    using BoardType = Piece* [BOARD_MAX_WIDTH][BOARD_MAX_HEIGHT];
-    Board() = default;
+    Board();
     ~Board();
-    void cloneBoard(Board &);
+    void cloneBoard(const Board &);
     void placePiece(Colour side, Type t, const Position & pos);
     void removePiece(const Piece & p);
     void playMove(const Move & m);
@@ -35,8 +38,6 @@ public:
     bool isCheck(Colour c) const;
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
-private:
-    BoardType board; // board[x][y]
 };
 
 #endif
