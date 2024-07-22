@@ -1,10 +1,10 @@
 #include "rook.h"
 
-Rook::Rook(Board *board) : Piece{board} {}
+Rook::Rook() : {}
 
-std::vector<Move> Rook::getPossibleMove() const {
+// check each direction the rook can move not including captures and return a vector containing the moves 
+std::vector<Move> Rook::getPossibleMove(const Piece***& curBoard) const {
     std::vector<Move> output;
-    const Piece*** curBoard = board.getBoard();
     int curX = currPosition.getX();
     int curY = currPosition.getY();
 
@@ -28,38 +28,54 @@ std::vector<Move> Rook::getPossibleMove() const {
 
 }
 
-std::vector<Move> Rook::getPossibleCaptures() const {
+// checks each direction the rook can move in and sees if it captures anything and returns a vector containing the catures  
+std::vector<Move> Rook::getPossibleCaptures(const Piece***& curBoard) const {
     std::vector<Move> output;
-    const Piece*** curBoard = board->getBoard();
     int curX = currPosition.getX();
     int curY = currPosition.getY();
 
     for (int i = curX; i < BOARD_MAX_WIDTH; ++i) {
         if (curBoard[i][curY] != nullptr) {
-            output.emplace_back(currPosition, Position(i, curY),
-                                this, curBoard[curY][i]);
-            break;
+            if (curBoard[i][curY].getSide() != this.getSide()) { 
+                output.emplace_back(currPosition, Position(i, curY), this, curBoard[i][curY]);
+                break;
+            }
+            else {
+                break;
+            }
         }
     }
-    for (int i = curX; i >= 0; --i) {
+    for (int i = curX; i >= BOARD_MIN_WIDTH; --i) {
         if (curBoard[i][curY] != nullptr) {
-            output.emplace_back(currPosition, Position(i, curY),
-                                this, curBoard[curY][i]);
-            break;
+            if (curBoard[i][curY].getSide() != this.getSide()) {
+                output.emplace_back(currPosition, Position(i, curY), this, curBoard[i][curY]);
+                break;
+            }
+            else {
+                break;
+            }
         }
     }
     for (int i = curY; i < BOARD_MAX_HEIGHT; ++i) {
-        if (curBoard[curX][i] != nullptr) {
-            output.emplace_back(currPosition, Position(curX, i),
-                                this, curBoard[i][curX]);
-            break;
+        if (curBoard[CurX][i] != nullptr) {
+            if (curBoard[curX][i].getSide() != this.getSide()) {
+                output.emplace_back(currPosition, Position(curX, i), this, curBoard[curX][i]);
+                break;
+            }
+            else {
+                break;
+            }
         }
     }
-    for (int i = curY; i >= 0; --i) {
+    for (int i = curY; i >= BOARD_MIN_HEIGHT; --i) {
         if (curBoard[curX][i] != nullptr) {
-            output.emplace_back(currPosition, Position(curX, i),
-                                this, curBoard[i][curX]);
-            break;
+            if (curBoard[curX][i].getSide() != this.getSide()) {
+                output.emplace_back(currPosition, Position(curX, i), this, curBoard[curX][i]);
+                break;
+            }
+            else {
+                break;
+            }
         }
     }
     return output;
