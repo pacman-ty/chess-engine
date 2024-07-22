@@ -16,6 +16,7 @@ public:
     Piece(Board * b);
     virtual std::vector<Move> getPossibleMove() const = 0;
     virtual std::vector<Move> getPossibleCaptures() const = 0;
+    Colour getSide();
 };
 
 #endif 
