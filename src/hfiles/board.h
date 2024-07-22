@@ -24,11 +24,13 @@ public:
         Piece& operator*() const;
         bool operator==(const Iterator &) const;
     };
-    void placePiece(Piece *piece, Position position);
+    void placePiece(char type, Position position);
+    void removePiece(Position position);
     std::vector<Move> getLegalMoves() const;
     Piece*** getBoard() const;
     Iterator begin() const;
     Iterator end() const;
+    void clear();
 };
 
 #endif

@@ -7,31 +7,34 @@
 
 using namespace std;
 
-Position readPosition() {
-    Position p;
-    char rank;
-    cin >> rank;
-    p.x = rank - 'a'; // Use value difference to translate a-f to 0-7
-
-    cin >> p.y;
-    --p.y; // Given position is 1-8, translate to 0-7
-    return p;
-}
-
 int main() {;
-    Board* board = new Board;
-    Controller* controller{board};
+    Board *board = new Board;
+    Controller controller{board};
 
     // Interpret user commands
-    string commmand;
+    string command;
     while (cin >> command) {
         if (controller.inSetup()) {
             if (command == "+") {
-                Position p = readPosition();
+                char type;
+                Position p;
+                cin >> type >> p;
+                board->placePiece(type, p);
             }
             else if (command == "-") {
+                Position p;
+                cin >> p;
+                board->removePiece(p);
             }
             else if (command == "=") {
+                string side;
+                cin >> side;
+                if (side == "white") {
+                    controller.switchTurn(Colour::WHITE);
+                }
+                else if (side == "black") {
+                    controller.switchTurn(Colour::BLACK);
+                }
             }
             else if (command == "done") {
                 controller.exitSetup();
@@ -48,8 +51,9 @@ int main() {;
             controller.resign();
         }
         else if (command == "move") {
-            Position oldPos = readPosition();
-            Position newPos = readPosition();
+            Position oldPos;
+            Position newPos;
+            cin >> oldPos >> newPos;
 
             controller.move(Move{oldPos, newPos});
         }

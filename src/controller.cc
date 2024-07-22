@@ -1,6 +1,11 @@
 #include "controller.h"
 
-void Controller::switchTurn() {
+void Controller::switchTurn(Colour val = Colour::EMPTY) {
+    if (val != Colour::EMPTY) {
+        turn = val;
+        return;
+    }
+
     if (turn == Colour::BLACK) {
         turn = Colour::WHITE;
     } else {
@@ -37,7 +42,12 @@ void Controller::move(Move m, Piece *promotion) {
     // TODO
 }
 
+bool Controller::isCheckmate() const {
+    return setupMode;
+}
+
 void Controller::enterSetup() {
+    board->clear();
     setupMode = true;
 }
 

@@ -12,14 +12,16 @@ class Controller {
     Player *whitePlayer;
     Player *blackPlayer;
 
-    void switchTurn();
     bool isCheckmate() const;
     bool isStalemate() const;
 
 public:
+    Controller(Board*);
     void startGame(Player *whitePlayer, Player *blackPlayer);
     void resign();
     void move(Move m, Piece *promotion);
+    void switchTurn(Colour val = Colour::EMPTY);
+    bool inSetup() const;
     void enterSetup();
     void exitSetup();
 };
