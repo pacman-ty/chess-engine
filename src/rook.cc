@@ -1,9 +1,9 @@
 #include "rook.h"
 
-Rook::Rook() : {}
+Rook::Rook() : Piece{Type::ROOK} {}
 
 // check each direction the rook can move not including captures and return a vector containing the moves 
-std::vector<Move> Rook::getPossibleMove(const Piece***& curBoard) const {
+std::vector<Move> Rook::getPossibleMoves(Board::BoardType & curBoard) const {
     std::vector<Move> output;
     int curX = currPosition.getX();
     int curY = currPosition.getY();
@@ -29,7 +29,7 @@ std::vector<Move> Rook::getPossibleMove(const Piece***& curBoard) const {
 }
 
 // checks each direction the rook can move in and sees if it captures anything and returns a vector containing the catures  
-std::vector<Move> Rook::getPossibleCaptures(const Piece***& curBoard) const {
+std::vector<Move> Rook::getPossibleCaptures(Board::BoardType & curBoard) const {
     std::vector<Move> output;
     int curX = currPosition.getX();
     int curY = currPosition.getY();

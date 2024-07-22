@@ -11,14 +11,16 @@ class Piece {
 protected:
     Colour side;
     Position currPosition;
-    Board* board;
     Type t;
 public:
-    virtual std::vector<Move> getPossibleMove() const = 0;
-    virtual std::vector<Move> getPossibleCaptures() const = 0;
+    Piece(Type t);
+    virtual std::vector<Move> getPossibleMoves(Board::BoardType & b) const = 0;
+    virtual std::vector<Move> getPossibleCaptures(Board::BoardType & b) const = 0;
     Colour getSide() const;
     Type getType() const;
     Position getPos() const;
+    void setSide(Colour c);
+    void setPos(Position p);
 };
 
 #endif 
