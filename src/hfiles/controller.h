@@ -16,7 +16,7 @@ class Controller {
     bool isStalemate() const;
 
 public:
-    Controller(Board*);
+    Controller(Board *);
     void startGame(Player *whitePlayer, Player *blackPlayer);
     void resign();
     void move(Move m, Piece *promotion);

@@ -8,8 +8,8 @@
 using namespace std;
 
 int main() {;
-    Board *board = new Board;
-    Controller controller{board};
+    std::shared_ptr<Board> board = std::make_shared<Board>();
+    Controller controller{board.get()};
 
     // Interpret user commands
     string command;
