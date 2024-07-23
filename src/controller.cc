@@ -8,26 +8,26 @@ void Controller::initBoard() {
         board->placePiece(Colour::BLACK, Type::PAWN, Position{i, BLACK_PAWN_START});
     }
     // Rook Placement
-    board->placePiece(Colour::WHITE, Type::ROOK, Position{0, BOARD_MIN_HEIGHT});
-    board->placePiece(Colour::WHITE, Type::ROOK, Position{7, BOARD_MIN_HEIGHT});
-    board->placePiece(Colour::BLACK, Type::ROOK, Position{0, BOARD_MAX_HEIGHT - 1});
-    board->placePiece(Colour::BLACK, Type::ROOK, Position{7, BOARD_MAX_HEIGHT - 1});
+    board->placePiece(Colour::WHITE, Type::ROOK, Position{L_ROOK, WHITE_Y});
+    board->placePiece(Colour::WHITE, Type::ROOK, Position{R_ROOK, WHITE_Y});
+    board->placePiece(Colour::BLACK, Type::ROOK, Position{L_ROOK, BLACK_Y});
+    board->placePiece(Colour::BLACK, Type::ROOK, Position{R_ROOK, BLACK_Y});
     // Knight Placement
-    board->placePiece(Colour::WHITE, Type::KNIGHT, Position{1, BOARD_MIN_HEIGHT});
-    board->placePiece(Colour::WHITE, Type::KNIGHT, Position{6, BOARD_MIN_HEIGHT});
-    board->placePiece(Colour::BLACK, Type::KNIGHT, Position{1, BOARD_MAX_HEIGHT - 1});
-    board->placePiece(Colour::BLACK, Type::KNIGHT, Position{6, BOARD_MAX_HEIGHT - 1});
+    board->placePiece(Colour::WHITE, Type::KNIGHT, Position{L_KNIGHT, WHITE_Y});
+    board->placePiece(Colour::WHITE, Type::KNIGHT, Position{R_KNIGHT, WHITE_Y});
+    board->placePiece(Colour::BLACK, Type::KNIGHT, Position{L_KNIGHT, BLACK_Y});
+    board->placePiece(Colour::BLACK, Type::KNIGHT, Position{R_KNIGHT, BLACK_Y});
     // Bishop Placement
-    board->placePiece(Colour::WHITE, Type::BISHOP, Position{2, BOARD_MIN_HEIGHT});
-    board->placePiece(Colour::WHITE, Type::BISHOP, Position{5, BOARD_MIN_HEIGHT});
-    board->placePiece(Colour::BLACK, Type::BISHOP, Position{2, BOARD_MAX_HEIGHT - 1});
-    board->placePiece(Colour::BLACK, Type::BISHOP, Position{5, BOARD_MAX_HEIGHT - 1});
+    board->placePiece(Colour::WHITE, Type::BISHOP, Position{L_BISHOP, WHITE_Y});
+    board->placePiece(Colour::WHITE, Type::BISHOP, Position{R_BISHOP, WHITE_Y});
+    board->placePiece(Colour::BLACK, Type::BISHOP, Position{L_BISHOP, BLACK_Y});
+    board->placePiece(Colour::BLACK, Type::BISHOP, Position{R_BISHOP, BLACK_Y});
     // Queen Placement
-    board->placePiece(Colour::WHITE, Type::QUEEN, Position{3, BOARD_MIN_HEIGHT});
-    board->placePiece(Colour::BLACK, Type::QUEEN, Position{3, BOARD_MAX_HEIGHT - 1});
+    board->placePiece(Colour::WHITE, Type::QUEEN, Position{QUEEN_X, WHITE_Y});
+    board->placePiece(Colour::BLACK, Type::QUEEN, Position{QUEEN_X, BLACK_Y});
     // King Placement
-    board->placePiece(Colour::WHITE, Type::KING, Position{4, BOARD_MIN_HEIGHT});
-    board->placePiece(Colour::BLACK, Type::KING, Position{4, BOARD_MAX_HEIGHT - 1});
+    board->placePiece(Colour::WHITE, Type::KING, Position{KING_X, WHITE_Y});
+    board->placePiece(Colour::BLACK, Type::KING, Position{KING_X, BLACK_Y});
 }
 
 void Controller::switchTurn(Colour val = Colour::EMPTY) {
