@@ -7,11 +7,11 @@ TextView::TextView(Board *b): Observer(b) {}
 void TextView::notify() {
     bool dark = false;
     for (int y = BOARD_MAX_HEIGHT-1; y >= 0; --y) {
-        std::cout << y << " " << std::endl;
+        std::cout << y << " ";
         for (int x = 0; x < BOARD_MAX_WIDTH; ++x) {
             const Piece *piece = subject->getItem(x, y);
             if (piece == nullptr) {
-                std::cout << (dark ? '_' : ' ') << std::endl;
+                std::cout << (dark ? '_' : ' ');
             } else {
                 char out;
                 switch (piece->getType())
@@ -40,9 +40,11 @@ void TextView::notify() {
                 if (piece->getSide() == Colour::BLACK) {
                     out += 'a' - 'A'; // convert to lowercase 
                 }
-                std::cout << out << std::endl;
+                std::cout << out;
             }
             dark = !dark; // next square will be the opposite of current
         }
+        std::cout << std::endl;
     }
+    std::cout << "  abcdefgh" << std::endl;
 }

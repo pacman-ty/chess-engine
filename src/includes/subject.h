@@ -6,9 +6,8 @@
 
 class Subject {
     std::vector<Observer*> observers;
-protected:
-    void notifyAll();
 public:
+    void notifyAll();
     void subscribe(Observer*);
     void unsubscribe(Observer*);
 };

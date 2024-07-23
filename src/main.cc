@@ -79,6 +79,8 @@ int main() {;
         }
         else if (command == "done") {
             return 0;
+        } else if (command == "print") {
+            board->notifyAll();
         }
     }
 }

@@ -77,7 +77,6 @@ bool Controller::isCheckmate() const {
 }
 
 void Controller::enterSetup() {
-    delete board;
     setupMode = true;
 }
 
