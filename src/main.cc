@@ -66,13 +66,11 @@ int main() {;
         else if (command == "resign") {
             controller.resign();
         }
-        // else if (command == "move") { * unsure what this is *
-        //     Position oldPos;
-        //     Position newPos;
-        //     cin >> oldPos >> newPos;
-
-        //     controller.move(Move{oldPos, newPos});
-        // }
+        else if (command == "move") { 
+            Position oldPos, newPos;
+            cin >> oldPos >> newPos;
+            board->playMove(oldPos, newPos);
+        }
         else if (command == "setup") {
             controller.enterSetup();
         }

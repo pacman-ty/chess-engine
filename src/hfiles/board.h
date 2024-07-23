@@ -25,7 +25,6 @@ public:
 private:
     std::vector<Piece *> whitePieces;
     std::vector<Piece *> blackPieces;
-    std::vector<Move> moveHistory;
     BoardType board; // board[x][y]
 public:
     Board();
@@ -34,6 +33,7 @@ public:
     void placePiece(Colour side, Type t, const Position & pos);
     void removePiece(Position p);
     void playMove(const Move & m);
+    void playMove(Position oldPos, Position newPos);
     bool isValidMove(const Move & m) const;
     bool isCheck(Colour c) const;
     const BoardType& getBoard() const;
