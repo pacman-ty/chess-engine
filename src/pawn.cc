@@ -2,6 +2,7 @@
 
 Pawn::Pawn() : Piece{Type::PAWN} {}
 
+// checks each direction the pawn can move not including captures and return a vector contain the moves
 std::vector<Move> Pawn::getPossibleMoves(const Board::BoardType & b) const {
     std::vector<Move> out;
     int curX = currPosition.getX();
@@ -39,6 +40,7 @@ std::vector<Move> Pawn::getPossibleMoves(const Board::BoardType & b) const {
     return out;
 }
 
+// checks each direction the pawn can move in and sees if it captures anything and returns a vector containing the captures
 std::vector<Move> Pawn::getPossibleCaptures(const Board::BoardType & b) const {
     std::vector<Move> out;
     int curX = currPosition.getX();
