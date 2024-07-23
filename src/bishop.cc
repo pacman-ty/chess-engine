@@ -1,7 +1,9 @@
 #include "bishop.h"
 
+Bishop::Bishop() : Piece{Type::BISHOP} {}
+
 // checks each direction the bishop can move not including captures and return a vector contain the moves
-std::vector<Move> getPossibleMoves(Board::BoardType & board) {
+std::vector<Move> Bishop::getPossibleMoves(const Board::BoardType & board) const {
     std::vector<Move> output;
     int curX = currPosition.getX();
     int curY = currPosition.getY();
@@ -37,7 +39,7 @@ std::vector<Move> getPossibleMoves(Board::BoardType & board) {
     return output; 
 }
 
-std::vector<Move> getPossibleCaptures(Board::Type & Board) {
+std::vector<Move> Bishop::getPossibleCaptures(const Board::Type & board) const {
     std::vector<Move> output;
     int curX = currPosition.getX();
     int curY = currPosition.getY();

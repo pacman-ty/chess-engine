@@ -84,11 +84,19 @@ void Board::cloneBoard(const Board & b) {
 bool Board::isValidMove(const Move & m) const {
     // check if you can go there
     bool found = false;
-    for (auto p : m.getTarget()->getPossibleMoves(board)) {
+    for (auto p : m.getTarget()->getPossibleMoves(board)) { // simple move
         if (p.getNewPosition() == m.getNewPosition()) {
             found = true;
             break;
         }
+    }
+    if (!found) {
+        for (auto p : m.getTarget()->getPossibleCaptures(board)) { // capture move
+            if (p.getNewPosition() == m.getNewPosition()) {
+                found = true;
+                break;
+            }
+    }
     }
     if (!found) return false;
     // simulate move
