@@ -1,7 +1,8 @@
 #ifndef SCOREBOARD_H
 #define SCOREBOARD_H
+
 #include <map>
-#include "player.h"
+class Player;
 
 class Scoreboard {
     std::map<Player *, int> tracker;

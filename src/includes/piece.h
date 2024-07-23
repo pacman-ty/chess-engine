@@ -1,11 +1,7 @@
 #ifndef PIECE_H
 #define PIECE_H
-#include <vector>
-#include "position.h"
-#include "move.h"
-#include "colour.h"
+
 #include "board.h"
-#include "type.h"
 
 class Piece {
 protected:

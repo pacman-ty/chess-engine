@@ -4,6 +4,8 @@
 #include "board.h"
 #include "scoreboard.h"
 
+class Player;
+
 class Controller {
     bool setupMode;
     Colour turn;

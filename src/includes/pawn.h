@@ -1,9 +1,7 @@
 #ifndef PAWN_H
 #define PAWN_H
 
-#include "piece.h" 
-#include "move.h"
-#include "position.h"
+#include "piece.h"
 
 const int INITIAL_DASH = 2;
 const int WHITE_PAWN_START = 1;

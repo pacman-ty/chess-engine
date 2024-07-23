@@ -4,7 +4,6 @@
 
 #include "controller.h"
 #include "textview.h"
-#include "board.h"
 
 using namespace std;
 

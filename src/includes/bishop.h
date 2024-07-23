@@ -2,8 +2,6 @@
 #define BISHOP_H
 
 #include "piece.h"
-#include "move.h"
-#include "position.h"
 
 class Bishop : public Piece {
 public:

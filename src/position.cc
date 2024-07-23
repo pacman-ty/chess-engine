@@ -1,5 +1,4 @@
 #include "position.h"
-#include <iostream>
 
 Position::Position(int x, int y): x(x), y(y) {}
 

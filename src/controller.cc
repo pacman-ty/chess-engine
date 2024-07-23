@@ -1,4 +1,5 @@
 #include "controller.h"
+#include "pawn.h"
 
 void Controller::initBoard() {
     // Pawn Placement

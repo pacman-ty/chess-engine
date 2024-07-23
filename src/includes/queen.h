@@ -2,8 +2,6 @@
 #define QUEEN_H
 
 #include "piece.h"
-#include "move.h"
-#include "position.h"
 
 class Queen : public Piece {
 public:

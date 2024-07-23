@@ -1,7 +1,6 @@
 #include "textview.h"
-#include "board.h" // for constants
-#include "type.h" // for constants
-#include <iostream>
+#include "board.h"
+#include "piece.h"
 
 TextView::TextView(Board *b): Observer(b) {}
 
