@@ -1,8 +1,9 @@
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include "controller.h"
-#include "observer.h"
+#include "textview.h"
 #include "board.h"
 
 using namespace std;
@@ -10,6 +11,8 @@ using namespace std;
 int main() {;
     std::shared_ptr<Board> board = std::make_shared<Board>();
     Controller controller{board.get()};
+
+    board.get()->subscribe(new TextView(board.get()));
 
     // Interpret user commands
     string command;
