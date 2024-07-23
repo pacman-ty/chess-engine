@@ -14,7 +14,7 @@ MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}	# makefile name
 SOURCES = position.cc move.cc piece.cc knight.cc bishop.cc pawn.cc rook.cc queen.cc king.cc observer.cc textview.cc subject.cc board.cc controller.cc	main.cc		# source files (*.cc)
 OBJECTS = ${SOURCES:.cc=.o}			# object files forming executable
 DEPENDS = ${OBJECTS:.o=.d}			# substitute ".o" with ".d"
-EXEC = a4q3					# executable name
+EXEC = chess					# executable name
 
 ########## Targets ##########
 
