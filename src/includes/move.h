@@ -9,14 +9,14 @@ class Move {
 private:
     Position oldPos;
     Position newPos;
-    Piece* target;
-    Piece* capture; 
+    const Piece* target;
+    const Piece* capture; 
 public:
-    Move(Position oldPos, Position newPos, Piece target, Piece capture);
+    Move(Position oldPos, Position newPos, const Piece *target, const Piece *capture);
     Position getOldPosition() const;
     Position getNewPosition() const;
-    Piece* getCapture() const;
-    Piece* getTarget() const;
+    const Piece* getCapture() const;
+    const Piece* getTarget() const;
 };
 
 #endif
