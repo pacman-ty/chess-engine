@@ -1,6 +1,8 @@
 #include "controller.h"
 #include "pawn.h"
 
+Controller::Controller(Board *b): board(b) {}
+
 void Controller::initBoard() {
     // Pawn Placement
     for (int i = BOARD_MIN_WIDTH; i < BOARD_MAX_HEIGHT; ++i) {
@@ -30,7 +32,7 @@ void Controller::initBoard() {
     board->placePiece(Colour::BLACK, Type::KING, Position{4, BOARD_MAX_HEIGHT - 1});
 }
 
-void Controller::switchTurn(Colour val = Colour::EMPTY) {
+void Controller::switchTurn(Colour val) {
     if (val != Colour::EMPTY) {
         turn = val;
         return;
@@ -41,10 +43,6 @@ void Controller::switchTurn(Colour val = Colour::EMPTY) {
     } else {
         turn = Colour::BLACK;
     }
-}
-
-bool Controller::isCheckmate() const {
-
 }
 
 bool Controller::isStalemate() const {
@@ -81,6 +79,10 @@ bool Controller::isCheckmate() const {
 void Controller::enterSetup() {
     delete board;
     setupMode = true;
+}
+
+bool Controller::inSetup() const {
+    return setupMode;
 }
 
 void Controller::exitSetup() {
