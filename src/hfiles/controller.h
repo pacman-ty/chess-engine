@@ -12,6 +12,9 @@ class Controller {
     Player *whitePlayer;
     Player *blackPlayer;
 
+    // initBoard() places all pieces in standard order on board
+    void initBoard();
+
     bool isCheckmate() const;
     bool isStalemate() const;
 
