@@ -9,13 +9,13 @@ class Player;
 const int WHITE_Y = BOARD_MIN_HEIGHT;
 const int BLACK_Y = BOARD_MAX_HEIGHT - 1;
 const int L_ROOK = 0;
-const int R_ROOK = 7;
 const int L_KNIGHT = 1;
-const int R_KNIGHT = 6;
 const int L_BISHOP = 2;
-const int R_BISHOP = 5;
 const int QUEEN_X = 3;
 const int KING_X = 4;
+const int R_BISHOP = 5;
+const int R_KNIGHT = 6;
+const int R_ROOK = 7;
 
 class Controller {
     bool setupMode;
