@@ -24,18 +24,18 @@ int main() {;
                 Colour c;
                 cin >> piece >> pos;
                 switch (piece) {
-                    case 'K': t = Type::KING; c = Colour::WHITE;
-                    case 'Q': t = Type::QUEEN; c = Colour::WHITE;
-                    case 'R': t = Type::ROOK; c = Colour::WHITE;
-                    case 'B': t = Type::BISHOP; c = Colour::WHITE;
-                    case 'N': t = Type::KNIGHT; c = Colour::WHITE;
-                    case 'P': t = Type::PAWN; c = Colour::WHITE;
-                    case 'k': t = Type::KING; c = Colour::BLACK;
-                    case 'q': t = Type::QUEEN; c = Colour::BLACK;
-                    case 'r': t = Type::ROOK; c = Colour::BLACK;
-                    case 'b': t = Type::BISHOP; c = Colour::BLACK;
-                    case 'n': t = Type::KNIGHT; c = Colour::BLACK;
-                    case 'p': t = Type::PAWN; c = Colour::BLACK;
+                    case 'K': t = Type::KING; c = Colour::WHITE; break;
+                    case 'Q': t = Type::QUEEN; c = Colour::WHITE; break;
+                    case 'R': t = Type::ROOK; c = Colour::WHITE; break;
+                    case 'B': t = Type::BISHOP; c = Colour::WHITE; break;
+                    case 'N': t = Type::KNIGHT; c = Colour::WHITE; break;
+                    case 'P': t = Type::PAWN; c = Colour::WHITE; break;
+                    case 'k': t = Type::KING; c = Colour::BLACK; break;
+                    case 'q': t = Type::QUEEN; c = Colour::BLACK; break;
+                    case 'r': t = Type::ROOK; c = Colour::BLACK; break;
+                    case 'b': t = Type::BISHOP; c = Colour::BLACK; break;
+                    case 'n': t = Type::KNIGHT; c = Colour::BLACK; break;
+                    case 'p': t = Type::PAWN; c = Colour::BLACK; break;
                 }
                 board->placePiece(c, t, pos);
             }

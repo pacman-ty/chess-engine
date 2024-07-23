@@ -16,6 +16,4 @@ public:
     virtual std::vector<Move> getPossibleCaptures(const Board::BoardType &) const override;
 };
 
-std::ostream& operator<<(std::ostream& out, Rook & r);
-
 #endif

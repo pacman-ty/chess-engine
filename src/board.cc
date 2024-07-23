@@ -30,12 +30,12 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
     }
     Piece* toAdd;
     switch (t) {
-        case Type::KING: toAdd = new King;
-        case Type::QUEEN: toAdd = new Queen;
-        case Type::ROOK: toAdd = new Rook;
-        case Type::BISHOP: toAdd = new Bishop;
-        case Type::KNIGHT: toAdd = new Knight;
-        case Type::PAWN: toAdd = new Pawn;
+        case Type::KING: toAdd = new King; break;
+        case Type::QUEEN: toAdd = new Queen; break;
+        case Type::ROOK: toAdd = new Rook; break;
+        case Type::BISHOP: toAdd = new Bishop; break;
+        case Type::KNIGHT: toAdd = new Knight; break;
+        case Type::PAWN: toAdd = new Pawn; break;
         default:
             std::cerr << "Invalid type" << std::endl;
             return;
@@ -43,8 +43,8 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
     toAdd->setSide(side);
     toAdd->setPos(pos);
     switch (side) {
-        case Colour::BLACK: blackPieces.push_back(toAdd);
-        case Colour::WHITE: whitePieces.push_back(toAdd);
+        case Colour::BLACK: blackPieces.push_back(toAdd); break;
+        case Colour::WHITE: whitePieces.push_back(toAdd); break;
         default:
             std::cerr << "Invalid Side" << std::endl;
             return;
@@ -125,12 +125,14 @@ bool Board::isCheck(Colour side) const {
                     if (cap.getCapture()->getType() == Type::KING) return false;
                 }
             }
+            break;
         case Colour::WHITE:
             for (auto p : blackPieces) {
                 for (auto cap : p->getPossibleCaptures(board)) {
                     if (cap.getCapture()->getType() == Type::KING) return false;
                 }
             }
+            break;
         default:
             std::cerr << "Invalid Colour" << std::endl;
             return false;
