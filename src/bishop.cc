@@ -39,7 +39,7 @@ std::vector<Move> Bishop::getPossibleMoves(const Board::BoardType & board) const
     return output; 
 }
 
-std::vector<Move> Bishop::getPossibleCaptures(const Board::Type & board) const {
+std::vector<Move> Bishop::getPossibleCaptures(const Board::BoardType & board) const {
     std::vector<Move> output;
     int curX = currPosition.getX();
     int curY = currPosition.getY();
@@ -47,7 +47,7 @@ std::vector<Move> Bishop::getPossibleCaptures(const Board::Type & board) const {
     for (int i = curX + 1; i < BOARD_MAX_WIDTH; ++i) {
         for (int j = curY + 1; j < BOARD_MAX_HEIGHT; ++j) {
             if (board[i][j] != nullptr) {
-                if (board->getSide() != this->getSide()) {
+                if (board[i][j]->getSide() != this->getSide()) {
                     output.emplace_back(currPosition, Position(i, j), this, board[i][j]);
                     break;
                 }
@@ -61,7 +61,7 @@ std::vector<Move> Bishop::getPossibleCaptures(const Board::Type & board) const {
     for (int i = curX + 1; i < BOARD_MAX_WIDTH; ++i) {
         for (int j = curY + 1; j >= BOARD_MAX_HEIGHT; --j) {
             if (board[i][j] != nullptr) {
-                if (board->getSide() != this->getSide()) {
+                if (board[i][j]->getSide() != this->getSide()) {
                     output.emplace_back(currPosition, Position(i, j), this, board[i][j]);
                     break;
                 }
@@ -75,7 +75,7 @@ std::vector<Move> Bishop::getPossibleCaptures(const Board::Type & board) const {
     for (int i = curX + 1; i >= BOARD_MIN_WIDTH; --i) {
         for (int j = curY+ 1; j < BOARD_MAX_HEIGHT; ++j) {
             if (board[i][j] != nullptr) {
-                if (board->getSide() != this->getSide()) {
+                if (board[i][j]->getSide() != this->getSide()) {
                     output.emplace_back(currPosition, Position(i, j), this, board[i][j]);
                     break;
                 }
@@ -89,7 +89,7 @@ std::vector<Move> Bishop::getPossibleCaptures(const Board::Type & board) const {
     for (int i = curX + 1; i >= BOARD_MIN_WIDTH; --i) {
         for (int j = curY + 1; j >= BOARD_MIN_HEIGHT; --j) {
             if (board[i][j] != nullptr) {
-                if (board->getSide() != this->getSide()) {
+                if (board[i][j]->getSide() != this->getSide()) {
                     output.emplace_back(currPosition, Position(i, j), this, board[i][j]);
                     break;
                 }
