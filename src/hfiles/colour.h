@@ -1,6 +1,6 @@
 #ifndef COLOUR_H
 #define COLOUR_H
-enum Colour {
+enum class Colour {
     WHITE, BLACK, EMPTY
 };
 #endif
