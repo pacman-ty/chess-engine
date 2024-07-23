@@ -72,6 +72,7 @@ int main() {;
         else if (command == "move") { 
             Position oldPos, newPos;
             cin >> oldPos >> newPos;
+            cout << newPos.getX() << ',' << newPos.getY() << std::endl;
             board->playMove(oldPos, newPos);
         }
         else if (command == "setup") {
@@ -81,6 +82,8 @@ int main() {;
             return 0;
         } else if (command == "print") {
             board->notifyAll();
+        } else if (command == "getItem") {
+            std::cout << board->getBoard()[0][0];
         }
     }
 }

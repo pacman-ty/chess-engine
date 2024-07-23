@@ -28,6 +28,7 @@ public:
     void removePiece(Position p);
     void playMove(const Move & m);
     void playMove(Position oldPos, Position newPos);
+    void forcePlayMove(const Move & m);
     bool isValidMove(const Move & m) const;
     bool isCheck(Colour c) const;
     const BoardType& getBoard() const;

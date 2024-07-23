@@ -19,11 +19,10 @@ Board::Board() {
 }
 
 Board::~Board() {
-    for (auto p : whitePieces) {
-        delete p;
-    }
-    for (auto p : blackPieces) {
-        delete p;
+    for (int i = 0; i < BOARD_MAX_WIDTH; ++i) {
+        for (int j = 0; j < BOARD_MAX_HEIGHT; ++j) {
+            delete board[i][j];
+        }
     }
 }
 
@@ -45,7 +44,7 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
             return;
     }
     toAdd->setSide(side);
-    toAdd->setPos(pos);
+    toAdd->setPos(Position{pos.getX(), pos.getY()});
     switch (side) {
         case Colour::BLACK: blackPieces.push_back(toAdd); break;
         case Colour::WHITE: whitePieces.push_back(toAdd); break;
@@ -59,7 +58,8 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
 }
 
 void Board::removePiece(Position p) {
-    delete board[p.getX()][p.getY()];
+    Piece* toRemove = board[p.getX()][p.getY()];
+    if(toRemove) delete toRemove;
     board[p.getX()][p.getY()] = nullptr; 
 }
 
@@ -82,15 +82,32 @@ void Board::playMove(const Move & m) {
     }
 }
 
+void Board::forcePlayMove(const Move & m) {
+    int x = m.getOldPosition().getX();
+    int y = m.getOldPosition().getY();
+    int newX = m.getNewPosition().getX();
+    int newY = m.getNewPosition().getY();    
+    if (m.getCapture()) { // has a target
+        delete board[newX][newY]; // delete captured piece
+        board[newX][newY] = board[x][y]; // move target piece
+        board[x][y] = nullptr;                    
+    } else { // no target
+        board[newX][newY] = board[x][y]; // move target piece
+        board[x][y] = nullptr;
+    }
+}
+
 void Board::playMove(Position oldPos, Position newPos) {
-    delete board[newPos.getX()][newPos.getY()];
-    board[newPos.getX()][newPos.getY()] = board[oldPos.getX()][oldPos.getY()];
+    Piece *capture = board[newPos.getX()][newPos.getY()];
+    Piece *target = board[oldPos.getX()][oldPos.getY()];
+    playMove(Move(oldPos, newPos, target, capture));
 }
 
 void Board::cloneBoard(const Board & b) {
     for (int y = BOARD_MIN_HEIGHT; y < BOARD_MAX_HEIGHT; ++y) {
         for (int x = BOARD_MIN_WIDTH; x < BOARD_MAX_WIDTH; ++x) {
             const Piece* curItem = b.getItem(x, y);
+            if (!curItem) continue;
             placePiece(curItem->getSide(), curItem->getType(), curItem->getPos());     
         }
     }
@@ -98,16 +115,26 @@ void Board::cloneBoard(const Board & b) {
 
 bool Board::isValidMove(const Move & m) const {
     // check if you can go there
+    const Piece *target = m.getTarget();
+    if (!target) return false;
+    std::vector<Move> possibleMoves = target->getPossibleMoves(board);
+    if (possibleMoves.empty()) return false;
+
     bool found = false;
-    for (auto p : m.getTarget()->getPossibleMoves(board)) { // simple move
+    for (auto p : possibleMoves) { // simple move
         if (p.getNewPosition() == m.getNewPosition()) {
+             std::cout << "MOVE" << std::endl;
             found = true;
             break;
         }
     }
+    
     if (!found) {
-        for (auto p : m.getTarget()->getPossibleCaptures(board)) { // capture move
+        std::vector<Move> possibleCaptures = target->getPossibleCaptures(board);
+        if (possibleCaptures.empty()) return false;
+        for (auto p : possibleCaptures) { // capture move
             if (p.getNewPosition() == m.getNewPosition()) {
+                 std::cout << "CAPTURE" << std::endl;
                 found = true;
                 break;
             }
@@ -115,11 +142,12 @@ bool Board::isValidMove(const Move & m) const {
     }
     if (!found) return false;
     // simulate move
-    std::unique_ptr<Board> temp_board{new Board};
-    temp_board->cloneBoard(*this);
-    temp_board->playMove(m);
-    // check simulated move is valid
-    return temp_board->isCheck(m.getTarget()->getSide());
+    // std::unique_ptr<Board> temp_board{new Board};
+    // temp_board->cloneBoard(*this);
+    // temp_board->forcePlayMove(m);
+    // // check simulated move is valid
+    // return temp_board->isCheck(target->getSide());
+    return true;
 }
 
 bool Board::isCheck(Colour side) const {

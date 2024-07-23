@@ -7,6 +7,7 @@ std::vector<Move> Pawn::getPossibleMoves(const Board::BoardType & b) const {
     std::vector<Move> out;
     int curX = currPosition.getX();
     int curY = currPosition.getY();
+    int moveTo = 0;
 
     switch(side) {
         case Colour::BLACK:
@@ -17,10 +18,13 @@ std::vector<Move> Pawn::getPossibleMoves(const Board::BoardType & b) const {
                                  this, nullptr);
             }
 
-            for (int i = curY; i >= BOARD_MIN_HEIGHT; --i) {
-                if (b[curX][i] != nullptr) break;
-                out.emplace_back(currPosition, Position{curX, i}, this, nullptr);
+            moveTo = curY - 1;
+            if (moveTo >= BOARD_MIN_HEIGHT && moveTo < BOARD_MAX_HEIGHT) {
+                if (b[curX][moveTo] == nullptr) {
+                    out.emplace_back(currPosition, Position{curX, moveTo}, this, nullptr);
+                }
             }
+            break;
         case Colour::WHITE:
             if (curY != WHITE_PAWN_START) hasMoved = true;
 
@@ -29,10 +33,13 @@ std::vector<Move> Pawn::getPossibleMoves(const Board::BoardType & b) const {
                                  this, nullptr);
             }
 
-            for (int i = curY; i < BOARD_MAX_HEIGHT; ++i) {
-                if (b[curX][i] != nullptr) break;
-                out.emplace_back(currPosition, Position{curX, i}, this, nullptr);
+            moveTo = curY + 1;
+            if (moveTo >= BOARD_MIN_HEIGHT && moveTo < BOARD_MAX_HEIGHT) {
+                if (b[curX][moveTo] == nullptr) {
+                    out.emplace_back(currPosition, Position{curX, moveTo}, this, nullptr);
+                }
             }
+            break;
         default:
             std::cerr << "Invalid side (error initializing pawn)" << std::endl;
     }
@@ -65,6 +72,7 @@ std::vector<Move> Pawn::getPossibleCaptures(const Board::BoardType & b) const {
                                             this, b[rightCaptureX][curY - 1]);
                     }
             }
+            break;
         case Colour::WHITE:
             if (leftCaptureX >= BOARD_MIN_HEIGHT && leftCaptureX < BOARD_MAX_HEIGHT) {
                 if (b[leftCaptureX][curY + 1] != nullptr &&
@@ -81,6 +89,7 @@ std::vector<Move> Pawn::getPossibleCaptures(const Board::BoardType & b) const {
                                             this, b[rightCaptureX][curY - 1]);
                     }
             }
+            break;
         default:
             std::cerr << "Invalid side (error initializing pawn)" << std::endl;
     }

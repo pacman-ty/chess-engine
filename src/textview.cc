@@ -7,7 +7,7 @@ TextView::TextView(Board *b): Observer(b) {}
 void TextView::notify() {
     bool dark = false;
     for (int y = BOARD_MAX_HEIGHT-1; y >= 0; --y) {
-        std::cout << y << " ";
+        std::cout << y + 1 << " ";
         for (int x = 0; x < BOARD_MAX_WIDTH; ++x) {
             const Piece *piece = subject->getItem(x, y);
             if (piece == nullptr) {
