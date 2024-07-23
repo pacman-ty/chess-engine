@@ -32,7 +32,7 @@ public:
     ~Board();
     void cloneBoard(const Board &);
     void placePiece(Colour side, Type t, const Position & pos);
-    void removePiece(const Piece & p);
+    void removePiece(Position p);
     void playMove(const Move & m);
     bool isValidMove(const Move & m) const;
     bool isCheck(Colour c) const;

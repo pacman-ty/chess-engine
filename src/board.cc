@@ -39,16 +39,9 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
     board[pos.getX()][pos.getY()] = toAdd;
 }
 
-void Board::removePiece(const Piece & piece) {
-    for (int y = BOARD_MIN_HEIGHT; y < BOARD_MAX_HEIGHT; ++y) {
-        for (int x = BOARD_MIN_WIDTH; x < BOARD_MAX_WIDTH; ++x) {
-            if (board[x][y] == &piece) {
-                delete &piece;
-                board[x][y] = nullptr;
-                break;
-            }
-        }
-    }    
+void Board::removePiece(Position p) {
+    delete board[p.getX()][p.getY()];
+    board[p.getX()][p.getY()] = nullptr; 
 }
 
 void Board::playMove(const Move & m) {

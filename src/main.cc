@@ -16,10 +16,26 @@ int main() {;
     while (cin >> command) {
         if (controller.inSetup()) {
             if (command == "+") {
-                char type;
-                Position p;
-                cin >> type >> p;
-                board->placePiece(type, p);
+                char piece;
+                Position pos;
+                Type t;
+                Colour c;
+                cin >> piece >> pos;
+                switch (piece) {
+                    case 'K': t = Type::KING; c = Colour::WHITE;
+                    case 'Q': t = Type::QUEEN; c = Colour::WHITE;
+                    case 'R': t = Type::ROOK; c = Colour::WHITE;
+                    case 'B': t = Type::BISHOP; c = Colour::WHITE;
+                    case 'N': t = Type::KNIGHT; c = Colour::WHITE;
+                    case 'P': t = Type::PAWN; c = Colour::WHITE;
+                    case 'k': t = Type::KING; c = Colour::BLACK;
+                    case 'q': t = Type::QUEEN; c = Colour::BLACK;
+                    case 'r': t = Type::ROOK; c = Colour::BLACK;
+                    case 'b': t = Type::BISHOP; c = Colour::BLACK;
+                    case 'n': t = Type::KNIGHT; c = Colour::BLACK;
+                    case 'p': t = Type::PAWN; c = Colour::BLACK;
+                }
+                board->placePiece(c, t, pos);
             }
             else if (command == "-") {
                 Position p;
@@ -50,13 +66,13 @@ int main() {;
         else if (command == "resign") {
             controller.resign();
         }
-        else if (command == "move") {
-            Position oldPos;
-            Position newPos;
-            cin >> oldPos >> newPos;
+        // else if (command == "move") { * unsure what this is *
+        //     Position oldPos;
+        //     Position newPos;
+        //     cin >> oldPos >> newPos;
 
-            controller.move(Move{oldPos, newPos});
-        }
+        //     controller.move(Move{oldPos, newPos});
+        // }
         else if (command == "setup") {
             controller.enterSetup();
         }
