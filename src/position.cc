@@ -28,6 +28,7 @@ std::istream& operator>>(std::istream& in, Position& rhs) {
     int file = 0;
     in >> file;
     --file; // Given position is 1-8, translate to 0-7
+    std::cout << '(' << rank - 'a' << ',' << file << ')' << std::endl;
     rhs.setX(rank - 'a'); // Use value difference to translate a-f to 0-7
     rhs.setY(file);
     return in;

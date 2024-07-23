@@ -28,7 +28,7 @@ Board::~Board() {
 }
 
 void Board::placePiece(Colour side, Type t, const Position & pos) {
-    if (!board[pos.getX()][pos.getY()]) {
+    if (board[pos.getX()][pos.getY()]) {
         std::cerr << "Invalid placement (Slot taken)" << std::endl;
         return;
     }
