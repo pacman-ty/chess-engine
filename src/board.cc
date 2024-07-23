@@ -25,7 +25,7 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
         case Type::ROOK: toAdd = new Rook();
         case Type::BISHOP: toAdd = new Bishop();
         case Type::KNIGHT: toAdd = new King();
-        case Type::PAWN: toAdd = new King();
+        case Type::PAWN: toAdd = new Pawn();
         default:
             std::cerr << "Invalid type" << std::endl;
             return;

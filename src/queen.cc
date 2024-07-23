@@ -1,5 +1,7 @@
 #include "queen.h"
 
+Queen::Queen() : Piece{Type::QUEEN} {}
+
 // checks each direction the queen can move not including captures and return a vector contain the moves
 std::vector<Move> Queen::getPossibleMoves(const Board::BoardType & board) const {
     std::vector<Move> output;
