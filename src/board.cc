@@ -28,16 +28,14 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
     }
     toAdd->setSide(side);
     toAdd->setPos(pos);
-    if (side == Colour::BLACK) {
-        blackPieces.push_back(toAdd);
+    switch (side) {
+        case Colour::BLACK: blackPieces.push_back(toAdd);
+        case Colour::WHITE: whitePieces.push_back(toAdd);
+        default:
+            std::cerr << "Invalid Side" << std::endl;
+            return;
     }
-    else if (side == Colour::WHITE) {
-        whitePieces.push_back(toAdd);
-    }
-    else {
-        std::cerr << "Invalid Side" << std::endl;
-        return;
-    }
+    // Add to the board
     board[pos.getX()][pos.getY()] = toAdd;
 }
 
@@ -64,13 +62,13 @@ void Board::playMove(const Move & m) {
                 if (m.getCapture()) { // has a target
                     int newX = m.getNewPosition().getX();
                     int newY = m.getNewPosition().getY();
-                    delete board[newX][newY];
-                    board[newX][newY] = board[x][y];
+                    delete board[newX][newY]; // delete captured piece
+                    board[newX][newY] = board[x][y]; // move target piece
                     board[x][y] = nullptr;                    
                 } else { // no target
                     int newX = m.getNewPosition().getX();
                     int newY = m.getNewPosition().getY();
-                    board[newX][newY] = board[x][y];
+                    board[newX][newY] = board[x][y]; // move target piece
                     board[x][y] = nullptr;
                 }
             }
@@ -98,13 +96,12 @@ bool Board::isValidMove(const Move & m) const {
         }
     }
     if (!found) return false;
-    // simulate move and check for check
-    Board *temp_board = new Board;
+    // simulate move
+    std::unique_ptr<Board> temp_board{new Board};
     temp_board->cloneBoard(*this);
     temp_board->playMove(m);
-    bool out = temp_board->isCheck(m.getTarget()->getSide());
-    delete temp_board;
-    return out;
+    // check simulated move is valid
+    return temp_board->isCheck(m.getTarget()->getSide());
 }
 
 bool Board::isCheck(Colour side) const {
