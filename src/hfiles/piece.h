@@ -8,7 +8,6 @@
 #include "type.h"
 
 class Piece {
-protected:
     Colour side;
     Position currPosition;
     Type t;

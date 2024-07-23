@@ -2,22 +2,22 @@
 
 Piece::Piece(Type t) : t{t} {}
 
-Piece::getSide() {
+Colour Piece::getSide() const {
     return side;
 }
 
-Piece::getType() {
+Type Piece::getType() const {
     return t;
 }
 
-Piece::getPos() {
+Position Piece::getPos() const {
     return currPosition;
 }
 
-Piece::setSide(Colour c) {
-    colour = c;
+void Piece::setSide(Colour c) {
+    side = c;
 }
 
-Piece::setPos(Position p) {
+void Piece::setPos(Position p) {
     currPosition = p;
 }
