@@ -53,6 +53,7 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
             std::cerr << "Invalid Side" << std::endl;
             return;
     }
+    std::cout << "Piece created" << std::endl;
     // Add to the board
     board[pos.getX()][pos.getY()] = toAdd;
 }

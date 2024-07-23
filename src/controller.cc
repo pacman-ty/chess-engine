@@ -50,9 +50,6 @@ bool Controller::isStalemate() const {
 }
 
 void Controller::startGame(Player *whitePlayer, Player *blackPlayer) {
-    delete whitePlayer;
-    delete blackPlayer;
-
     this->whitePlayer = whitePlayer;
     this->blackPlayer = blackPlayer;
     
