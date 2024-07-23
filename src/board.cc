@@ -11,7 +11,11 @@
 #include "pawn.h"
 
 Board::Board() {
-    std::memset(board, 0, sizeof(board));
+    for (int i = 0; i < BOARD_MAX_HEIGHT; ++i) {
+        for (int j = 0; j < BOARD_MAX_WIDTH; ++j) {
+            board[i][j] = nullptr;
+        }
+    }
 }
 
 Board::~Board() {
