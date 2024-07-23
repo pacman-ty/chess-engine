@@ -2,13 +2,12 @@
 #define SUBJECT_H
 
 #include <vector>
-
-class Observer;
+#include "observer.h"
 
 class Subject {
     std::vector<Observer*> observers;
 protected:
-    void notify();
+    void notifyAll();
 public:
     void subscribe(Observer*);
     void unsubscribe(Observer*);

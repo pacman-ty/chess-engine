@@ -4,7 +4,7 @@
 #include "observer.h"
 
 class TextView : public Observer {
-    virtual void update();
+    virtual void notify();
 };
 
 #endif
