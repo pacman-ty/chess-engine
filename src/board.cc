@@ -14,6 +14,10 @@ Board::~Board() {
 }
 
 void Board::placePiece(Colour side, Type t, const Position & pos) {
+    if (!board[pos.getX()][pos.getY()]) {
+        std::cerr << "Invalid placement (Slot taken)" << std::endl;
+        return;
+    }
     Piece* toAdd;
     switch (t) {
         case Type::KING: toAdd = new King();
@@ -49,25 +53,23 @@ void Board::playMove(const Move & m) {
         std::cerr << "invalid move" << std::endl;
         return;
     }
-    for (int y = BOARD_MIN_HEIGHT; y < BOARD_MAX_HEIGHT; ++y) {
-        for (int x = BOARD_MIN_WIDTH; x < BOARD_MAX_WIDTH; ++x) {
-            if (board[x][y] == m.getTarget()) {
-                if (m.getCapture()) { // has a target
-                    int newX = m.getNewPosition().getX();
-                    int newY = m.getNewPosition().getY();
-                    delete board[newX][newY]; // delete captured piece
-                    board[newX][newY] = board[x][y]; // move target piece
-                    board[x][y] = nullptr;                    
-                } else { // no target
-                    int newX = m.getNewPosition().getX();
-                    int newY = m.getNewPosition().getY();
-                    board[newX][newY] = board[x][y]; // move target piece
-                    board[x][y] = nullptr;
-                }
-            }
-        }
+    int x = m.getOldPosition().getX();
+    int y = m.getOldPosition().getY();
+    int newX = m.getNewPosition().getX();
+    int newY = m.getNewPosition().getY();    
+    if (m.getCapture()) { // has a target
+        delete board[newX][newY]; // delete captured piece
+        board[newX][newY] = board[x][y]; // move target piece
+        board[x][y] = nullptr;                    
+    } else { // no target
+        board[newX][newY] = board[x][y]; // move target piece
+        board[x][y] = nullptr;
     }
-    moveHistory.push_back(m);
+}
+
+void Board::playMove(Position oldPos, Position newPos) {
+    delete board[newPos.getX()][newPos.getY()];
+    board[newPos.getX()][newPos.getY()] = board[oldPos.getX()][oldPos.getY()];
 }
 
 void Board::cloneBoard(const Board & b) {
