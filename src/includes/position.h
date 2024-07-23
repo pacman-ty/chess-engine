@@ -7,7 +7,7 @@ class Position {
 private: 
     int x = 0, y = 0;
 public:
-    Position();
+    Position() = default;
     Position(int x, int y);
     int getX() const;
     int getY() const;

@@ -4,6 +4,7 @@
 
 #include "controller.h"
 #include "textview.h"
+#include "position.h"
 
 using namespace std;
 
