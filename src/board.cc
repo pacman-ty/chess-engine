@@ -1,4 +1,14 @@
+#include <stdio.h>
+#include <memory>
+#include <cstring>
 #include "board.h"
+#include "piece.h"
+#include "king.h"
+#include "queen.h"
+#include "bishop.h"
+#include "knight.h"
+#include "rook.h"
+#include "pawn.h"
 
 Board::Board() {
     std::memset(board, 0, sizeof(board));
@@ -20,12 +30,12 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
     }
     Piece* toAdd;
     switch (t) {
-        case Type::KING: toAdd = new King();
-        case Type::QUEEN: toAdd = new Queen();
-        case Type::ROOK: toAdd = new Rook();
-        case Type::BISHOP: toAdd = new Bishop();
-        case Type::KNIGHT: toAdd = new Knight();
-        case Type::PAWN: toAdd = new Pawn();
+        case Type::KING: toAdd = new King;
+        case Type::QUEEN: toAdd = new Queen;
+        case Type::ROOK: toAdd = new Rook;
+        case Type::BISHOP: toAdd = new Bishop;
+        case Type::KNIGHT: toAdd = new Knight;
+        case Type::PAWN: toAdd = new Pawn;
         default:
             std::cerr << "Invalid type" << std::endl;
             return;

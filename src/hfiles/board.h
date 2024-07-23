@@ -1,18 +1,12 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <vector>
-#include "subject.h"
-#include "piece.h"
-#include "position.h"
-#include "move.h"
+#include "colour.h"
 #include "type.h"
-#include "king.h"
-#include "queen.h"
-#include "bishop.h"
-#include "rook.h"
-#include "knight.h"
-#include "pawn.h"
+#include "move.h"
+#include "subject.h"
+
+class Piece;
 
 const int BOARD_MIN_HEIGHT = 0;
 const int BOARD_MIN_WIDTH = 0;

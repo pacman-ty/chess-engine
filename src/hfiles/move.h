@@ -2,7 +2,8 @@
 #define MOVE_H
 
 #include "position.h"
-#include "piece.h"
+
+class Piece;
 
 class Move {
 private:

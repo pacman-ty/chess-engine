@@ -2,8 +2,6 @@
 #define ROOK_H
 
 #include "piece.h"
-#include "move.h"
-#include "position.h"
 
 const char ROOK_SYM = 'r';
 
