@@ -3,6 +3,8 @@
 #include "type.h" // for constants
 #include <iostream>
 
+TextView::TextView(Board *b): Observer(b) {}
+
 void TextView::notify() {
     bool dark = false;
     for (int y = BOARD_MAX_HEIGHT-1; y >= 0; --y) {
