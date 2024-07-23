@@ -87,3 +87,13 @@ std::vector<Move> Rook::getPossibleCaptures(const Board::BoardType & board) cons
     
     return output;
 }
+
+std::ostream& operator<<(std::ostream& out, Rook & r) {
+    switch (r.getSide()) {
+        case Colour::BLACK: out << ROOK_SYM << std::endl;
+        case Colour::WHITE: out << ROOK_SYM + 'A' - 'a' << std::endl;
+        default:
+            std::cerr << "Bad Side" << std::endl;
+    }
+    return out;
+}

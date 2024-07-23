@@ -43,7 +43,7 @@ void Controller::switchTurn(Colour val = Colour::EMPTY) {
 }
 
 bool Controller::isCheckmate() const {
-    // TODO
+
 }
 
 bool Controller::isStalemate() const {
