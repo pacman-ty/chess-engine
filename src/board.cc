@@ -68,6 +68,7 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
         case Colour::BLACK: blackPieces.push_back(toAdd); break;
         case Colour::WHITE: whitePieces.push_back(toAdd); break;
         default:
+            delete toAdd;
             throw std::invalid_argument("Invalid side when placing piece");
     }
     // Add to the board

@@ -27,8 +27,6 @@ std::vector<Move> Rook::getPossibleMoves(const Board::BoardType & board) const {
         if (board[curX][i] != nullptr) break;
         output.emplace_back(currPosition, Position(curX, i), this, nullptr);
     }
-
-    std::cout << output.empty()  << std::endl;
     
     return output;
 }
