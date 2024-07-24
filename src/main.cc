@@ -148,9 +148,8 @@ int main() {
                 continue;
             }
             if (controller.isCheckmate()) { // checkmate
-                cout << controller.colourToString(controller.getTurn()) << " is in checkmate." << endl;
-                cout << "Restarting Game ..." << endl;
                 controller.switchTurn();
+                cout << "Checkmate! " << controller.colourToString(controller.getTurn()) << " wins!" << endl;
                 scoreboard[controller.getTurn()]++; // increment score
                 controller.restartGame(); // restart game
                 continue;

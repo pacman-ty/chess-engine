@@ -49,6 +49,8 @@ void Controller::switchTurn(Colour val) {
     } else {
         turn = Colour::BLACK;
     }
+    std::cout << "===============" << std::endl;
+    std::cout << colourToString(getTurn()) << "'s turn:" << std::endl;
 }
 
 bool Controller::isStalemate() const {
@@ -82,7 +84,6 @@ void Controller::move(Position oldPos, Position newPos, Piece *promotion) {
     if (isCheck()) { // in check but not checkmate
         std::cout << colourToString(getTurn()) << " is in check." << std::endl;
     }
-    std::cout << colourToString(getTurn()) << "'s turn:" << std::endl;    
 }
 
 bool Controller::isCheckmate() const {
