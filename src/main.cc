@@ -57,6 +57,8 @@ int main() {;
             }
             else if (command == "done") {
                 controller.exitSetup();
+            } else {
+                cerr << "Invalid setup command" << endl;
             }
             continue;
         }
@@ -82,6 +84,8 @@ int main() {;
             return 0;
         } else if (command == "print") {
             board->notifyAll();
+        } else {
+            cerr << "Invalid command" << endl;
         }
     }
 }

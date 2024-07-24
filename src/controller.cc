@@ -82,5 +82,5 @@ bool Controller::inSetup() const {
 }
 
 void Controller::exitSetup() {
-    setupMode = true;
+    setupMode = false;
 }
