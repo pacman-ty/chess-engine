@@ -2,7 +2,6 @@
 #define CONTROLLER_H
 
 #include "board.h"
-#include "scoreboard.h"
 
 class Player;
 
@@ -21,7 +20,7 @@ class Controller {
     bool setupMode;
     Colour turn;
     Board* board;
-    Scoreboard *scoreboard;
+    
     Player *whitePlayer;
     Player *blackPlayer;
 
@@ -43,6 +42,7 @@ public:
     bool isCheckmate() const;
     bool isStalemate() const;
     bool isCheck() const;
+    std::string colourToString(Colour c) const;
 };
 
 #endif

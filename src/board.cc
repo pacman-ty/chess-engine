@@ -41,14 +41,14 @@ void Board::capture(Piece *p) {
             }
             break;
         default:
-            std::cerr << "Invalid colour when capturing" << std::endl;
+            throw std::invalid_argument("Invalid colour when capturing");
     }
     if (p) delete p;
 }
 
 void Board::placePiece(Colour side, Type t, const Position & pos) {
     if (board[pos.getX()][pos.getY()]) {
-        std::cerr << "Invalid placement (Slot taken)" << std::endl;
+        throw std::logic_error("Invalid placement (Slot taken)");
         return;
     }
     Piece* toAdd;
@@ -60,8 +60,7 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
         case Type::KNIGHT: toAdd = new Knight; break;
         case Type::PAWN: toAdd = new Pawn; break;
         default:
-            std::cerr << "Invalid type" << std::endl;
-            return;
+            throw std::invalid_argument("Invalid type when placing piece");
     }
     toAdd->setSide(side);
     toAdd->setPos(Position{pos.getX(), pos.getY()});
@@ -69,8 +68,7 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
         case Colour::BLACK: blackPieces.push_back(toAdd); break;
         case Colour::WHITE: whitePieces.push_back(toAdd); break;
         default:
-            std::cerr << "Invalid Side" << std::endl;
-            return;
+            throw std::invalid_argument("Invalid side when placing piece");
     }
     // Add to the board
     board[pos.getX()][pos.getY()] = toAdd;
@@ -194,7 +192,7 @@ bool Board::isCheck(Colour side) const {
             }
             break;
         default:
-            std::cerr << "Invalid Colour" << std::endl;
+            throw std::invalid_argument("Invalid Colour when performing check");
             return false;
     }
     return false;
@@ -221,7 +219,7 @@ bool Board::isCheckmate(Colour side) const {
             }
             break;
         default:
-            std::cerr << "Invalid Colour" << std::endl;
+            throw std::invalid_argument("Invalid Colour when checking for checkmate");
             return false;
     }
     return true;

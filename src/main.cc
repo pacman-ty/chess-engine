@@ -13,14 +13,6 @@
 
 using namespace std;
 
-string colourToString(Colour c) {
-    switch (c) {
-        case Colour::WHITE: return "White"; break;
-        case Colour::BLACK: return "Black"; break;
-        case Colour::EMPTY: return "Empty"; break;
-        default: return "Invalid";
-    }
-}
 
 Player* createPlayer(string name, Colour c, Board * b) {
     if (name == "human") { 
@@ -144,19 +136,15 @@ int main() {
                 cerr << "Move Error: " << e.what() << std::endl;
                 continue;
             }
-            controller.switchTurn();
             if (controller.isCheckmate()) { // checkmate
-                cout << colourToString(controller.getTurn()) << " is in checkmate." << endl;
+                cout << controller.colourToString(controller.getTurn()) << " is in checkmate." << endl;
                 cout << "Restarting Game ..." << endl;
+                controller.switchTurn();
                 scoreboard[controller.getTurn()]++; // increment score
                 controller.restartGame(); // restart game
                 continue;
             }
-            if (controller.isCheck()) { // in check but not checkmate
-                cout << colourToString(controller.getTurn()) << " is in check." << endl;
-            }
             board->notifyAll();
-            cout << colourToString(controller.getTurn()) << "'s turn:" << endl;
         }
         else if (command == "setup") {
             controller.enterSetup();
