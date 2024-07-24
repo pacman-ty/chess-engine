@@ -37,6 +37,7 @@ void Board::capture(Piece *p) {
                     break;
                 }
             }
+            break;
         case Colour::BLACK:
             for (auto it = blackPieces.begin(); it != blackPieces.end(); ++it) {
                 if (p == *it) {
@@ -44,6 +45,7 @@ void Board::capture(Piece *p) {
                     break;
                 }
             }
+            breka;
         default:
             std::cerr << "Invalid colour when capturing" << std::endl;
     }
