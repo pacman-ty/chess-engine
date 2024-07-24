@@ -32,6 +32,7 @@ public:
     bool isValidMove(const Move & m) const;
     void capture(Piece * p);
     bool isCheck(Colour c) const;
+    bool isCheckmate(Colour side) const;
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
 };

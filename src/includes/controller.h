@@ -28,9 +28,6 @@ class Controller {
     // initBoard() places all pieces in standard order on board
     void initBoard();
 
-    bool isCheckmate() const;
-    bool isStalemate() const;
-
 public:
     Controller(Board *);
     void startGame(Player *whitePlayer, Player *blackPlayer);
@@ -41,6 +38,9 @@ public:
     void enterSetup();
     void exitSetup();
     Colour getTurn() const;
+    bool isCheckmate() const;
+    bool isStalemate() const;
+    bool isCheck() const;
 };
 
 #endif

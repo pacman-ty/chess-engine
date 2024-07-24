@@ -48,7 +48,7 @@ int main() {
     Controller controller{board.get()};
     Player *whitePlayer;
     Player *blackPlayer;
-    map<Player *, int> scoreboard;
+    map<Colour, int> scoreboard;
 
     board.get()->subscribe(new TextView(board.get()));
 
@@ -135,16 +135,25 @@ int main() {
             try {
                 cin >> oldPos >> newPos;
             } catch (std::invalid_argument & e) {
-                std::cerr << "Move Error: " << e.what() << std::endl;
+                cerr << "Move Error: " << e.what() << std::endl;
                 continue;
             }
-            try {
+            try { 
                 controller.move(oldPos, newPos, nullptr);
             } catch (std::logic_error & e) {
-                std::cerr << "Move Error: " << e.what() << std::endl;
+                cerr << "Move Error: " << e.what() << std::endl;
                 continue;
             }
             controller.switchTurn();
+            if (controller.isCheck()) {
+                cout << colourToString(controller.getTurn()) << " is in check." << endl;
+            }
+            if (controller.isCheckmate()) {
+                cout << colourToString(controller.getTurn()) << " is in checkmate." << endl;
+                scoreboard[controller.getTurn()]++;
+                controller.startGame(whitePlayer, blackPlayer);
+                continue;
+            }
             board->notifyAll();
             cout << colourToString(controller.getTurn()) << "'s turn:" << endl;
         }
@@ -161,8 +170,8 @@ int main() {
     }
 
     cout << "Final Score:" << endl;
-    cout << "White: " << scoreboard[whitePlayer] << endl;
-    cout << "Black: " << scoreboard[blackPlayer] << endl;
+    cout << "White: " << scoreboard[Colour::WHITE] << endl;
+    cout << "Black: " << scoreboard[Colour::BLACK] << endl;
 
     delete whitePlayer;
     delete blackPlayer;

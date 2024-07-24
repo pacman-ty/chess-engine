@@ -70,7 +70,7 @@ void Controller::move(Position oldPos, Position newPos, Piece *promotion) {
 }
 
 bool Controller::isCheckmate() const {
-    return setupMode;
+    return board->isCheckmate(turn);
 }
 
 void Controller::enterSetup() {
@@ -87,4 +87,8 @@ void Controller::exitSetup() {
 
 Colour Controller::getTurn() const {
     return turn;
+}
+
+bool Controller::isCheck() const {
+    return board->isCheck(turn);
 }

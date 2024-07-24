@@ -3,62 +3,33 @@
 Queen::Queen() : Piece{Type::QUEEN} {}
 
 // checks each direction the queen can move not including captures and return a vector contain the moves
-std::vector<Move> Queen::getPossibleMoves(const Board::BoardType & board) const {
+std::vector<Move> Queen::getPossibleMoves(const Board::BoardType &board) const {
     std::vector<Move> output;
     int curX = currPosition.getX();
     int curY = currPosition.getY();
 
-    for (int i = curX + 1; i < BOARD_MAX_WIDTH; ++i) {
-        for (int j = curY + 1; j < BOARD_MAX_HEIGHT; ++j) {
-            if (board[i][j] != nullptr) break;
-            output.emplace_back(currPosition, Position(i, j), this, nullptr);
-       }
-    }
+    // Direction vectors for the eight possible directions
+    const std::vector<std::pair<int, int>> directions = {
+        {1, 0}, {-1, 0}, {0, 1}, {0, -1},  // Horizontal and Vertical
+        {1, 1}, {1, -1}, {-1, 1}, {-1, -1} // Diagonal
+    };
 
-    for (int i = curX + 1; i < BOARD_MAX_WIDTH; ++i) {
-        for (int j = curY + 1; j >= BOARD_MAX_HEIGHT; --j) {
-            if (board[i][j] != nullptr) break;
-            output.emplace_back(currPosition, Position(i, j), this, nullptr);
-       }
-    }
+    for (const auto& direction : directions) {
+        int x = curX + direction.first;
+        int y = curY + direction.second;
 
-    for (int i = curX + 1; i >= BOARD_MIN_WIDTH; --i) {
-        for (int j = curY + 1; j < BOARD_MAX_HEIGHT; ++j) {
-            if (board[i][j] != nullptr) break;
-            output.emplace_back(currPosition, Position(i, j), this, nullptr);
-       }
-    }
+        while (x >= BOARD_MIN_WIDTH && x < BOARD_MAX_WIDTH &&
+               y >= BOARD_MIN_HEIGHT && y < BOARD_MAX_HEIGHT) {
+            if (board[x][y] != nullptr) break;
+            output.emplace_back(currPosition, Position(x, y), this, nullptr);
 
-    for (int i = curX + 1; i >= BOARD_MIN_WIDTH; --i) {
-        for (int j = curY + 1; j >= BOARD_MIN_HEIGHT; --j) {
-            if (board[i][j] != nullptr) break;
-            output.emplace_back(currPosition, Position(i, j), this, nullptr);
-       }
-    }
-
-    for (int i = curX + 1; i < BOARD_MAX_WIDTH; ++i) {
-        if (board[i][curY] != nullptr) break;
-        output.emplace_back(currPosition, Position(i, curY), this, nullptr);
-    }
-
-    for (int i = curX + 1; i >= BOARD_MIN_WIDTH; --i) {
-        if (board[i][curY] != nullptr) break;
-        output.emplace_back(currPosition, Position(i, curY), this, nullptr);
-    }
-
-    for (int i = curY + 1; i < BOARD_MAX_HEIGHT; ++i) {
-        if (board[curX][i] != nullptr) break;
-        output.emplace_back(currPosition, Position(curX, i), this, nullptr);
-    }
-    
-    for (int i = curY + 1; i >= BOARD_MIN_HEIGHT; --i) {
-        if (board[curX][i] != nullptr) break;
-        output.emplace_back(currPosition, Position(curX, i), this, nullptr);
+            x += direction.first;
+            y += direction.second;
+        }
     }
 
     return output;
 }
-
 // checks each direction the queen can move in and sees if it captures anything and returns a vector containing the catures
 std::vector<Move> Queen::getPossibleCaptures(const Board::BoardType & board) const {
     std::vector<Move> output;

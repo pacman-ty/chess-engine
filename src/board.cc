@@ -206,6 +206,33 @@ bool Board::isCheck(Colour side) const {
     return false;
 }
 
+bool Board::isCheckmate(Colour side) const {
+    switch(side) {
+        case Colour::BLACK:
+            for (auto p : blackPieces) {
+                std::vector<Move> moves = p->getPossibleMoves(board);
+                if (moves.empty()) continue;
+                for (auto m : moves) {
+                    if (isValidMove(m)) std::cout << '[' << m.getNewPosition().getX() + 1 << ',' << m.getNewPosition().getY() + 1 << ']' << std::endl; return false;
+                }
+            }
+            break;
+        case Colour::WHITE:
+            for (auto p : whitePieces) {
+                std::vector<Move> moves = p->getPossibleMoves(board);
+                if (moves.empty()) continue;
+                for (auto m : moves) {
+                    if (isValidMove(m)) return false;
+                }
+            }
+            break;
+        default:
+            std::cerr << "Invalid Colour" << std::endl;
+            return false;
+    }
+    return true;
+}
+
 const Board::BoardType& Board::getBoard() const {
     return board;
 }
