@@ -52,7 +52,6 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
             std::cerr << "Invalid Side" << std::endl;
             return;
     }
-    std::cout << "Piece created" << std::endl;
     // Add to the board
     board[pos.getX()][pos.getY()] = toAdd;
 }
@@ -73,13 +72,11 @@ void Board::playMove(const Move & m) {
     int newX = m.getNewPosition().getX();
     int newY = m.getNewPosition().getY();    
     if (m.getCapture()) { // has a target
-        delete board[newX][newY]; // delete captured piece
-        board[newX][newY] = board[x][y]; // move target piece
-        board[x][y] = nullptr;                    
-    } else { // no target
-        board[newX][newY] = board[x][y]; // move target piece
-        board[x][y] = nullptr;
+        if (!board[newX][newY]) delete board[newX][newY]; // delete captured piece               
     }
+    board[newX][newY] = board[x][y]; // move target piece
+    board[x][y] = nullptr;
+    board[newX][newY]->setPos(Position{newX, newY});
 }
 
 void Board::forcePlayMove(const Move & m) {
@@ -88,13 +85,11 @@ void Board::forcePlayMove(const Move & m) {
     int newX = m.getNewPosition().getX();
     int newY = m.getNewPosition().getY();    
     if (m.getCapture()) { // has a target
-        delete board[newX][newY]; // delete captured piece
-        board[newX][newY] = board[x][y]; // move target piece
-        board[x][y] = nullptr;                    
-    } else { // no target
-        board[newX][newY] = board[x][y]; // move target piece
-        board[x][y] = nullptr;
+        if (!board[newX][newY]) delete board[newX][newY]; // delete captured piece               
     }
+    board[newX][newY] = board[x][y]; // move target piece
+    board[x][y] = nullptr;
+    board[newX][newY]->setPos(Position{newX, newY});
 }
 
 void Board::playMove(Position oldPos, Position newPos) {
@@ -119,6 +114,9 @@ bool Board::isValidMove(const Move & m) const {
     if (!target) return false;
     std::vector<Move> possibleMoves = target->getPossibleMoves(board);
     if (possibleMoves.empty()) return false;
+    for (auto p : possibleMoves) {
+        std::cout << p.getNewPosition().getX() << ',' << p.getNewPosition().getY() << std::endl;
+    }
 
     bool found = false;
     for (auto p : possibleMoves) { // simple move
@@ -131,6 +129,9 @@ bool Board::isValidMove(const Move & m) const {
     
     if (!found) {
         std::vector<Move> possibleCaptures = target->getPossibleCaptures(board);
+        for (auto p : possibleMoves) {
+            std::cout << p.getNewPosition().getX() << ',' << p.getNewPosition().getY() << std::endl;
+        }
         if (possibleCaptures.empty()) return false;
         for (auto p : possibleCaptures) { // capture move
             if (p.getNewPosition() == m.getNewPosition()) {
