@@ -52,42 +52,25 @@ std::vector<Move> Pawn::getPossibleCaptures(const Board::BoardType & b) const {
     int curX = currPosition.getX();
     int curY = currPosition.getY();
     int leftCaptureX = curX - 1;
-    int rightCaptureX = curX + 1;   
+    int rightCaptureX = curX + 1;
 
-    switch(side) {
+    auto checkAndAddCapture = [&](int targetX, int targetY, Colour enemyColour) {
+        if (targetX >= BOARD_MIN_WIDTH && targetX < BOARD_MAX_WIDTH && 
+            targetY >= BOARD_MIN_HEIGHT && targetY < BOARD_MAX_HEIGHT && // Ensure targetY is within bounds
+            b[targetX][targetY] != nullptr && 
+            b[targetX][targetY]->getSide() == enemyColour) {
+            out.emplace_back(currPosition, Position{targetX, targetY}, this, b[targetX][targetY]);
+        }
+    };
+
+    switch (side) {
         case Colour::BLACK:
-            if (leftCaptureX >= BOARD_MIN_HEIGHT && leftCaptureX < BOARD_MAX_HEIGHT) {
-                if (b[leftCaptureX][curY - 1] != nullptr &&
-                    b[leftCaptureX][curY - 1]->getSide() == Colour::WHITE) {
-                        out.emplace_back(currPosition, Position{leftCaptureX, curY - 1},
-                                            this, b[leftCaptureX][curY - 1]);
-                    }
-            }
-
-            if (rightCaptureX >= BOARD_MIN_HEIGHT && rightCaptureX < BOARD_MAX_HEIGHT) {
-                if (b[rightCaptureX][curY - 1] != nullptr &&
-                    b[rightCaptureX][curY - 1]->getSide() == Colour::WHITE) {
-                        out.emplace_back(currPosition, Position{rightCaptureX, curY - 1},
-                                            this, b[rightCaptureX][curY - 1]);
-                    }
-            }
+            checkAndAddCapture(leftCaptureX, curY - 1, Colour::WHITE);
+            checkAndAddCapture(rightCaptureX, curY - 1, Colour::WHITE);
             break;
         case Colour::WHITE:
-            if (leftCaptureX >= BOARD_MIN_HEIGHT && leftCaptureX < BOARD_MAX_HEIGHT) {
-                if (b[leftCaptureX][curY + 1] != nullptr &&
-                    b[leftCaptureX][curY + 1]->getSide() == Colour::BLACK) {
-                        out.emplace_back(currPosition, Position{leftCaptureX, curY - 1},
-                                            this, b[leftCaptureX][curY - 1]);
-                    }
-            }
-            
-            if (rightCaptureX >= BOARD_MIN_HEIGHT && rightCaptureX < BOARD_MAX_HEIGHT) {
-                if (b[rightCaptureX][curY + 1] != nullptr &&
-                    b[rightCaptureX][curY + 1]->getSide() == Colour::BLACK) {
-                        out.emplace_back(currPosition, Position{rightCaptureX, curY - 1},
-                                            this, b[rightCaptureX][curY - 1]);
-                    }
-            }
+            checkAndAddCapture(leftCaptureX, curY + 1, Colour::BLACK);
+            checkAndAddCapture(rightCaptureX, curY + 1, Colour::BLACK);
             break;
         default:
             std::cerr << "Invalid side (error initializing pawn)" << std::endl;

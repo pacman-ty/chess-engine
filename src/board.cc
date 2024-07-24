@@ -70,12 +70,20 @@ void Board::playMove(const Move & m) {
     int x = m.getOldPosition().getX();
     int y = m.getOldPosition().getY();
     int newX = m.getNewPosition().getX();
-    int newY = m.getNewPosition().getY();    
-    if (m.getCapture()) { // has a target
-        if (!board[newX][newY]) delete board[newX][newY]; // delete captured piece               
+    int newY = m.getNewPosition().getY(); 
+
+    if (board[x][y] == nullptr) {
+        std::cerr << "No piece to move" << std::endl;
+        return;
     }
+
+    if (m.getCapture()) { // has a target
+        if (board[newX][newY] != nullptr) delete board[newX][newY]; // delete captured piece               
+    }
+
     board[newX][newY] = board[x][y]; // move target piece
     board[x][y] = nullptr;
+
     board[newX][newY]->setPos(Position{newX, newY});
 }
 
@@ -113,15 +121,13 @@ bool Board::isValidMove(const Move & m) const {
     const Piece *target = m.getTarget();
     if (!target) return false;
     std::vector<Move> possibleMoves = target->getPossibleMoves(board);
-    if (possibleMoves.empty()) return false;
-    for (auto p : possibleMoves) {
-        std::cout << p.getNewPosition().getX() << ',' << p.getNewPosition().getY() << std::endl;
-    }
+    // for (auto p : possibleMoves) {
+    //     std::cout << p.getNewPosition().getX() << ',' << p.getNewPosition().getY() << std::endl;
+    // }
 
     bool found = false;
     for (auto p : possibleMoves) { // simple move
         if (p.getNewPosition() == m.getNewPosition()) {
-             std::cout << "MOVE" << std::endl;
             found = true;
             break;
         }
@@ -129,13 +135,13 @@ bool Board::isValidMove(const Move & m) const {
     
     if (!found) {
         std::vector<Move> possibleCaptures = target->getPossibleCaptures(board);
-        for (auto p : possibleMoves) {
-            std::cout << p.getNewPosition().getX() << ',' << p.getNewPosition().getY() << std::endl;
-        }
+        // for (auto p : possibleMoves) {
+        //     std::cout << p.getNewPosition().getX() << ',' << p.getNewPosition().getY() << std::endl;
+        // }
         if (possibleCaptures.empty()) return false;
         for (auto p : possibleCaptures) { // capture move
             if (p.getNewPosition() == m.getNewPosition()) {
-                 std::cout << "CAPTURE" << std::endl;
+                //  std::cout << "CAPTURE" << std::endl;
                 found = true;
                 break;
             }
