@@ -83,9 +83,8 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
 }
 
 void Board::removePiece(Position p) {
-    Piece* toRemove = board[p.getX()][p.getY()];
-    if(toRemove) delete toRemove;
-    board[p.getX()][p.getY()] = nullptr; 
+    capture(board[p.getX()][p.getY()]);
+    board[p.getX()][p.getY()] = nullptr;
 }
 
 void Board::playMove(const Move & m) {
