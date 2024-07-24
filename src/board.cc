@@ -125,9 +125,15 @@ void Board::forcePlayMove(const Move & m) {
     board[newX][newY]->setPos(Position{newX, newY});
 }
 
-void Board::playMove(Position oldPos, Position newPos) {
+void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     Piece *capture = board[newPos.getX()][newPos.getY()];
     Piece *target = board[oldPos.getX()][oldPos.getY()];
+    if (target == nullptr) {
+        throw std::logic_error("No piece to move");
+    }
+    if (target->getSide() != turn) {
+        throw std::logic_error("Not your turn");
+    }
     playMove(Move(oldPos, newPos, target, capture));
 }
 

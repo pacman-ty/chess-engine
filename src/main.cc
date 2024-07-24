@@ -8,6 +8,15 @@
 
 using namespace std;
 
+string colourToString(Colour c) {
+    switch (c) {
+        case Colour::WHITE: return "White"; break;
+        case Colour::BLACK: return "Black"; break;
+        case Colour::EMPTY: return "Empty"; break;
+        default: return "Invalid";
+    }
+}
+
 int main() {;
     std::shared_ptr<Board> board = std::make_shared<Board>();
     Controller controller{board.get()};
@@ -72,11 +81,12 @@ int main() {;
             Player* black;
 
             controller.startGame(white, black);
+            board->notifyAll();
         }
         else if (command == "resign") {
             controller.resign();
         }
-        else if (command == "move") { 
+        else if (command == "move") {
             Position oldPos, newPos;
             try {
                 cin >> oldPos >> newPos;
@@ -84,8 +94,15 @@ int main() {;
                 std::cerr << "Move Error: " << e.what() << std::endl;
                 continue;
             }
-            board->playMove(oldPos, newPos);
+            try {
+                controller.move(oldPos, newPos, nullptr);
+            } catch (std::logic_error & e) {
+                std::cerr << "Move Error: " << e.what() << std::endl;
+                continue;
+            }
+            controller.switchTurn();
             board->notifyAll();
+            cout << colourToString(controller.getTurn()) << "'s turn:" << endl;
         }
         else if (command == "setup") {
             controller.enterSetup();

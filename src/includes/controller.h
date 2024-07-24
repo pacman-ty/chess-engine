@@ -35,11 +35,12 @@ public:
     Controller(Board *);
     void startGame(Player *whitePlayer, Player *blackPlayer);
     void resign();
-    void move(Move m, Piece *promotion);
+    void move(Position oP, Position nP, Piece *promotion);
     void switchTurn(Colour val = Colour::EMPTY);
     bool inSetup() const;
     void enterSetup();
     void exitSetup();
+    Colour getTurn() const;
 };
 
 #endif

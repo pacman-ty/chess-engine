@@ -65,8 +65,8 @@ void Controller::resign() {
     }
 }
 
-void Controller::move(Move m, Piece *promotion) {
-    // TODO
+void Controller::move(Position oldPos, Position newPos, Piece *promotion) {
+    board->playMove(oldPos, newPos, turn);
 }
 
 bool Controller::isCheckmate() const {
@@ -83,4 +83,8 @@ bool Controller::inSetup() const {
 
 void Controller::exitSetup() {
     setupMode = false;
+}
+
+Colour Controller::getTurn() const {
+    return turn;
 }
