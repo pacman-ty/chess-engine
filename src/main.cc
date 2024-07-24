@@ -43,6 +43,7 @@ int main() {
     map<Colour, int> scoreboard;
 
     board.get()->subscribe(new TextView(board.get()));
+    board->notifyAll();
 
     // Interpret user commands
     string command;
@@ -79,6 +80,7 @@ int main() {
                     std::cerr << "Setup Error: " << e.what() << std::endl;
                     continue;
                 }
+                board->notifyAll();
                 
             }
             else if (command == "-") {
@@ -90,6 +92,7 @@ int main() {
                     std::cerr << "Setup Error: " << e.what() << std::endl;
                     continue;
                 }
+                board->notifyAll();
             }
             else if (command == "=") {
                 string side;
@@ -109,7 +112,8 @@ int main() {
             continue;
         }
         if (command == "game") {
-
+            delete whitePlayer;
+            delete blackPlayer;
             string white, black;
             cin >> white >> black;
 
@@ -157,6 +161,12 @@ int main() {
             board->notifyAll();
         }
         else if (command == "setup") {
+            cout << "Entering setup mode:" << endl;
+            cout << "Available Commands:" << endl;
+            cout << "+ <Piece> <Location> [Insert Piece]" << endl;
+            cout << "- <Location> [Remove Piece]" << endl;
+            cout << "= [Swap Sides]" << endl;
+            cout << "done [Exit Setup]" << endl;
             controller.enterSetup();
         }
         else if (command == "done") {
