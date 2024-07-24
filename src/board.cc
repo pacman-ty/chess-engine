@@ -19,13 +19,7 @@ Board::Board() {
 }
 
 Board::~Board() {
-    for (int i = 0; i < BOARD_MAX_WIDTH; ++i) {
-        for (int j = 0; j < BOARD_MAX_HEIGHT; ++j) {
-            delete board[i][j];
-        }
-    }
-    blackPieces.clear();
-    whitePieces.clear();
+    clear();
 }
 
 void Board::capture(Piece *p) {
@@ -213,7 +207,7 @@ bool Board::isCheckmate(Colour side) const {
                 std::vector<Move> moves = p->getPossibleMoves(board);
                 if (moves.empty()) continue;
                 for (auto m : moves) {
-                    if (isValidMove(m)) std::cout << '[' << m.getNewPosition().getX() + 1 << ',' << m.getNewPosition().getY() + 1 << ']' << std::endl; return false;
+                    if (isValidMove(m)) return false;
                 }
             }
             break;
@@ -241,4 +235,13 @@ const Piece* Board::getItem(int x, int y) const {
     return board[x][y];
 }
 
-
+void Board::clear() {
+    for (int i = 0; i < BOARD_MAX_WIDTH; ++i) {
+        for (int j = 0; j < BOARD_MAX_HEIGHT; ++j) {
+            delete board[i][j];
+            board[i][j] = nullptr;
+        }
+    }
+    blackPieces.clear();
+    whitePieces.clear();    
+}

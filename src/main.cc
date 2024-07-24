@@ -145,14 +145,15 @@ int main() {
                 continue;
             }
             controller.switchTurn();
-            if (controller.isCheck()) {
-                cout << colourToString(controller.getTurn()) << " is in check." << endl;
-            }
-            if (controller.isCheckmate()) {
+            if (controller.isCheckmate()) { // checkmate
                 cout << colourToString(controller.getTurn()) << " is in checkmate." << endl;
-                scoreboard[controller.getTurn()]++;
-                controller.startGame(whitePlayer, blackPlayer);
+                cout << "Restarting Game ..." << endl;
+                scoreboard[controller.getTurn()]++; // increment score
+                controller.restartGame(); // restart game
                 continue;
+            }
+            if (controller.isCheck()) { // in check but not checkmate
+                cout << colourToString(controller.getTurn()) << " is in check." << endl;
             }
             board->notifyAll();
             cout << colourToString(controller.getTurn()) << "'s turn:" << endl;

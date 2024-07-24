@@ -65,12 +65,21 @@ void Controller::resign() {
     }
 }
 
+void Controller::restartGame() {
+    board->clear();
+    startGame(whitePlayer, blackPlayer);
+}
+
 void Controller::move(Position oldPos, Position newPos, Piece *promotion) {
     board->playMove(oldPos, newPos, turn);
 }
 
 bool Controller::isCheckmate() const {
     return board->isCheckmate(turn);
+}
+
+void Controller::setBoard(Board * b) {
+    board = b;
 }
 
 void Controller::enterSetup() {

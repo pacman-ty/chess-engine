@@ -35,6 +35,7 @@ public:
     bool isCheckmate(Colour side) const;
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
+    void clear();
 };
 
 #endif

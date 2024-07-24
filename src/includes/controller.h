@@ -37,6 +37,8 @@ public:
     bool inSetup() const;
     void enterSetup();
     void exitSetup();
+    void setBoard(Board *);
+    void restartGame();
     Colour getTurn() const;
     bool isCheckmate() const;
     bool isStalemate() const;
