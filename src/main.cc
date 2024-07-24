@@ -23,7 +23,12 @@ int main() {;
                 Position pos;
                 Type t;
                 Colour c;
-                cin >> piece >> pos;
+                try {
+                    cin >> piece >> pos;
+                } catch (std::invalid_argument & e) {
+                    std::cerr << "Setup Error: " << e.what() << std::endl;
+                    continue;
+                }
                 switch (piece) {
                     case 'K': t = Type::KING; c = Colour::WHITE; break;
                     case 'Q': t = Type::QUEEN; c = Colour::WHITE; break;
@@ -73,7 +78,12 @@ int main() {;
         }
         else if (command == "move") { 
             Position oldPos, newPos;
-            cin >> oldPos >> newPos;
+            try {
+                cin >> oldPos >> newPos;
+            } catch (std::invalid_argument & e) {
+                std::cerr << "Move Error: " << e.what() << std::endl;
+                continue;
+            }
             board->playMove(oldPos, newPos);
             board->notifyAll();
         }
