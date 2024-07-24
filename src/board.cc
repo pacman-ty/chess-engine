@@ -45,7 +45,7 @@ void Board::capture(Piece *p) {
                     break;
                 }
             }
-            breka;
+            break;
         default:
             std::cerr << "Invalid colour when capturing" << std::endl;
     }
