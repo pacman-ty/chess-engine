@@ -65,110 +65,28 @@ std::vector<Move> Queen::getPossibleCaptures(const Board::BoardType & board) con
     int curX = currPosition.getX();
     int curY = currPosition.getY();
 
-    for (int i = curX + 1; i < BOARD_MAX_WIDTH; ++i) {
-        for (int j = curY + 1; j < BOARD_MAX_HEIGHT; ++j) {
+    // Define all eight directions: horizontal, vertical, and diagonal
+    const int directions[8][2] = {
+        {1, 0}, {-1, 0}, {0, 1}, {0, -1},  // horizontal and vertical
+        {1, 1}, {1, -1}, {-1, 1}, {-1, -1}  // diagonal
+    };
+
+    for (const auto& dir : directions) {
+        int i = curX + dir[0];
+        int j = curY + dir[1];
+
+        while (i >= BOARD_MIN_WIDTH && i < BOARD_MAX_WIDTH && 
+               j >= BOARD_MIN_HEIGHT && j < BOARD_MAX_HEIGHT) {
             if (board[i][j] != nullptr) {
                 if (board[i][j]->getSide() != this->getSide()) {
                     output.emplace_back(currPosition, Position(i, j), this, board[i][j]);
-                    break;
                 }
-                else {
-                    break;
-                }
+                break;  // Stop checking this direction after encountering any piece
             }
+            i += dir[0];
+            j += dir[1];
         }
     }
-
-    for (int i = curX + 1; i < BOARD_MAX_WIDTH; ++i) {
-        for (int j = curY + 1; j >= BOARD_MAX_HEIGHT; --j) {
-            if (board[i][j] != nullptr) {
-                if (board[i][j]->getSide() != this->getSide()) {
-                    output.emplace_back(currPosition, Position(i, j), this, board[i][j]);
-                    break;
-                }
-                else {
-                    break;
-                }
-            }
-        }
-    }
-
-    for (int i = curX + 1; i >= BOARD_MIN_WIDTH; --i) {
-        for (int j = curY+ 1; j < BOARD_MAX_HEIGHT; ++j) {
-            if (board[i][j] != nullptr) {
-                if (board[i][j]->getSide() != this->getSide()) {
-                    output.emplace_back(currPosition, Position(i, j), this, board[i][j]);
-                    break;
-                }
-                else {
-                    break;
-                }
-            }
-        }
-    }
-
-    for (int i = curX + 1; i >= BOARD_MIN_WIDTH; --i) {
-        for (int j = curY + 1; j >= BOARD_MIN_HEIGHT; --j) {
-            if (board[i][j] != nullptr) {
-                if (board[i][j]->getSide() != this->getSide()) {
-                    output.emplace_back(currPosition, Position(i, j), this, board[i][j]);
-                    break;
-                }
-                else {
-                    break;
-                }
-            }
-        }
-    }
-
-    for (int i = curX + 1; i < BOARD_MAX_WIDTH; ++i) {
-        if (board[i][curY] != nullptr) {
-            if (board[i][curY]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(i, curY), this, board[i][curY]);
-                break;
-            }
-            else {
-                break;
-            }
-        }
-    }
-
-    for (int i = curX + 1; i >= BOARD_MIN_WIDTH; --i) {
-        if (board[i][curY] != nullptr) {
-            if (board[i][curY]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(i, curY), this, board[i][curY]);
-                break;
-            }
-            else {
-                break;
-            }
-        }
-    }
-
-    for (int i = curY + 1; i < BOARD_MAX_HEIGHT; ++i) {
-        if (board[curX][i] != nullptr) {
-            if (board[curX][i]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX, i), this, board[curX][i]);
-                break;
-            }
-            else {
-                break;
-            }
-        }
-    }
-
-    for (int i = curY + 1; i >= BOARD_MIN_HEIGHT; --i) {
-        if (board[curX][i] != nullptr) {
-            if (board[curX][i]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX, i), this, board[curX][i]);
-                break;
-            }
-            else {
-                break;
-            }
-        }
-    }
-
+    
     return output;
 }
-    

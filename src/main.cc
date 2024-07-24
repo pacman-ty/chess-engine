@@ -75,6 +75,7 @@ int main() {;
             Position oldPos, newPos;
             cin >> oldPos >> newPos;
             board->playMove(oldPos, newPos);
+            board->notifyAll();
         }
         else if (command == "setup") {
             controller.enterSetup();
