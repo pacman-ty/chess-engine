@@ -73,12 +73,23 @@ int main() {
                     case 'n': t = Type::KNIGHT; c = Colour::BLACK; break;
                     case 'p': t = Type::PAWN; c = Colour::BLACK; break;
                 }
-                board->placePiece(c, t, pos);
+                try {
+                    board->placePiece(c, t, pos);
+                } catch (std::invalid_argument & e) {
+                    std::cerr << "Setup Error: " << e.what() << std::endl;
+                    continue;
+                }
+                
             }
             else if (command == "-") {
                 Position p;
                 cin >> p;
-                board->removePiece(p);
+                try {
+                    board->removePiece(p);
+                } catch (std::invalid_argument & e) {
+                    std::cerr << "Setup Error: " << e.what() << std::endl;
+                    continue;
+                }
             }
             else if (command == "=") {
                 string side;
