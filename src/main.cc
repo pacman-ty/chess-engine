@@ -1,10 +1,15 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <map>
 
 #include "controller.h"
 #include "textview.h"
 #include "position.h"
+#include "computerplayer1.h"
+#include "computerplayer2.h"
+#include "computerplayer3.h"
+#include "computerplayer4.h"
 
 using namespace std;
 
@@ -17,9 +22,33 @@ string colourToString(Colour c) {
     }
 }
 
-int main() {;
+Player* createPlayer(string name, Colour c, Board * b) {
+    if (name == "human") { 
+        return nullptr;
+    }
+    else if (name == "computer1") {
+        return new ComputerPlayer1(c, b);
+    }
+    else if (name == "computer2") {
+        return new ComputerPlayer2(c, b);
+    }
+    else if (name == "computer3") {
+        return new ComputerPlayer3(c, b);
+    }
+    else if (name == "computer4") {
+        return new ComputerPlayer4(c, b);
+    }
+    else {
+        throw std::invalid_argument("Invalid player type");
+    }
+}
+
+int main() {
     std::shared_ptr<Board> board = std::make_shared<Board>();
     Controller controller{board.get()};
+    Player *whitePlayer;
+    Player *blackPlayer;
+    map<Player *, int> scoreboard;
 
     board.get()->subscribe(new TextView(board.get()));
 
@@ -77,10 +106,25 @@ int main() {;
             continue;
         }
         if (command == "game") {
-            Player* white;
-            Player* black;
 
-            controller.startGame(white, black);
+            string white, black;
+            cin >> white >> black;
+
+            try {
+                whitePlayer = createPlayer(white, Colour::WHITE, board.get());
+            } catch (std::invalid_argument & e) {
+                std::cerr << "White Player Error: " << e.what() << std::endl;
+                continue;
+            }
+
+            try {
+                blackPlayer = createPlayer(black, Colour::BLACK, board.get());
+            } catch (std::invalid_argument & e) {
+                std::cerr << "Black Player Error: " << e.what() << std::endl;
+                continue;
+            }
+
+            controller.startGame(whitePlayer, blackPlayer);
             board->notifyAll();
         }
         else if (command == "resign") {
@@ -115,4 +159,11 @@ int main() {;
             cerr << "Invalid command" << endl;
         }
     }
+
+    cout << "Final Score:" << endl;
+    cout << "White: " << scoreboard[whitePlayer] << endl;
+    cout << "Black: " << scoreboard[blackPlayer] << endl;
+
+    delete whitePlayer;
+    delete blackPlayer;
 }
