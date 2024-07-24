@@ -89,8 +89,7 @@ void Board::removePiece(Position p) {
 
 void Board::playMove(const Move & m) {
     if (!isValidMove(m)) {
-        std::cerr << "invalid move" << std::endl;
-        return;
+        throw std::logic_error("Invalid move");
     }
     int x = m.getOldPosition().getX();
     int y = m.getOldPosition().getY();
@@ -172,13 +171,12 @@ bool Board::isValidMove(const Move & m) const {
     }
     }
     if (!found) return false;
-    return true;
     // simulate move
-    // std::unique_ptr<Board> temp_board{new Board};
-    // temp_board->cloneBoard(*this);
-    // temp_board->forcePlayMove(m);
-    // // check simulated move is validva
-    // return temp_board->isCheck(target->getSide());
+    std::unique_ptr<Board> temp_board{new Board};
+    temp_board->cloneBoard(*this);
+    temp_board->forcePlayMove(m);
+    // check simulated move is validva
+    return !temp_board->isCheck(target->getSide());
 }
 
 bool Board::isCheck(Colour side) const {
