@@ -39,53 +39,28 @@ std::vector<Move> Rook::getPossibleCaptures(const Board::BoardType & board) cons
     int curX = currPosition.getX();
     int curY = currPosition.getY();
 
-    for (int i = curX + 1; i < BOARD_MAX_WIDTH; ++i) {
-        if (board[i][curY] != nullptr) {
-            if (board[i][curY]->getSide() != this->getSide()) { 
-                output.emplace_back(currPosition, Position(i, curY), this, board[i][curY]);
-                break;
+    // Helper lambda to check captures in a straight line
+    auto checkLine = [&](int dx, int dy) {
+        int x = curX + dx;
+        int y = curY + dy;
+
+        while (x >= BOARD_MIN_WIDTH && x < BOARD_MAX_WIDTH && y >= BOARD_MIN_HEIGHT && y < BOARD_MAX_HEIGHT) {
+            if (board[x][y] != nullptr) {
+                if (board[x][y]->getSide() != this->getSide()) {
+                    output.emplace_back(currPosition, Position(x, y), this, board[x][y]);
+                }
+                break; // Stop scanning in this direction after a capture or obstacle
             }
-            else {
-                break;
-            }
+            x += dx;
+            y += dy;
         }
-    }
-    
-    for (int i = curX - 1; i >= BOARD_MIN_WIDTH; --i) {
-        if (board[i][curY] != nullptr) {
-            if (board[i][curY]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(i, curY), this, board[i][curY]);
-                break;
-            }
-            else {
-                break;
-            }
-        }
-    }
-    
-    for (int i = curY + 1; i < BOARD_MAX_HEIGHT; ++i) {
-        if (board[curX][i] != nullptr) {
-            if (board[curX][i]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX, i), this, board[curX][i]);
-                break;
-            }
-            else {
-                break;
-            }
-        }
-    }
-    
-    for (int i = curY - 1; i >= BOARD_MIN_HEIGHT; --i) {
-        if (board[curX][i] != nullptr) {
-            if (board[curX][i]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX, i), this, board[curX][i]);
-                break;
-            }
-            else {
-                break;
-            }
-        }
-    }
-    
+    };
+
+    // Check all four straight-line directions
+    checkLine(1, 0);   // Moving right
+    checkLine(-1, 0);  // Moving left
+    checkLine(0, 1);   // Moving up
+    checkLine(0, -1);  // Moving down
+
     return output;
 }

@@ -30,6 +30,7 @@ public:
     void playMove(Position oldPos, Position newPos);
     void forcePlayMove(const Move & m);
     bool isValidMove(const Move & m) const;
+    void capture(Piece * p);
     bool isCheck(Colour c) const;
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;

@@ -24,6 +24,30 @@ Board::~Board() {
             delete board[i][j];
         }
     }
+    blackPieces.clear();
+    whitePieces.clear();
+}
+
+void Board::capture(Piece *p) {
+    switch (p->getSide()) {
+        case Colour::WHITE:
+            for (auto it = whitePieces.begin(); it != whitePieces.end(); ++it) {
+                if (p == *it) {
+                    whitePieces.erase(it);
+                    break;
+                }
+            }
+        case Colour::BLACK:
+            for (auto it = blackPieces.begin(); it != blackPieces.end(); ++it) {
+                if (p == *it) {
+                    blackPieces.erase(it);
+                    break;
+                }
+            }
+        default:
+            std::cerr << "Invalid colour when capturing" << std::endl;
+    }
+    if (p) delete p;
 }
 
 void Board::placePiece(Colour side, Type t, const Position & pos) {
@@ -78,7 +102,7 @@ void Board::playMove(const Move & m) {
     }
 
     if (m.getCapture()) { // has a target
-        if (board[newX][newY] != nullptr) delete board[newX][newY]; // delete captured piece               
+        if (board[newX][newY] != nullptr) capture(board[newX][newY]); // delete captured piece               
     }
 
     board[newX][newY] = board[x][y]; // move target piece
@@ -93,7 +117,7 @@ void Board::forcePlayMove(const Move & m) {
     int newX = m.getNewPosition().getX();
     int newY = m.getNewPosition().getY();    
     if (m.getCapture()) { // has a target
-        if (!board[newX][newY]) delete board[newX][newY]; // delete captured piece               
+        if (board[newX][newY] != nullptr) capture(board[newX][newY]); // delete captured piece               
     }
     board[newX][newY] = board[x][y]; // move target piece
     board[x][y] = nullptr;
@@ -121,9 +145,6 @@ bool Board::isValidMove(const Move & m) const {
     const Piece *target = m.getTarget();
     if (!target) return false;
     std::vector<Move> possibleMoves = target->getPossibleMoves(board);
-    // for (auto p : possibleMoves) {
-    //     std::cout << p.getNewPosition().getX() << ',' << p.getNewPosition().getY() << std::endl;
-    // }
 
     bool found = false;
     for (auto p : possibleMoves) { // simple move
@@ -135,41 +156,41 @@ bool Board::isValidMove(const Move & m) const {
     
     if (!found) {
         std::vector<Move> possibleCaptures = target->getPossibleCaptures(board);
-        // for (auto p : possibleMoves) {
-        //     std::cout << p.getNewPosition().getX() << ',' << p.getNewPosition().getY() << std::endl;
-        // }
         if (possibleCaptures.empty()) return false;
         for (auto p : possibleCaptures) { // capture move
             if (p.getNewPosition() == m.getNewPosition()) {
-                //  std::cout << "CAPTURE" << std::endl;
                 found = true;
                 break;
             }
     }
     }
     if (!found) return false;
+    return true;
     // simulate move
     // std::unique_ptr<Board> temp_board{new Board};
     // temp_board->cloneBoard(*this);
     // temp_board->forcePlayMove(m);
-    // // check simulated move is valid
+    // // check simulated move is validva
     // return temp_board->isCheck(target->getSide());
-    return true;
 }
 
 bool Board::isCheck(Colour side) const {
     switch(side) {
         case Colour::BLACK:
             for (auto p : whitePieces) { // check opposing pieces
-                for (auto cap : p->getPossibleCaptures(board)) {
-                    if (cap.getCapture()->getType() == Type::KING) return false;
+                std::vector<Move> captures = p->getPossibleCaptures(board);
+                if (captures.empty()) continue;
+                for (auto cap : captures) {
+                    if (cap.getCapture()->getType() == Type::KING) return true;
                 }
             }
             break;
         case Colour::WHITE:
             for (auto p : blackPieces) {
-                for (auto cap : p->getPossibleCaptures(board)) {
-                    if (cap.getCapture()->getType() == Type::KING) return false;
+                std::vector<Move> captures = p->getPossibleCaptures(board);
+                if (captures.empty()) continue;
+                for (auto cap : captures) {
+                    if (cap.getCapture()->getType() == Type::KING) return true;
                 }
             }
             break;
@@ -177,7 +198,7 @@ bool Board::isCheck(Colour side) const {
             std::cerr << "Invalid Colour" << std::endl;
             return false;
     }
-    return true;
+    return false;
 }
 
 const Board::BoardType& Board::getBoard() const {
