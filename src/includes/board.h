@@ -37,10 +37,11 @@ public:
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
     void clear();
+    std::vector<Move> getLegalMoves(Colour side);
+    std::vector<Move> getCheckMoves(Colour side);
+    std::vector<Move> getCaptureMoves(Colour side);
+    Move getRandomMove(const std::vector<Move> m);
     std::vector<Piece *> getPieces(Colour side);
-    Piece* getRandomPiece(Colour side);
-    Move getRandomMove(const Piece & p);
-    std::vector<Move> getLegalMoves(const Piece & p);
 };
 
 #endif

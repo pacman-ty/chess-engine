@@ -288,12 +288,55 @@ std::vector<Piece* > Board::getPieces(Colour side) {
         return blackPieces; 
     }
 }
-std::vector<Move> Board::getLegalMoves(const Piece & p) {
-    std::vector<Move> moves = p.getPossibleMoves(board);
-    std::vector<Move> legalMoves;
 
-    for (auto m : p.getPossibleCaptures(board)) {
-        moves.emplace_back(m);
+std::vector<Move> Board::getCheckMoves(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+    std::vector<Move> checkMoves;
+    std::vector<Move> captures;
+
+    for (auto p : pieces) { 
+        std::vector<Move> captures = p->getPossibleCaptures(board);
+        if (captures.empty()) return captures;
+        for (auto cap : captures) {
+            if (cap.getCapture()->getType() == Type::KING) {
+                checkMoves.emplace_back(cap);
+            }
+        }
+    }
+    
+    return checkMoves;
+}
+
+std::vector<Move> Board::getCaptureMoves(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+    std::vector<Move> captureMoves;
+    std::vector<Move> moves;
+
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleCaptures(board)) {
+            moves.emplace_back(m);
+        }
+    }
+
+    for (auto m : moves) {
+        if (isValidMove(m)) captureMoves.emplace_back(m);
+    }
+
+    return captureMoves;
+}
+
+std::vector<Move> Board::getLegalMoves(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+    std::vector<Move> legalMoves;
+    std::vector<Move> moves;
+
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleMoves(board)) {
+            moves.emplace_back(m);
+        }
+        for (auto m : p->getPossibleCaptures(board)) {
+            moves.emplace_back(m);
+        }
     }
 
     for (auto m : moves) {
@@ -303,41 +346,8 @@ std::vector<Move> Board::getLegalMoves(const Piece & p) {
     return legalMoves;
 }
 
-Piece* Board::getRandomPiece(Colour side) {
-    // generate seed for random number generator 
-    std::srand(static_cast<unsigned int>(std::time(0)));
-    Piece* randPiece = nullptr;
-    // Random number generator
-    std::default_random_engine generator1(std::random_device{}());
-    std::uniform_int_distribution<std::size_t> distribution1(0, whitePieces.size() - 1);
-    // Random number generator
-    std::default_random_engine generator2(std::random_device{}());
-    std::uniform_int_distribution<std::size_t> distribution2(0, blackPieces.size() - 1);
-    int randIndex;
 
-    switch(side) { 
-        case Colour::WHITE:
-            // select a random piece
-            randIndex = distribution1(generator1);
-            randPiece = whitePieces[randIndex];
-            break;
-        case Colour::BLACK:
-            // select a random piece
-            randIndex = distribution2(generator2);
-            randPiece = blackPieces[randIndex];
-            break;
-        default:
-            // should never get here not possible piece always has colour 
-            // could potenially break program otherwise
-            std::cerr << "Invalid Colour" << std::endl;
-    }
-
-    return randPiece;
-}
-
-Move Board::getRandomMove(const Piece & p) {
-    std::vector<Move> legalMoves = getLegalMoves(p);
-
+Move Board::getRandomMove(const std::vector<Move> legalMoves) {
     // generate seed for random number generator 
     std::srand(static_cast<unsigned int>(std::time(0)));
     // Random number generator
