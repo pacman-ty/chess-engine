@@ -13,7 +13,8 @@ std::vector<Move> Pawn::getPossibleMoves(const Board::BoardType & b) const {
         case Colour::BLACK:
             if (curY != BLACK_PAWN_START) hasMoved = true;
 
-            if (!hasMoved && b[curX][curY - INITIAL_DASH] == nullptr){ // dbl. move
+            if (!hasMoved && b[curX][curY - INITIAL_DASH] == nullptr &&
+                b[curX][curY - 1] == nullptr) { // dbl move
                 out.emplace_back(currPosition, Position{curX, curY - INITIAL_DASH},
                                  this, nullptr);
             }
@@ -28,7 +29,8 @@ std::vector<Move> Pawn::getPossibleMoves(const Board::BoardType & b) const {
         case Colour::WHITE:
             if (curY != WHITE_PAWN_START) hasMoved = true;
 
-            if (!hasMoved && b[curX][curY + INITIAL_DASH] == nullptr){ // dbl. move
+            if (!hasMoved && b[curX][curY + INITIAL_DASH] == nullptr &&
+                b[curX][curY + 1] == nullptr) { // dbl move
                 out.emplace_back(currPosition, Position{curX, curY + INITIAL_DASH},
                                  this, nullptr);
             }

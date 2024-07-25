@@ -54,7 +54,7 @@ void Controller::switchTurn(Colour val) {
 }
 
 bool Controller::isStalemate() const {
-    // TODO
+    board->isStalemate(turn);
 }
 
 void Controller::startGame(Player *whitePlayer, Player *blackPlayer) {
@@ -65,15 +65,20 @@ void Controller::startGame(Player *whitePlayer, Player *blackPlayer) {
 }
 
 void Controller::resign() {
-    // TODO
-    if (turn == Colour::WHITE) {
-
-    } else {
-
+    switch (turn) {
+        case Colour::BLACK:
+            std::cout << "White wins!" << std::endl;
+            addScore(Colour::WHITE);
+            break;
+        case Colour::WHITE:
+            std::cout << "Black wins!" << std::endl;
+            addScore(Colour::BLACK);
+            break;        
     }
 }
 
 void Controller::restartGame() {
+    board->notifyAll();
     board->clear();
     switchTurn(Colour::WHITE);
     startGame(whitePlayer, blackPlayer);
@@ -82,6 +87,9 @@ void Controller::restartGame() {
 void Controller::move(Position oldPos, Position newPos, Piece *promotion) {
     board->playMove(oldPos, newPos, turn);
     switchTurn();
+    if (promotion != nullptr) {
+        // promotes
+    }
     if (isCheck()) { // in check but not checkmate
         std::cout << getTurn() << " is in check." << std::endl;
     }

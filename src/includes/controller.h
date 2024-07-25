@@ -3,8 +3,7 @@
 
 #include "board.h"
 #include "scoreboard.h"
-
-class Player;
+#include "player.h"
 
 const int WHITE_Y = BOARD_MIN_HEIGHT;
 const int BLACK_Y = BOARD_MAX_HEIGHT - 1;

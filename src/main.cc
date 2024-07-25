@@ -35,6 +35,19 @@ Player* createPlayer(string name, Colour c, Board * b) {
     }
 }
 
+void handleComputerMove(Controller& controller, Player* player) {
+    if (player != nullptr) {
+        player->move();
+        if (controller.isCheckmate()) {
+            controller.switchTurn();
+            cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
+            controller.addScore(controller.getTurn());
+            controller.restartGame();
+            return;
+        }
+    }
+}
+
 int main() {
     std::shared_ptr<Board> board = std::make_shared<Board>();
     Controller controller{board.get()};
@@ -42,7 +55,6 @@ int main() {
     Player *blackPlayer;
 
     board.get()->subscribe(new TextView(board.get()));
-    board->notifyAll();
 
     // Interpret user commands
     string command;
@@ -147,6 +159,18 @@ int main() {
             controller.startGame(whitePlayer, blackPlayer);
 
             board->notifyAll();
+
+            // Game loop for computer players
+            if (!whitePlayer && !blackPlayer) continue;
+            while (!controller.isCheckmate() && !controller.isStalemate()) {
+                if (controller.getTurn() == Colour::WHITE) {
+                    handleComputerMove(controller, whitePlayer);
+                } else {
+                    handleComputerMove(controller, blackPlayer);
+                }
+                board->notifyAll();
+                controller.switchTurn();
+            }
         }
         else if (command == "resign") {
             controller.resign();
@@ -165,7 +189,12 @@ int main() {
                 cerr << "Move Error: " << e.what() << std::endl;
                 continue;
             }
-            if (controller.isCheckmate()) { // Checkmate
+            if (controller.isStalemate()) { // Stalemate
+                cout << "Stalemate!" << endl;
+                controller.restartGame(); // Restart Game 
+                continue;    
+            }
+            else if (controller.isCheckmate()) { // Checkmate
                 controller.switchTurn();
                 cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
                 controller.addScore(controller.getTurn());
@@ -192,6 +221,8 @@ int main() {
             cerr << "Invalid command" << endl;
         }
     }
+
+
 
     controller.printScore();
 
