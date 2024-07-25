@@ -114,7 +114,7 @@ int main() {
                     cerr << "Invalid side" << endl;
                     continue;
                 }
-                cout << "Side switched to " << controller.colourToString(controller.getTurn()) << endl;
+                cout << "Side switched to " << controller.getTurn() << endl;
             }
             else if (command == "done") {
                 cout << "Exiting setup mode" << endl;
@@ -167,7 +167,7 @@ int main() {
             }
             if (controller.isCheckmate()) { // Checkmate
                 controller.switchTurn();
-                cout << "Checkmate! " << controller.colourToString(controller.getTurn()) << " wins!" << endl;
+                cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
                 controller.addScore(controller.getTurn());
                 controller.restartGame(); // Restart Game
                 continue;

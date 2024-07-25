@@ -50,7 +50,7 @@ void Controller::switchTurn(Colour val) {
         turn = Colour::BLACK;
     }
     std::cout << "===============" << std::endl;
-    std::cout << colourToString(getTurn()) << "'s turn:" << std::endl;
+    std::cout << getTurn() << "'s turn:" << std::endl;
 }
 
 bool Controller::isStalemate() const {
@@ -83,7 +83,7 @@ void Controller::move(Position oldPos, Position newPos, Piece *promotion) {
     board->playMove(oldPos, newPos, turn);
     switchTurn();
     if (isCheck()) { // in check but not checkmate
-        std::cout << colourToString(getTurn()) << " is in check." << std::endl;
+        std::cout << getTurn() << " is in check." << std::endl;
     }
 }
 
@@ -113,15 +113,6 @@ Colour Controller::getTurn() const {
 
 bool Controller::isCheck() const {
     return board->isCheck(turn);
-}
-
-std::string Controller::colourToString(Colour c) const {
-    switch (c) {
-        case Colour::WHITE: return "White"; break;
-        case Colour::BLACK: return "Black"; break;
-        case Colour::EMPTY: return "Empty"; break;
-        default: return "Invalid";
-    }
 }
 
 void Controller::addScore(Colour c) {

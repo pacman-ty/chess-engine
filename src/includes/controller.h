@@ -46,7 +46,6 @@ public:
     bool isStalemate() const;
     bool isCheck() const;
     Colour getTurn() const;
-    std::string colourToString(Colour c) const;
 };
 
 #endif
