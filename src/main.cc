@@ -79,6 +79,9 @@ int main() {
                 } catch (std::invalid_argument & e) {
                     std::cerr << "Setup Error: " << e.what() << std::endl;
                     continue;
+                } catch (std::logic_error & e) {
+                    std::cerr << "Setup Error: " << e.what() << std::endl;
+                    continue;
                 }
                 board->notifyAll();
                 
@@ -89,6 +92,9 @@ int main() {
                 try {
                     board->removePiece(p);
                 } catch (std::invalid_argument & e) {
+                    std::cerr << "Setup Error: " << e.what() << std::endl;
+                    continue;
+                } catch (std::logic_error & e) {
                     std::cerr << "Setup Error: " << e.what() << std::endl;
                     continue;
                 }
@@ -103,8 +109,10 @@ int main() {
                 else if (side == "black") {
                     controller.switchTurn(Colour::BLACK);
                 }
+                cout << "Side switched to " << controller.colourToString(controller.getTurn()) << endl;
             }
             else if (command == "done") {
+                cout << "Exiting setup mode" << endl;
                 controller.exitSetup();
             } else {
                 cerr << "Invalid setup command" << endl;
@@ -165,7 +173,7 @@ int main() {
             cout << "Available Commands:" << endl;
             cout << "+ <Piece> <Location> [Insert Piece]" << endl;
             cout << "- <Location> [Remove Piece]" << endl;
-            cout << "= [Swap Sides]" << endl;
+            cout << "= <Colour> [Swap Sides]" << endl;
             cout << "done [Exit Setup]" << endl;
             controller.enterSetup();
         }

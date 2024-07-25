@@ -76,6 +76,9 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
 }
 
 void Board::removePiece(Position p) {
+    if (board[p.getX()][p.getY()] == nullptr) {
+        throw std::logic_error("No piece to remove");
+    }
     capture(board[p.getX()][p.getY()]);
     board[p.getX()][p.getY()] = nullptr;
 }
