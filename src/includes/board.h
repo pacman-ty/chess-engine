@@ -31,11 +31,14 @@ public:
     void forcePlayMove(const Move & m);
     bool isValidMove(const Move & m) const;
     void capture(Piece * p);
-    bool isCheck(Colour c) const;
+    bool isCheck(Colour side) const;
     bool isCheckmate(Colour side) const;
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
     void clear();
+    Piece* getRandomPiece(Colour side);
+    Move getRandomMove(const Piece & p);
+    std::vector<Move> getLegalMoves(const Piece & p);
 };
 
 #endif

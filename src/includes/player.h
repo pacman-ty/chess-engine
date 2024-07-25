@@ -8,6 +8,7 @@ class Board;
 class Piece;
 
 class Player {
+protected:
     Colour side;
     Board *board;
 public:

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <memory>
 #include <cstring>
+#include <random>
+#include <ctime>
 #include "board.h"
 #include "piece.h"
 #include "king.h"
@@ -82,12 +84,12 @@ void Board::playMove(const Move & m) {
         board[x][y] = nullptr;
     }
 }
-
+/*
 void Board::playMove(Position oldPos, Position newPos) {
     delete board[newPos.getX()][newPos.getY()];
     board[newPos.getX()][newPos.getY()] = board[oldPos.getX()][oldPos.getY()];
 }
-
+*/
 void Board::cloneBoard(const Board & b) {
     for (int y = BOARD_MIN_HEIGHT; y < BOARD_MAX_HEIGHT; ++y) {
         for (int x = BOARD_MIN_WIDTH; x < BOARD_MAX_WIDTH; ++x) {
@@ -154,4 +156,61 @@ const Piece* Board::getItem(int x, int y) const {
     return board[x][y];
 }
 
+std::vector<Move> Board::getLegalMoves(const Piece & p) {
+    std::vector<Move> moves = p.getPossibleMoves(board);
+    std::vector<Move> legalMoves;
 
+    for (auto m : p.getPossibleCaptures(board)) {
+        moves.emplace_back(m);
+    }
+
+    for (auto m : moves) {
+        if (isValidMove(m)) legalMoves.emplace_back(m);
+    }
+
+    return legalMoves;
+}
+
+Piece* Board::getRandomPiece(Colour side) {
+    // generate seed for random number generator 
+    std::srand(static_cast<unsigned int>(std::time(0)));
+    Piece* randPiece = nullptr;
+    // Random number generator
+    std::default_random_engine generator1(std::random_device{}());
+    std::uniform_int_distribution<std::size_t> distribution1(0, whitePieces.size() - 1);
+    // Random number generator
+    std::default_random_engine generator2(std::random_device{}());
+    std::uniform_int_distribution<std::size_t> distribution2(0, blackPieces.size() - 1);
+    int randIndex;
+
+    switch(side) { 
+        case Colour::WHITE:
+            // select a random piece
+            randIndex = distribution1(generator1);
+            randPiece = whitePieces[randIndex];
+            break;
+        case Colour::BLACK:
+            // select a random piece
+            randIndex = distribution2(generator2);
+            randPiece = blackPieces[randIndex];
+            break;
+        default:
+            // should never get here not possible piece always has colour 
+            // could potenially break program otherwise
+            std::cerr << "Invalid Colour" << std::endl;
+    }
+
+    return randPiece;
+}
+
+Move Board::getRandomMove(const Piece & p) {
+    std::vector<Move> legalMoves = getLegalMoves(p);
+
+    // generate seed for random number generator 
+    std::srand(static_cast<unsigned int>(std::time(0)));
+    // Random number generator
+    std::default_random_engine generator(std::random_device{}());
+    std::uniform_int_distribution<std::size_t> distribution(0, legalMoves.size() - 1);
+    int randIndex = distribution(generator);
+    return legalMoves[randIndex];
+}
