@@ -4,6 +4,7 @@
 
 #include "controller.h"
 #include "textview.h"
+#include "windowview.h"
 #include "position.h"
 
 using namespace std;
@@ -13,6 +14,7 @@ int main() {;
     Controller controller{board.get()};
 
     board.get()->subscribe(new TextView(board.get()));
+    board.get()->subscribe(new WindowView(board.get()));
 
     // Interpret user commands
     string command;
