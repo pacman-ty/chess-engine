@@ -8,44 +8,44 @@ std::vector<Move> King::getPossibleMoves(const Board::BoardType & board) const {
     int curX = currPosition.getX();
     int curY = currPosition.getY();
 
-    if (curX < BOARD_MAX_WIDTH && curY < BOARD_MAX_HEIGHT) {
+    if (curX + 1 < BOARD_MAX_WIDTH && curY + 1 < BOARD_MAX_HEIGHT) {
         if (board[curX + 1][curY + 1] == nullptr) {
             output.emplace_back(currPosition, Position(curX + 1, curY + 1), this, nullptr);
         }
     }
-    if (curX < BOARD_MAX_WIDTH && curY > BOARD_MIN_HEIGHT) {
+    if (curX + 1 < BOARD_MAX_WIDTH && curY - 1 >= BOARD_MIN_HEIGHT) {
         if (board[curX + 1][curY - 1] == nullptr) {
             output.emplace_back(currPosition, Position(curX + 1, curY - 1), this, nullptr);
         }
     }
-    if (curX < BOARD_MAX_WIDTH) {
+    if (curX + 1 < BOARD_MAX_WIDTH) {
         if (board[curX + 1][curY] == nullptr) {
             output.emplace_back(currPosition, Position(curX + 1, curY), this, nullptr);
         }
     }
     
-    if (curX > BOARD_MIN_WIDTH && curY < BOARD_MAX_HEIGHT) {
+    if (curX - 1 < BOARD_MAX_WIDTH && curY + 1 < BOARD_MAX_HEIGHT) {
         if (board[curX - 1][curY + 1] == nullptr) {
             output.emplace_back(currPosition, Position(curX - 1, curY + 1), this, nullptr);
         }
     }
-    if (curX > BOARD_MIN_WIDTH && curY > BOARD_MIN_HEIGHT) {
+    if (curX - 1 < BOARD_MAX_WIDTH && curY - 1 >= BOARD_MIN_HEIGHT) {
         if (board[curX - 1][curY - 1] == nullptr) {
             output.emplace_back(currPosition, Position(curX - 1, curY - 1), this, nullptr);
         }
     }
-    if (curX > BOARD_MIN_WIDTH) {
+    if (curX - 1 < BOARD_MAX_WIDTH) {
         if (board[curX - 1][curY] == nullptr) {
             output.emplace_back(currPosition, Position(curX - 1, curY), this, nullptr);
         }
     }
 
-    if (curY < BOARD_MAX_HEIGHT) {
+    if (curY + 1 < BOARD_MAX_HEIGHT) {
         if (board[curX][curY + 1] == nullptr) {
             output.emplace_back(currPosition, Position(curX, curY + 1), this, nullptr);
         }
     }
-    if (curY > BOARD_MIN_HEIGHT) {
+    if (curY - 1 < BOARD_MIN_HEIGHT) {
         if (board[curX][curY - 1] == nullptr) {
             output.emplace_back(currPosition, Position(curX, curY - 1), this, nullptr);
         }
