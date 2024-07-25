@@ -178,30 +178,24 @@ bool Board::isValidMove(const Move & m) const {
     return !temp_board->isCheck(target->getSide());
 }
 
-bool Board::isCheck(Colour side) const {
-    switch(side) {
-        case Colour::BLACK:
-            for (auto p : whitePieces) { // check opposing pieces
-                std::vector<Move> captures = p->getPossibleCaptures(board);
-                if (captures.empty()) continue;
-                for (auto cap : captures) {
-                    if (cap.getCapture()->getType() == Type::KING) return true;
-                }
-            }
-            break;
-        case Colour::WHITE:
-            for (auto p : blackPieces) {
-                std::vector<Move> captures = p->getPossibleCaptures(board);
-                if (captures.empty()) continue;
-                for (auto cap : captures) {
-                    if (cap.getCapture()->getType() == Type::KING) return true;
-                }
-            }
-            break;
-        default:
-            throw std::invalid_argument("Invalid Colour when performing check");
-            return false;
+bool Board::isCheck(Colour side) {
+    std::vector<Piece *> pieces;
+
+    if (side == Colour::WHITE) {
+        pieces = getPieces(Colour::BLACK);
     }
+    else{
+        pieces = getPieces(Colour::WHITE);
+    }
+
+    for (auto p : whitePieces) { // check opposing pieces
+        std::vector<Move> captures = p->getPossibleCaptures(board);
+        if (captures.empty()) continue;
+        for (auto cap : captures) {
+            if (cap.getCapture()->getType() == Type::KING) return true;
+        }
+    }
+
     return false;
 }
 
@@ -280,7 +274,7 @@ void Board::clear() {
     whitePieces.clear();    
 }
 
-std::vector<Piece* > Board::getPieces(Colour side) {
+std::vector<Piece* > Board::getPieces(const Colour & side) {
     if (side == Colour::WHITE) {
         return whitePieces;
     }

@@ -31,7 +31,7 @@ public:
     void forcePlayMove(const Move & m);
     bool isValidMove(const Move & m) const;
     void capture(Piece * p);
-    bool isCheck(Colour side) const;
+    bool isCheck(Colour side);
     bool isStalemate(Colour side) const;
     bool isCheckmate(Colour side) const;
     const BoardType& getBoard() const;
