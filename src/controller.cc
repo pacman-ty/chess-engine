@@ -74,6 +74,7 @@ void Controller::resign() {
 }
 
 void Controller::restartGame() {
+    board->notifyAll();
     board->clear();
     switchTurn(Colour::WHITE);
     startGame(whitePlayer, blackPlayer);
