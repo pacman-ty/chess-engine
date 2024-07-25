@@ -259,6 +259,43 @@ std::vector<Piece* > Board::getPieces(Colour side) {
         return blackPieces; 
     }
 }
+
+std::vector<Move> Board::getCheckMoves(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+    std::vector<Move> checkMoves;
+    std::vector<Move> captures;
+
+    for (auto p : pieces) { 
+        std::vector<Move> captures = p->getPossibleCaptures(board);
+        if (captures.empty()) return captures;
+        for (auto cap : captures) {
+            if (cap.getCapture()->getType() == Type::KING) {
+                checkMoves.emplace_back(cap);
+            }
+        }
+    }
+    
+    return checkMoves;
+}
+
+std::vector<Move> Board::getCaptureMoves(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+    std::vector<Move> captureMoves;
+    std::vector<Move> moves;
+
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleCaptures(board)) {
+            moves.emplace_back(m);
+        }
+    }
+
+    for (auto m : moves) {
+        if (isValidMove(m)) captureMoves.emplace_back(m);
+    }
+
+    return captureMoves;
+}
+
 std::vector<Move> Board::getLegalMoves(Colour side) {
     std::vector<Piece *> pieces = getPieces(side);
     std::vector<Move> legalMoves;
