@@ -101,7 +101,11 @@ void Board::playMove(const Move & m) {
     }
 
     if (m.getCapture()) { // has a target
-        if (board[newX][newY] != nullptr) capture(board[newX][newY]); // delete captured piece               
+        int captureX = m.getCapture()->getPos().getX();
+        int captureY = m.getCapture()->getPos().getY();
+        if (board[captureX][captureY] != nullptr) {
+            capture(board[captureX][captureY]); // delete captured piece
+        }               
     }
 
     board[newX][newY] = board[x][y]; // move target piece
@@ -124,7 +128,6 @@ void Board::forcePlayMove(const Move & m) {
 }
 
 void Board::playMove(Position oldPos, Position newPos, Colour turn) {
-    Piece *capture = board[newPos.getX()][newPos.getY()];
     Piece *target = board[oldPos.getX()][oldPos.getY()];
     if (target == nullptr) {
         throw std::logic_error("No piece to move");
@@ -132,7 +135,13 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     if (target->getSide() != turn) {
         throw std::logic_error("Not your turn");
     }
-    playMove(Move(oldPos, newPos, target, capture));
+
+    Piece *capture = board[newPos.getX()][oldPos.getY()];
+    if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN) {
+        playMove(Move(oldPos, newPos, target, capture)); 
+    } else {
+        playMove(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()])); 
+    }
 }
 
 void Board::cloneBoard(const Board & b) {
