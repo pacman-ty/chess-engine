@@ -280,6 +280,14 @@ void Board::clear() {
     whitePieces.clear();    
 }
 
+std::vector<Piece* > Board::getPieces(Colour side) {
+    if (side == Colour::WHITE) {
+        return whitePieces;
+    }
+    else {
+        return blackPieces; 
+    }
+}
 std::vector<Move> Board::getLegalMoves(const Piece & p) {
     std::vector<Move> moves = p.getPossibleMoves(board);
     std::vector<Move> legalMoves;

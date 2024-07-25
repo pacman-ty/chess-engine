@@ -37,6 +37,7 @@ public:
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
     void clear();
+    std::vector<Piece *> getPieces(Colour side);
     Piece* getRandomPiece(Colour side);
     Move getRandomMove(const Piece & p);
     std::vector<Move> getLegalMoves(const Piece & p);
