@@ -232,6 +232,35 @@ bool Board::isCheckmate(Colour side) const {
     return true;
 }
 
+bool Board::isStalemate(Colour side) const {
+    switch (side) {
+        case Colour::BLACK:
+            if (isCheck(Colour::BLACK)) return false;
+            for (auto p : blackPieces) {
+                std::vector<Move> moves = p->getPossibleMoves(board);
+                if (moves.empty()) continue;
+                for (auto m : moves) {
+                    if (isValidMove(m)) return false;
+                }
+            }
+            break;
+        case Colour::WHITE:
+            if (isCheck(Colour::WHITE)) return false;
+            for (auto p : whitePieces) {
+                std::vector<Move> moves = p->getPossibleMoves(board);
+                if (moves.empty()) continue;
+                for (auto m : moves) {
+                    if (isValidMove(m)) return false;
+                }
+            }
+            break;
+        default:
+            throw std::invalid_argument("Invalid Colour when checking for stalemate");
+            return false;
+    }
+    return true;
+}
+
 const Board::BoardType& Board::getBoard() const {
     return board;
 }
