@@ -40,25 +40,28 @@ int main() {
     Controller controller{board.get()};
     Player *whitePlayer;
     Player *blackPlayer;
-    map<Colour, int> scoreboard;
 
     board.get()->subscribe(new TextView(board.get()));
+    board->notifyAll();
 
     // Interpret user commands
     string command;
     while (cin >> command) {
+        // - Setup Mode Start -
         if (controller.inSetup()) {
-            if (command == "+") {
+            if (command == "+") { // + <Piece> <Location>
                 char piece;
                 Position pos;
                 Type t;
                 Colour c;
-                try {
+
+                try { // Read in piece and position
                     cin >> piece >> pos;
                 } catch (std::invalid_argument & e) {
                     std::cerr << "Setup Error: " << e.what() << std::endl;
                     continue;
                 }
+
                 switch (piece) {
                     case 'K': t = Type::KING; c = Colour::WHITE; break;
                     case 'Q': t = Type::QUEEN; c = Colour::WHITE; break;
@@ -73,54 +76,68 @@ int main() {
                     case 'n': t = Type::KNIGHT; c = Colour::BLACK; break;
                     case 'p': t = Type::PAWN; c = Colour::BLACK; break;
                 }
-                try {
+
+                try { // Attempt to place piece on board
                     board->placePiece(c, t, pos);
                 } catch (std::invalid_argument & e) {
                     std::cerr << "Setup Error: " << e.what() << std::endl;
                     continue;
+                } catch (std::logic_error & e) {
+                    std::cerr << "Setup Error: " << e.what() << std::endl;
+                    continue;
                 }
-                
+                board->notifyAll(); // Display board to user
             }
-            else if (command == "-") {
+            else if (command == "-") { // - <Location>
                 Position p;
-                cin >> p;
-                try {
+                cin >> p; // Read in location
+                try { // Attempt to remove piece from board
                     board->removePiece(p);
                 } catch (std::invalid_argument & e) {
                     std::cerr << "Setup Error: " << e.what() << std::endl;
                     continue;
+                } catch (std::logic_error & e) {
+                    std::cerr << "Setup Error: " << e.what() << std::endl;
+                    continue;
                 }
+                board->notifyAll(); // Display Board to user
             }
-            else if (command == "=") {
+            else if (command == "=") { // = <Colour>
                 string side;
-                cin >> side;
-                if (side == "white") {
+                cin >> side; // Read in side
+                if (side == "white" || side == "WHITE") {
                     controller.switchTurn(Colour::WHITE);
                 }
-                else if (side == "black") {
+                else if (side == "black" || side == "BLACK") {
                     controller.switchTurn(Colour::BLACK);
+                } else {
+                    cerr << "Invalid side" << endl;
+                    continue;
                 }
+                cout << "Side switched to " << controller.colourToString(controller.getTurn()) << endl;
             }
             else if (command == "done") {
+                cout << "Exiting setup mode" << endl;
                 controller.exitSetup();
             } else {
                 cerr << "Invalid setup command" << endl;
             }
             continue;
-        }
+        } // - Setup Mode End -
         if (command == "game") {
-
+            delete whitePlayer;
+            delete blackPlayer;
             string white, black;
-            cin >> white >> black;
+            cin >> white >> black; // read in types of players
 
-            try {
+            try { // attempt to create whitePlayer
                 whitePlayer = createPlayer(white, Colour::WHITE, board.get());
             } catch (std::invalid_argument & e) {
                 std::cerr << "White Player Error: " << e.what() << std::endl;
                 continue;
             }
 
-            try {
+            try { // attempt to create blackPlayer
                 blackPlayer = createPlayer(black, Colour::BLACK, board.get());
             } catch (std::invalid_argument & e) {
                 std::cerr << "Black Player Error: " << e.what() << std::endl;
@@ -128,6 +145,7 @@ int main() {
             }
 
             controller.startGame(whitePlayer, blackPlayer);
+
             board->notifyAll();
         }
         else if (command == "resign") {
@@ -135,28 +153,35 @@ int main() {
         }
         else if (command == "move") {
             Position oldPos, newPos;
-            try {
+            try { // Read in move from user
                 cin >> oldPos >> newPos;
             } catch (std::invalid_argument & e) {
                 cerr << "Move Error: " << e.what() << std::endl;
                 continue;
             }
-            try { 
+            try { // Attempts move
                 controller.move(oldPos, newPos, nullptr);
             } catch (std::logic_error & e) {
                 cerr << "Move Error: " << e.what() << std::endl;
                 continue;
             }
-            if (controller.isCheckmate()) { // checkmate
+            if (controller.isCheckmate()) { // Checkmate
                 controller.switchTurn();
                 cout << "Checkmate! " << controller.colourToString(controller.getTurn()) << " wins!" << endl;
-                scoreboard[controller.getTurn()]++; // increment score
-                controller.restartGame(); // restart game
+                controller.addScore(controller.getTurn());
+                controller.restartGame(); // Restart Game
                 continue;
             }
             board->notifyAll();
         }
         else if (command == "setup") {
+            /* Available Commands */
+            cout << "Entering setup mode:" << endl;
+            cout << "Available Commands:" << endl;
+            cout << "+ <Piece> <Location> [Insert Piece]" << endl;
+            cout << "- <Location> [Remove Piece]" << endl;
+            cout << "= <Colour> [Swap Sides]" << endl;
+            cout << "done [Exit Setup]" << endl;
             controller.enterSetup();
         }
         else if (command == "done") {
@@ -168,9 +193,7 @@ int main() {
         }
     }
 
-    cout << "Final Score:" << endl;
-    cout << "White: " << scoreboard[Colour::WHITE] << endl;
-    cout << "Black: " << scoreboard[Colour::BLACK] << endl;
+    controller.printScore();
 
     delete whitePlayer;
     delete blackPlayer;
