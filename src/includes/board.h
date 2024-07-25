@@ -27,11 +27,15 @@ public:
     void placePiece(Colour side, Type t, const Position & pos);
     void removePiece(Position p);
     void playMove(const Move & m);
-    void playMove(Position oldPos, Position newPos);
+    void playMove(Position oldPos, Position newPos, Colour turn);
+    void forcePlayMove(const Move & m);
     bool isValidMove(const Move & m) const;
+    void capture(Piece * p);
     bool isCheck(Colour c) const;
+    bool isCheckmate(Colour side) const;
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
+    void clear();
 };
 
 #endif

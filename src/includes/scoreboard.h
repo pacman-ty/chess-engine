@@ -1,12 +1,16 @@
 #ifndef SCOREBOARD_H
 #define SCOREBOARD_H
-
 #include <map>
-class Player;
+#include <ostream>
+#include "colour.h"
 
 class Scoreboard {
-    std::map<Player *, int> tracker;
+    std::map<Colour, int> scoreboard;
 public:
-    void addWin(Player * p);
+    Scoreboard();
+    void addWin(Colour c);
+    int getWin(Colour c) const;
 };
+
+std::ostream& operator<<(std::ostream& out, const Scoreboard& s);
 #endif

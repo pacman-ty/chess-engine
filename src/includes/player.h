@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "controller.h"
+#include "board.h"
 
 class Board;
 class Piece;
@@ -10,6 +11,7 @@ class Player {
     Colour side;
     Board *board;
 public:
-    virtual void move(Move m, Piece *promotion) = 0;
+    Player(Colour side, Board * b);
+    virtual Move move() = 0;
 };
 #endif
