@@ -124,3 +124,10 @@ std::string Controller::colourToString(Colour c) const {
     }
 }
 
+void Controller::addScore(Colour c) {
+    scoreboard.addWin(c);
+}
+
+void Controller::printScore() const {
+    std::cout << scoreboard;
+}

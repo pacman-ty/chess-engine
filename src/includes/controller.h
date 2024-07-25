@@ -2,6 +2,7 @@
 #define CONTROLLER_H
 
 #include "board.h"
+#include "scoreboard.h"
 
 class Player;
 
@@ -20,6 +21,7 @@ class Controller {
     bool setupMode;
     Colour turn;
     Board* board;
+    Scoreboard scoreboard;
     
     Player *whitePlayer;
     Player *blackPlayer;
@@ -38,10 +40,12 @@ public:
     void exitSetup();
     void setBoard(Board *);
     void restartGame();
-    Colour getTurn() const;
+    void addScore(Colour);
+    void printScore() const;
     bool isCheckmate() const;
     bool isStalemate() const;
     bool isCheck() const;
+    Colour getTurn() const;
     std::string colourToString(Colour c) const;
 };
 
