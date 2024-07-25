@@ -68,11 +68,18 @@ void Xwindow::fillRectangle(int x, int y, int width, int height, int colour) {
   XSetForeground(d, gc, colours[Black]);
 }
 
-void Xwindow::drawString(int x, int y, string msg) {
-  XFontStruct *font;
-  font = XLoadQueryFont(d, "fixed");
-  XSetFont(d, gc, font->fid);
-  XDrawString(d, w, DefaultGC(d, s), x, y, msg.c_str(), msg.length());
+void Xwindow::drawString(int x, int y, string msg, int colour) {
+  fillRectangle(x+16, y+16, 32, 32, colour);
+   /* try to load the given font. */
+  XFontStruct *fontInfo = XLoadQueryFont(d, "fixed");
+  if (!fontInfo) {
+      exit(-1);
+  }
+
+  /* assign the given font to our GC. */
+  XSetFont(d, gc, fontInfo->fid);
+  XSetForeground(d, gc, colours[White]);
+  XDrawString(d, w, gc, x+32, y+32, msg.c_str(), msg.length());
 }
 /*
 void Xwindow::drawPiece(int x, int y, Type type, Colour side) {

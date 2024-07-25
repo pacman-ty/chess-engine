@@ -8,12 +8,11 @@ using namespace std;
 WindowView::WindowView(Board *board): Observer{board} { }
 
 void WindowView::notify() {
-    window.fillRectangle(0, 0, 8, 8, 1);
     for (int y = BOARD_MAX_HEIGHT-1; y >= 0; --y) {
         for (int x = 0; x < BOARD_MAX_WIDTH; ++x) {
             int colour = ((x+y) % 2 == 0) ? Xwindow::White : Xwindow::Black;
             window.fillRectangle(x*64, y*64, 64, 64, colour);
-            const Piece *piece = subject->getItem(x, y);
+            const Piece *piece = subject->getItem(x, BOARD_MAX_HEIGHT-1-y);
             if (piece == nullptr) {
                 continue;
             }
@@ -41,10 +40,12 @@ void WindowView::notify() {
             default:
                 break;
             }
+            int pieceColour = Xwindow::Blue;
             if (piece->getSide() == Colour::BLACK) {
                 out += 'a' - 'A'; // convert to lowercase 
+                pieceColour = Xwindow::Red;
             }
-            //window.drawString(x*8, y*8, std::string{out});
+            window.drawString(x*64, y*64, std::string{out}, pieceColour);
         }
     }
 }
