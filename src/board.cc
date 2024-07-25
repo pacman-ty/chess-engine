@@ -169,6 +169,7 @@ bool Board::isValidMove(const Move & m) const {
             }
     }
     }
+
     if (!found) return false;
     // simulate move
     std::unique_ptr<Board> temp_board{new Board};
@@ -188,70 +189,45 @@ bool Board::isCheck(Colour side) {
         pieces = getPieces(Colour::WHITE);
     }
 
-    for (auto p : whitePieces) { // check opposing pieces
+    for (auto p : pieces) { // check opposing pieces
         std::vector<Move> captures = p->getPossibleCaptures(board);
-        if (captures.empty()) continue;
+        if (captures.empty()) break;
         for (auto cap : captures) {
             if (cap.getCapture()->getType() == Type::KING) return true;
         }
     }
 
     return false;
+
 }
 
-bool Board::isCheckmate(Colour side) const {
-    switch(side) {
-        case Colour::BLACK:
-            for (auto p : blackPieces) {
-                std::vector<Move> moves = p->getPossibleMoves(board);
-                if (moves.empty()) continue;
-                for (auto m : moves) {
-                    if (isValidMove(m)) return false;
-                }
-            }
-            break;
-        case Colour::WHITE:
-            for (auto p : whitePieces) {
-                std::vector<Move> moves = p->getPossibleMoves(board);
-                if (moves.empty()) continue;
-                for (auto m : moves) {
-                    if (isValidMove(m)) return false;
-                }
-            }
-            break;
-        default:
-            throw std::invalid_argument("Invalid Colour when checking for checkmate");
-            return false;
+bool Board::isCheckmate(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+
+    for (auto p : pieces) {
+        std::vector<Move> moves = p->getPossibleMoves(board);
+        if (moves.empty()) break;
+        for (auto m : moves) {
+            if (isValidMove(m)) return false;
+        }
     }
+
     return true;
 }
 
-bool Board::isStalemate(Colour side) const {
-    switch (side) {
-        case Colour::BLACK:
-            if (isCheck(Colour::BLACK)) return false;
-            for (auto p : blackPieces) {
-                std::vector<Move> moves = p->getPossibleMoves(board);
-                if (moves.empty()) continue;
-                for (auto m : moves) {
-                    if (isValidMove(m)) return false;
-                }
-            }
-            break;
-        case Colour::WHITE:
-            if (isCheck(Colour::WHITE)) return false;
-            for (auto p : whitePieces) {
-                std::vector<Move> moves = p->getPossibleMoves(board);
-                if (moves.empty()) continue;
-                for (auto m : moves) {
-                    if (isValidMove(m)) return false;
-                }
-            }
-            break;
-        default:
-            throw std::invalid_argument("Invalid Colour when checking for stalemate");
-            return false;
+bool Board::isStalemate(Colour side)  {
+    std::vector<Piece *> pieces = getPieces(side);
+            
+    if (isCheck(side)) return false;
+    
+    for (auto p : pieces) {
+        std::vector<Move> moves = p->getPossibleMoves(board);
+        if (moves.empty()) break;
+        for (auto m : moves) {
+            if (isValidMove(m)) return false;
+        }
     }
+
     return true;
 }
 
@@ -285,16 +261,14 @@ std::vector<Piece* > Board::getPieces(const Colour & side) {
 
 std::vector<Move> Board::getCheckMoves(Colour side) {
     std::vector<Piece *> pieces = getPieces(side);
+    std::vector<Move> captures = getCaptureMoves(side);
     std::vector<Move> checkMoves;
-    std::vector<Move> captures;
-
-    for (auto p : pieces) { 
-        std::vector<Move> captures = p->getPossibleCaptures(board);
-        if (captures.empty()) return captures;
-        for (auto cap : captures) {
-            if (cap.getCapture()->getType() == Type::KING) {
-                checkMoves.emplace_back(cap);
-            }
+    
+    
+    if (captures.empty()) return captures;
+    for (auto cap : captures) {
+        if (cap.getCapture()->getType() == Type::KING) {
+            checkMoves.emplace_back(cap);
         }
     }
     

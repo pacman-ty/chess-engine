@@ -32,8 +32,8 @@ public:
     bool isValidMove(const Move & m) const;
     void capture(Piece * p);
     bool isCheck(Colour side);
-    bool isStalemate(Colour side) const;
-    bool isCheckmate(Colour side) const;
+    bool isStalemate(Colour side);
+    bool isCheckmate(Colour side);
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
     void clear();
@@ -41,7 +41,7 @@ public:
     std::vector<Move> getCheckMoves(Colour side);
     std::vector<Move> getCaptureMoves(Colour side);
     Move getRandomMove(const std::vector<Move> m);
-    std::vector<Piece *> getPieces(Colour side);
+    std::vector<Piece *> getPieces(const Colour & side);
 };
 
 #endif
