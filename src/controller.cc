@@ -2,7 +2,7 @@
 #include "pawn.h"
 // Implementation of Controller class
 
-Controller::Controller(Board *b): board(b) {}
+Controller::Controller(Board *b): board{b}, setupMode{false}, turn{Colour::WHITE} {}
 
 void Controller::initBoard() {
 

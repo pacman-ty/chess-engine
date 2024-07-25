@@ -5,13 +5,12 @@
 TextView::TextView(Board *b): Observer(b) {}
 
 void TextView::notify() {
-    bool dark = false;
     for (int y = BOARD_MAX_HEIGHT-1; y >= 0; --y) {
         std::cout << y + 1 << " ";
         for (int x = 0; x < BOARD_MAX_WIDTH; ++x) {
             const Piece *piece = subject->getItem(x, y);
             if (piece == nullptr) {
-                std::cout << (dark ? '_' : ' ');
+                std::cout << (((x+y)%2 == 0) ? '_' : ' ');
             } else {
                 char out;
                 switch (piece->getType())
@@ -42,7 +41,6 @@ void TextView::notify() {
                 }
                 std::cout << out;
             }
-            dark = !dark; // next square will be the opposite of current
         }
         std::cout << std::endl;
     }
