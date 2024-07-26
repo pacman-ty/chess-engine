@@ -164,54 +164,29 @@ int main(int argc, char* argv[]) {
 
             board->notifyAll();
 
-            // Game loop for Computer v Computer
-            if (whitePlayer && blackPlayer) {
-                while (true) {
-                    if (controller.getGameState()) break; // toggles game done state and escapes loop
-                    if (controller.getTurn() == Colour::WHITE) {
-                        if (whitePlayer != nullptr) {
-                            Move m = whitePlayer->move();
-                            controller.move(m.getOldPosition(), m.getNewPosition());
-                        }
-                    } else if (controller.getTurn() == Colour::BLACK) {
-                        if (blackPlayer != nullptr) {
-                            Move m = blackPlayer->move();
-                            controller.move(m.getOldPosition(), m.getNewPosition());
-                        }
-                    }
-                }
-            } else if (whitePlayer && !blackPlayer) { // When White: Computer, Black: Human (Starting move)
-                Move m = whitePlayer->move();
-                controller.move(m.getOldPosition(), m.getNewPosition());
-            }
-
         }
         else if (command == "resign") {
             controller.resign();
         }
         else if (command == "move") {
             Position oldPos, newPos;
-            try { // Read in move from user
-                cin >> oldPos >> newPos;
-            } catch (std::invalid_argument & e) {
-                cerr << "Move Error: " << e.what() << std::endl;
-                continue;
-            }
-            try { // Attempts move
-                controller.move(oldPos, newPos);
-            } catch (std::logic_error & e) {
-                cerr << "Move Error: " << e.what() << std::endl;
-                continue;
-            }
-            // Check if Computer is playing and generate move if necessary
-            if (controller.getTurn() == Colour::WHITE) {
-                if (!whitePlayer) continue;
-                Move m = whitePlayer->move();
+            Player *currPlayer = controller.getTurn() == Colour::WHITE ? whitePlayer : blackPlayer;
+            if (currPlayer) { // if current player is AI
+                Move m = currPlayer->move();
                 controller.move(m.getOldPosition(), m.getNewPosition());
-            } else if (controller.getTurn() == Colour::BLACK) {
-                if (!blackPlayer) continue;
-                Move m = blackPlayer->move();
-                controller.move(m.getOldPosition(), m.getNewPosition());
+            } else {
+                try { // Read in move from user
+                    cin >> oldPos >> newPos;
+                } catch (std::invalid_argument & e) {
+                    cerr << "Move Error: " << e.what() << std::endl;
+                    continue;
+                }
+                try { // Attempts move
+                    controller.move(oldPos, newPos);
+                } catch (std::logic_error & e) {
+                    cerr << "Move Error: " << e.what() << std::endl;
+                    continue;
+                }
             }
         }
         else if (command == "setup") {
