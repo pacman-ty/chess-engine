@@ -3,6 +3,7 @@
 #include <cstring>
 #include <random>
 #include <ctime>
+#include <algorithm>
 #include "board.h"
 #include "piece.h"
 #include "king.h"
@@ -27,22 +28,24 @@ Board::~Board() {
 
 void Board::capture(Piece *p) {
     switch (p->getSide()) {
-        case Colour::WHITE:
-            for (auto it = whitePieces.begin(); it != whitePieces.end(); ++it) {
-                if (p == *it) {
-                    whitePieces.erase(it);
-                    break;
-                }
+        case Colour::WHITE: {
+            auto it = std::find(whitePieces.begin(), whitePieces.end(), p);
+            if (it != whitePieces.end()) {
+                whitePieces.erase(it);
+            } else {
+                std::cerr << "COULD NOT ERASE " << p->getPos().getX() + 1 << "," << p->getPos().getY() + 1 << std::endl;
             }
             break;
-        case Colour::BLACK:
-            for (auto it = blackPieces.begin(); it != blackPieces.end(); ++it) {
-                if (p == *it) {
-                    blackPieces.erase(it);
-                    break;
-                }
+        }
+        case Colour::BLACK: {
+            auto it = std::find(blackPieces.begin(), blackPieces.end(), p);
+            if (it != blackPieces.end()) {
+                blackPieces.erase(it);
+            } else {
+                std::cerr << "COULD NOT ERASE " << p->getPos().getX() + 1 << "," << p->getPos().getY() + 1 << std::endl;
             }
             break;
+        }
         default:
             throw std::invalid_argument("Invalid colour when capturing");
     }
@@ -106,7 +109,7 @@ void Board::playMove(const Move & m) {
         if (board[captureX][captureY] != nullptr) {
             capture(board[captureX][captureY]); // delete captured piece
             board[captureX][captureY] = nullptr;
-        }               
+        }
     }
 
     board[newX][newY] = board[x][y]; // move target piece
@@ -122,8 +125,7 @@ void Board::forcePlayMove(const Move & m) {
     int newY = m.getNewPosition().getY(); 
 
     if (board[x][y] == nullptr) {
-        std::cerr << "No piece to move" << std::endl;
-        return;
+        throw std::logic_error("NO PIECE TO MOVE");
     }
 
     if (m.getCapture()) { // has a target
@@ -132,12 +134,11 @@ void Board::forcePlayMove(const Move & m) {
         if (board[captureX][captureY] != nullptr) {
             capture(board[captureX][captureY]); // delete captured piece
             board[captureX][captureY] = nullptr;
-        }               
+        }
     }
 
     board[newX][newY] = board[x][y]; // move target piece
     board[x][y] = nullptr;
-
     board[newX][newY]->setPos(Position{newX, newY});
 }
 
@@ -151,7 +152,9 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     }
 
     Piece *capture = board[newPos.getX()][oldPos.getY()];
-    if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN) {
+    if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN
+        && target->getType() == Type::PAWN) {
+        std::cout << "ENTERING EP BLOCK" << std::endl;
         playMove(Move(oldPos, newPos, target, capture)); 
     } else {
         playMove(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()])); 
