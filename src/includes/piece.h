@@ -3,6 +3,8 @@
 
 #include "board.h"
 
+const int KING_VALUE = 10000;
+
 class Piece {
 protected:
     Colour side;
