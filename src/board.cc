@@ -115,6 +115,50 @@ void Board::playMove(const Move & m) {
     board[newX][newY]->setPos(Position{newX, newY});
 }
 
+bool Board::checkPawnPromotion(int newX, int newY) {
+        if (board[newX][newY]->getType() == Type::PAWN) {
+        if (board[newX][newY]->getSide() == Colour::WHITE &&
+            newY != BOARD_MAX_HEIGHT - 1) return false;
+        if (board[newX][newY]->getSide() == Colour::BLACK &&
+            newY != BOARD_MIN_HEIGHT) return false;
+        std::cout << "~ It is Pawn Promotion time ~" << std::endl;
+        Piece *newPiece = nullptr;
+        char type;
+
+        while (newPiece == nullptr) {
+            std::cout << "Enter piece type (Q, R, B, N): ";
+            std::cin >> type;
+
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Invalid Input. Try again." << std::endl;
+            }
+            switch (type) {
+                case 'Q': newPiece = new Queen; break;
+                case 'R': newPiece = new Rook; break;
+                case 'B': newPiece = new Bishop; break;
+                case 'N': newPiece = new Knight; break;
+                default:
+                std::cout << "Invalid type. Try again." << std::endl;
+                    continue;
+            }
+        }
+        std::cout << "Promoted!" << std::endl;
+        newPiece->setSide(board[newX][newY]->getSide());
+        newPiece->setPos(Position{newX, newY});
+        capture(board[newX][newY]);
+        board[newX][newY] = newPiece;
+        switch (newPiece->getSide()) {
+            case Colour::BLACK: blackPieces.push_back(newPiece); break;
+            case Colour::WHITE: whitePieces.push_back(newPiece); break;
+            default:
+                throw std::invalid_argument("Invalid side when placing piece");
+        }
+    }
+    return true;
+}
+
 void Board::forcePlayMove(const Move & m) {
     int x = m.getOldPosition().getX();
     int y = m.getOldPosition().getY();
@@ -253,7 +297,7 @@ bool Board::isStalemate(Colour side)  {
     return true;
 }
 
-bool Board::isInsufficientMaterial() {
+bool Board::isInsufficientMaterial() const {
     return whitePieces.size() == 1 && blackPieces.size() == 1
         && whitePieces[0]->getType() == Type::KING
         && blackPieces[0]->getType() == Type::KING;

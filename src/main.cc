@@ -40,8 +40,8 @@ Player* createPlayer(string name, Colour c, Board * b) {
 int main(int argc, char* argv[]) {
     std::shared_ptr<Board> board = std::make_shared<Board>();
     Controller controller{board.get()};
-    Player *whitePlayer;
-    Player *blackPlayer;
+    Player *whitePlayer = nullptr;
+    Player *blackPlayer = nullptr;
     vector<Observer *> obs;
 
     bool nogui = false;
@@ -197,12 +197,10 @@ int main(int argc, char* argv[]) {
                     controller.restartGame();
                     continue;
                     }
-                    board->notifyAll();
                 }
-            } else if (!blackPlayer) { // When White: Computer, Black: Human (Starting move)
+            } else if (whitePlayer && !blackPlayer) { // When White: Computer, Black: Human (Starting move)
                 Move m = whitePlayer->move();
                 controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
-                board->notifyAll();
             }
 
         }
@@ -240,7 +238,7 @@ int main(int argc, char* argv[]) {
                 controller.restartGame();
                 continue;
             }
-            board->notifyAll();
+
             if (controller.getTurn() == Colour::WHITE) {
                 if (!whitePlayer) continue;
                 Move m = whitePlayer->move();
@@ -267,7 +265,7 @@ int main(int argc, char* argv[]) {
                 controller.restartGame();
                 continue;
             }
-            board->notifyAll();
+
         }
         else if (command == "setup") {
             /* Available Commands */
