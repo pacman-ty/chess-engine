@@ -36,18 +36,6 @@ Player* createPlayer(string name, Colour c, Board * b) {
     }
 }
 
-void handleComputerMove(Controller& controller, Player* player) {
-    if (player != nullptr) {
-        player->move();
-        if (controller.isCheckmate()) {
-            controller.switchTurn();
-            cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
-            controller.addScore(controller.getTurn());
-            controller.restartGame();
-            return;
-        }
-    }
-}
 
 int main(int argc, char* argv[]) {
     std::shared_ptr<Board> board = std::make_shared<Board>();
@@ -179,11 +167,29 @@ int main(int argc, char* argv[]) {
 
             // Game loop for computer players
             if (!whitePlayer && !blackPlayer) continue;
-            while (!controller.isCheckmate() && !controller.isStalemate()) {
+            while (true) {
                 if (controller.getTurn() == Colour::WHITE) {
-                    handleComputerMove(controller, whitePlayer);
-                } else {
-                    handleComputerMove(controller, blackPlayer);
+                    if (whitePlayer != nullptr) {
+                        Move m = whitePlayer->move();
+                        controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                    }
+                } else if (controller.getTurn() == Colour::BLACK) {
+                    if (blackPlayer != nullptr) {
+                        Move m = blackPlayer->move();
+                        controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                    }
+                }
+                if (controller.isStalemate()) { // Stalemate
+                    cout << "Stalemate!" << endl;
+                    controller.restartGame(); // Restart Game 
+                    break;
+                }
+                else if (controller.isCheckmate()) {
+                    controller.switchTurn();
+                    cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
+                    controller.addScore(controller.getTurn());
+                    controller.restartGame();
+                    break;
                 }
                 board->notifyAll();
                 controller.switchTurn();
