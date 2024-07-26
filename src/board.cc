@@ -150,7 +150,6 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     Piece *capture = board[newPos.getX()][oldPos.getY()];
     if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN
         && target->getType() == Type::PAWN) {
-        std::cout << "ENTERING EP BLOCK" << std::endl;
         playMove(Move(oldPos, newPos, target, capture)); 
     } else {
         playMove(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()])); 

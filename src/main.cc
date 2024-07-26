@@ -165,34 +165,40 @@ int main(int argc, char* argv[]) {
 
             board->notifyAll();
 
-            // Game loop for computer players
-            if (!whitePlayer && !blackPlayer) continue;
-            while (true) {
-                if (controller.getTurn() == Colour::WHITE) {
-                    if (whitePlayer != nullptr) {
-                        Move m = whitePlayer->move();
-                        controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+            // Game loop for Computer v Computer
+            if (!whitePlayer && !blackPlayer) {
+                while (true) {
+                    if (controller.getTurn() == Colour::WHITE) {
+                        if (whitePlayer != nullptr) {
+                            Move m = whitePlayer->move();
+                            controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                        }
+                    } else if (controller.getTurn() == Colour::BLACK) {
+                        if (blackPlayer != nullptr) {
+                            Move m = blackPlayer->move();
+                            controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                        }
                     }
-                } else if (controller.getTurn() == Colour::BLACK) {
-                    if (blackPlayer != nullptr) {
-                        Move m = blackPlayer->move();
-                        controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                    if (controller.isStalemate()) { // Stalemate
+                        cout << "Stalemate!" << endl;
+                        controller.restartGame(); // Restart Game 
+                        break;
                     }
+                    else if (controller.isCheckmate()) {
+                        controller.switchTurn();
+                        cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
+                        controller.addScore(controller.getTurn());
+                        controller.restartGame();
+                        break;
+                    }
+                    board->notifyAll();
                 }
-                if (controller.isStalemate()) { // Stalemate
-                    cout << "Stalemate!" << endl;
-                    controller.restartGame(); // Restart Game 
-                    break;
-                }
-                else if (controller.isCheckmate()) {
-                    controller.switchTurn();
-                    cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
-                    controller.addScore(controller.getTurn());
-                    controller.restartGame();
-                    break;
-                }
+            } else if (!blackPlayer) { // When White: Computer, Black: Human (Starting move)
+                Move m = whitePlayer->move();
+                controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
                 board->notifyAll();
             }
+
         }
         else if (command == "resign") {
             controller.resign();
@@ -210,6 +216,28 @@ int main(int argc, char* argv[]) {
             } catch (std::logic_error & e) {
                 cerr << "Move Error: " << e.what() << std::endl;
                 continue;
+            }
+            if (controller.isStalemate()) { // Stalemate
+                cout << "Stalemate!" << endl;
+                controller.restartGame(); // Restart Game 
+                continue;    
+            }
+            else if (controller.isCheckmate()) { // Checkmate
+                controller.switchTurn();
+                cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
+                controller.addScore(controller.getTurn());
+                controller.restartGame(); // Restart Game
+                continue;
+            }
+            board->notifyAll();
+            if (controller.getTurn() == Colour::WHITE) {
+                if (!whitePlayer) continue;
+                Move m = whitePlayer->move();
+                controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+            } else if (controller.getTurn() == Colour::BLACK) {
+                if (!blackPlayer) continue;
+                Move m = blackPlayer->move();
+                controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
             }
             if (controller.isStalemate()) { // Stalemate
                 cout << "Stalemate!" << endl;
