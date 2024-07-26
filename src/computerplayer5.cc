@@ -29,17 +29,6 @@ Move ComputerPlayer5::move() {
     if (!avoidCaptureMoves.empty()) return board->getRandomMove(avoidCaptureMoves);
 
     std::vector<Move> legalMoves = board->getLegalMoves(side);
-    Move bestLegalMove = board->getRandomMove(legalMoves);
 
-    // Find move that captures the highest weight value
-    for (auto m : legalMoves) {
-        int lowest_move = KING_VALUE;
-        if (m.getTarget() && m.getTarget()->getValue() < lowest_move
-            && m.getTarget()->getSide() == side) {
-            lowest_move = m.getTarget()->getValue();
-            bestLegalMove = m;
-        }
-    }
-
-    return bestLegalMove;
+    return board->getRandomMove(legalMoves);
 }
