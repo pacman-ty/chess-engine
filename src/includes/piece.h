@@ -11,6 +11,7 @@ protected:
 public:
     Piece(Type t);
     virtual ~Piece() = default;
+    virtual bool getHasMoved() = 0;
     virtual std::vector<Move> getPossibleMoves(const Board::BoardType & b) const = 0;
     virtual std::vector<Move> getPossibleCaptures(const Board::BoardType & b) const = 0;
     Colour getSide() const;

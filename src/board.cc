@@ -132,7 +132,35 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     if (target->getSide() != turn) {
         throw std::logic_error("Not your turn");
     }
+
+    // castling checks some basic stuff then returns and lets playMove method 
+    // handle the move whether its invalid or not 
+    if (tryCastling(Move(oldPos, newPos, target, capture))) return;
+
     playMove(Move(oldPos, newPos, target, capture));
+}
+
+bool Board::tryCastling(const Move & m) {
+    if (m.getTarget()->getType() != Type::KING) return false;
+    if (m.getTarget()->getHasMoved()) return false;
+    if (m.getCapture() != nullptr) return false;
+    
+    if (m.getOldPosition() == Position(4, 0) && m.getNewPosition() == Position(6, 0)) {
+        return tryCastlingWhiteRight(m);
+    }
+    else if (m.getOldPosition() == Position(4, 0) && m.getNewPosition() == Position(2, 0)) {
+        return tryCastlingWhiteLeft(m);
+    }
+    else if (m.getOldPosition() == Position(4, 7) && m.getNewPosition() == Position(6, 7)) {
+        return tryCastlingBlackRight(m);
+    }
+    else if (m.getOldPosition() == Position(4, 7) && m.getNewPosition() == Position(2, 7)) {
+        return tryCastlingBlackLeft(m);
+    }
+    else {
+        return false;
+    }
+
 }
 
 void Board::cloneBoard(const Board & b) {
