@@ -99,6 +99,10 @@ void Board::playMove(const Move & m) {
         return;
     }
 
+    if (m.getTarget()->getType() == Type::KING || m.getTarget()->getType() == Type::KING) {
+        board[x][y]->didMove();
+    }
+
     if (m.getCapture()) { // has a target
         int captureX = m.getCapture()->getPos().getX();
         int captureY = m.getCapture()->getPos().getY();
@@ -218,23 +222,27 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
         throw std::logic_error("Not your turn");
     }
 
-    // castling checks some basic stuff then returns and lets playMove method 
-    // handle the move whether its invalid or not 
-    if (tryCastling(Move(oldPos, newPos, target, capture))) return;
 
-    playMove(Move(oldPos, newPos, target, capture));
-    Piece *capture = board[newPos.getX()][oldPos.getY()]; // En Passant Case
+
+    Piece * capture = board[newPos.getX()][oldPos.getY()]; // En Passant Case
     if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN
         && target->getType() == Type::PAWN) {
         playMove(Move(oldPos, newPos, target, capture)); 
-    } else { // Normal case
+    } 
+    else if (checkCastling(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()]))) {
+        return;
+    }
+    else { // Normal case
         playMove(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()])); 
     }
 }
 
 bool Board::checkCastling(const Move & m) {
+    int x = m.getOldPosition().getX();
+    int y = m.getOldPosition().getY();
+
     if (m.getTarget()->getType() != Type::KING) return false;
-    if (m.getTarget()->getHasMoved()) return false;
+    if (board[x][y]->getHasMoved()) return false;
     if (m.getCapture() != nullptr) return false;
     
     if (m.getOldPosition() == Position(4, 0) && m.getNewPosition() == Position(6, 0)) {
@@ -448,9 +456,11 @@ std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
 
     // Collect all friendly pieces that are under threat
     for (auto m : threatenedPieceMoves) {
-        Piece * threatenedPiece = m.getCapture();
+        int x = m.getOldPosition().getX();
+        int y = m.getOldPosition().getY();
+        Piece * threatenedPiece = board[x][y];
         if (threatenedPiece && threatenedPiece->getSide() == side) {
-            friendlyPieces.push_back(m.getCapture());
+            friendlyPieces.push_back(board[x][y]);
         }
     }
 

@@ -6,8 +6,6 @@
 const char ROOK_SYM = 'r';
 
 class Rook : public Piece {
-    // keeps track if the rook has moved yet for castling purposes
-    bool hasMoved = false;
 public:
     Rook();
     // return list of possible moves (does not mean that moves are legal)

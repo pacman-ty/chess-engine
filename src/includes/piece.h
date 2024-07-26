@@ -8,10 +8,12 @@ protected:
     Colour side;
     Position currPosition;
     Type t;
+    bool hasMoved = false;
 public:
     Piece(Type t);
     virtual ~Piece() = default;
-    virtual bool getHasMoved() = 0;
+    bool getHasMoved();
+    void didMove();
     virtual std::vector<Move> getPossibleMoves(const Board::BoardType & b) const = 0;
     virtual std::vector<Move> getPossibleCaptures(const Board::BoardType & b) const = 0;
     Colour getSide() const;
