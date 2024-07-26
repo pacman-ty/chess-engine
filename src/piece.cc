@@ -2,7 +2,7 @@
 
 Piece::Piece(Type t) : t{t} {}
 
-int Piece::getValue(Type t) {
+int Piece::getValue() const {
     switch(t) {
         case Type::PAWN: return 1;
         case Type::BISHOP: return 3;

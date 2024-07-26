@@ -201,9 +201,32 @@ int main(int argc, char* argv[]) {
         }
         else if (command == "done") {
             return 0;
-        } else if (command == "print") {
+        }
+        else if (command == "print") {
             board->notifyAll();
-        } else {
+        }
+        else if (command == "cvc") {
+            if (whitePlayer && blackPlayer) {
+                while (true) {
+                    if (controller.getGameState()) break; // toggles game done state and escapes loop
+                    if (controller.getTurn() == Colour::WHITE) {
+                        if (whitePlayer != nullptr) {
+                            Move m = whitePlayer->move();
+                            controller.move(m.getOldPosition(), m.getNewPosition());
+                        }
+                    } else if (controller.getTurn() == Colour::BLACK) {
+                        if (blackPlayer != nullptr) {
+                            Move m = blackPlayer->move();
+                            controller.move(m.getOldPosition(), m.getNewPosition());
+                        }
+                    }
+                }
+            }
+            else {
+                cout << "Both players aren't computer" << endl;
+            }
+        }
+        else {
             cerr << "Invalid command" << endl;
         }
     }

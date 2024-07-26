@@ -2,9 +2,7 @@
 #define PLAYER_H
 
 #include "board.h"
-
-class Board;
-class Piece;
+#include "piece.h"
 
 class Player {
 protected:

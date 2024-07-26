@@ -15,7 +15,7 @@ public:
     virtual std::vector<Move> getPossibleCaptures(const Board::BoardType & b) const = 0;
     Colour getSide() const;
     Type getType() const;
-    virtual int getValue(Type t);
+    int getValue() const;
     Position getPos() const;
     void setSide(Colour c);
     void setPos(Position p);
