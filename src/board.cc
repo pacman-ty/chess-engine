@@ -123,6 +123,50 @@ void Board::forcePlayMove(const Move & m) {
     board[newX][newY]->setPos(Position{newX, newY});
 }
 
+bool Board::tryCastle(const Move & m) {
+    const Piece *king = m.getTarget();
+    int curX = king->getPos().getX();
+    int curY = king->getPos().getY();
+
+    bool castleRight = curX < m.getNewPosition().getX();
+    Piece *piece = castleRight ? board[curX+3][curY] : piece = board[curX-3][curY];
+
+    // Is there a piece?
+    if (!piece) return false; 
+    // Is the piece on the same side?
+    if (piece->getSide() != king->getSide()) return false;
+    // Is the piece a rook? 
+    if (piece->getType() != Type::ROOK) return false;
+    Rook *rook = static_cast<Rook*>(piece);
+    // Has the rook moved?
+    if (rook->getHasMoved()) return false;
+
+    if (castleRight) {
+        // Can king move 1 space?
+        if (!isValidMove(Move{m.getOldPosition(), Position{curX+1, curY}, king, NULL})) return false;
+        // Can king move 2 spaces?
+        if (!isValidMove(Move{Position{curX+1, curY}, Position{curX+2, curY}, king, NULL})) return false;
+        // Move king
+        forcePlayMove(Move{m.getOldPosition(), Position{curX+2, curY}, king, NULL});
+        // Move rook
+        forcePlayMove(Move{m.getOldPosition(), Position{curX+1, curY}, rook, NULL});
+    }
+    else { // castle left
+        // Can king move 1 space?
+        if (!isValidMove(Move{m.getOldPosition(), Position{curX-1, curY}, king, NULL})) return false;
+        // Can king move 2 spaces?
+        if (!isValidMove(Move{m.getOldPosition(), Position{curX-2, curY}, king, NULL})) return false;
+        // Can king move 3 spaces?
+        if (!isValidMove(Move{m.getOldPosition(), Position{curX-3, curY}, king, NULL})) return false;
+        // Move king
+        forcePlayMove(Move{m.getOldPosition(), Position{curX-2, curY}, king, NULL});
+        // Move rook
+        forcePlayMove(Move{m.getOldPosition(), Position{curX-1, curY}, rook, NULL});
+    }
+
+    return true;
+}
+
 void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     Piece *capture = board[newPos.getX()][newPos.getY()];
     Piece *target = board[oldPos.getX()][oldPos.getY()];
@@ -132,7 +176,15 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     if (target->getSide() != turn) {
         throw std::logic_error("Not your turn");
     }
-    playMove(Move(oldPos, newPos, target, capture));
+
+    Move move = Move{oldPos, newPos, target, capture};
+    if (move.isCastle()) {
+        if (!tryCastle(Move(oldPos, newPos, target, NULL))) {
+            throw std::logic_error("Can not castle");
+        }
+    } else {
+        playMove(move);
+    }
 }
 
 void Board::cloneBoard(const Board & b) {

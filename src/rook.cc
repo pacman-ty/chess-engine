@@ -62,3 +62,10 @@ std::vector<Move> Rook::getPossibleCaptures(const Board::BoardType & board) cons
 
     return output;
 }
+
+bool Rook::getHasMoved() {
+    return hasMoved;
+}
+void Rook::setHasMoved() {
+    hasMoved = true;
+}

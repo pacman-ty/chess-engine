@@ -17,6 +17,7 @@ public:
     Position getNewPosition() const;
     const Piece* getCapture() const;
     const Piece* getTarget() const;
+    bool isCastle() const;
 };
 
 #endif

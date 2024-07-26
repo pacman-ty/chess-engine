@@ -14,6 +14,10 @@ public:
     virtual std::vector<Move> getPossibleMoves(const Board::BoardType &) const override;
     // return list of attacking moves (does not mean that moves are legal)
     virtual std::vector<Move> getPossibleCaptures(const Board::BoardType &) const override;
+
+    bool getHasMoved();
+    // Sets 'hasMoved' to true
+    void setHasMoved();
 };
 
 #endif

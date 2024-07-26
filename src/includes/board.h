@@ -26,6 +26,7 @@ public:
     void cloneBoard(const Board &);
     void placePiece(Colour side, Type t, const Position & pos);
     void removePiece(Position p);
+    bool tryCastle(const Move & m);
     void playMove(const Move & m);
     void playMove(Position oldPos, Position newPos, Colour turn);
     void forcePlayMove(const Move & m);
