@@ -2,9 +2,7 @@
 #define PLAYER_H
 
 #include "board.h"
-
-class Board;
-class Piece;
+#include "piece.h"
 
 class Player {
 protected:
@@ -13,5 +11,6 @@ protected:
 public:
     Player(Colour side, Board * b);
     virtual Move move() = 0;
+    virtual ~Player() = default;
 };
 #endif

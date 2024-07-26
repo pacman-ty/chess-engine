@@ -1,7 +1,6 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <map>
 
 #include "controller.h"
 #include "textview.h"
@@ -36,27 +35,29 @@ Player* createPlayer(string name, Colour c, Board * b) {
     }
 }
 
-void handleComputerMove(Controller& controller, Player* player) {
-    if (player != nullptr) {
-        player->move();
-        if (controller.isCheckmate()) {
-            controller.switchTurn();
-            cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
-            controller.addScore(controller.getTurn());
-            controller.restartGame();
-            return;
-        }
-    }
-}
 
-int main() {
+int main(int argc, char* argv[]) {
     std::shared_ptr<Board> board = std::make_shared<Board>();
     Controller controller{board.get()};
-    Player *whitePlayer;
-    Player *blackPlayer;
+    Player *whitePlayer = nullptr;
+    Player *blackPlayer = nullptr;
+    vector<Observer *> obs;
 
-    board.get()->subscribe(new TextView(board.get()));
-    board.get()->subscribe(new WindowView(board.get()));
+    bool nogui = false;
+
+    for (int i = 1; i < argc; ++i) {
+        string arg = argv[i];
+        if (arg == "-nogui") nogui = true;
+    }
+    Observer* text = new TextView(board.get());
+    obs.push_back(text);
+    board.get()->subscribe(text);
+    if (!nogui) {
+        Observer* window = new WindowView(board.get());
+        obs.push_back(window);
+        board.get()->subscribe(window);
+    }
+
     board->notifyAll();
 
     // Interpret user commands
@@ -140,8 +141,8 @@ int main() {
             continue;
         } // - Setup Mode End -
         if (command == "game") {
-            delete whitePlayer;
-            delete blackPlayer;
+            if (whitePlayer) delete whitePlayer;
+            if (blackPlayer) delete blackPlayer;
             string white, black;
             cin >> white >> black; // read in types of players
 
@@ -163,48 +164,30 @@ int main() {
 
             board->notifyAll();
 
-            // Game loop for computer players
-            if (!whitePlayer && !blackPlayer) continue;
-            while (!controller.isCheckmate() && !controller.isStalemate()) {
-                if (controller.getTurn() == Colour::WHITE) {
-                    handleComputerMove(controller, whitePlayer);
-                } else {
-                    handleComputerMove(controller, blackPlayer);
-                }
-                board->notifyAll();
-                controller.switchTurn();
-            }
         }
         else if (command == "resign") {
             controller.resign();
         }
         else if (command == "move") {
             Position oldPos, newPos;
-            try { // Read in move from user
-                cin >> oldPos >> newPos;
-            } catch (std::invalid_argument & e) {
-                cerr << "Move Error: " << e.what() << std::endl;
-                continue;
+            Player *currPlayer = controller.getTurn() == Colour::WHITE ? whitePlayer : blackPlayer;
+            if (currPlayer) { // if current player is AI
+                Move m = currPlayer->move();
+                controller.move(m.getOldPosition(), m.getNewPosition());
+            } else {
+                try { // Read in move from user
+                    cin >> oldPos >> newPos;
+                } catch (std::invalid_argument & e) {
+                    cerr << "Move Error: " << e.what() << std::endl;
+                    continue;
+                }
+                try { // Attempts move
+                    controller.move(oldPos, newPos);
+                } catch (std::logic_error & e) {
+                    cerr << "Move Error: " << e.what() << std::endl;
+                    continue;
+                }
             }
-            try { // Attempts move
-                controller.move(oldPos, newPos, nullptr);
-            } catch (std::logic_error & e) {
-                cerr << "Move Error: " << e.what() << std::endl;
-                continue;
-            }
-            if (controller.isStalemate()) { // Stalemate
-                cout << "Stalemate!" << endl;
-                controller.restartGame(); // Restart Game 
-                continue;    
-            }
-            else if (controller.isCheckmate()) { // Checkmate
-                controller.switchTurn();
-                cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
-                controller.addScore(controller.getTurn());
-                controller.restartGame(); // Restart Game
-                continue;
-            }
-            board->notifyAll();
         }
         else if (command == "setup") {
             /* Available Commands */
@@ -218,16 +201,41 @@ int main() {
         }
         else if (command == "done") {
             return 0;
-        } else if (command == "print") {
+        }
+        else if (command == "print") {
             board->notifyAll();
-        } else {
+        }
+        else if (command == "cvc") {
+            if (whitePlayer && blackPlayer) {
+                while (true) {
+                    if (controller.getGameState()) break; // toggles game done state and escapes loop
+                    if (controller.getTurn() == Colour::WHITE) {
+                        if (whitePlayer != nullptr) {
+                            Move m = whitePlayer->move();
+                            controller.move(m.getOldPosition(), m.getNewPosition());
+                        }
+                    } else if (controller.getTurn() == Colour::BLACK) {
+                        if (blackPlayer != nullptr) {
+                            Move m = blackPlayer->move();
+                            controller.move(m.getOldPosition(), m.getNewPosition());
+                        }
+                    }
+                }
+            }
+            else {
+                cout << "Both players aren't computer" << endl;
+            }
+        }
+        else {
             cerr << "Invalid command" << endl;
         }
     }
 
-
-
     controller.printScore();
+
+    for (auto it : obs) {
+        delete it;
+    }
 
     delete whitePlayer;
     delete blackPlayer;

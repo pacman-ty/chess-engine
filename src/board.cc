@@ -3,6 +3,7 @@
 #include <cstring>
 #include <random>
 #include <ctime>
+#include <algorithm>
 #include "board.h"
 #include "piece.h"
 #include "king.h"
@@ -27,22 +28,20 @@ Board::~Board() {
 
 void Board::capture(Piece *p) {
     switch (p->getSide()) {
-        case Colour::WHITE:
-            for (auto it = whitePieces.begin(); it != whitePieces.end(); ++it) {
-                if (p == *it) {
-                    whitePieces.erase(it);
-                    break;
-                }
+        case Colour::WHITE: {
+            auto it = std::find(whitePieces.begin(), whitePieces.end(), p);
+            if (it != whitePieces.end()) {
+                whitePieces.erase(it);
             }
             break;
-        case Colour::BLACK:
-            for (auto it = blackPieces.begin(); it != blackPieces.end(); ++it) {
-                if (p == *it) {
-                    blackPieces.erase(it);
-                    break;
-                }
+        }
+        case Colour::BLACK: {
+            auto it = std::find(blackPieces.begin(), blackPieces.end(), p);
+            if (it != blackPieces.end()) {
+                blackPieces.erase(it);
             }
             break;
+        }
         default:
             throw std::invalid_argument("Invalid colour when capturing");
     }
@@ -101,31 +100,117 @@ void Board::playMove(const Move & m) {
     }
 
     if (m.getCapture()) { // has a target
-        if (board[newX][newY] != nullptr) capture(board[newX][newY]); // delete captured piece               
+        int captureX = m.getCapture()->getPos().getX();
+        int captureY = m.getCapture()->getPos().getY();
+        if (board[captureX][captureY] != nullptr) {
+            capture(board[captureX][captureY]); // delete captured piece
+            board[captureX][captureY] = nullptr;
+        }
     }
 
     board[newX][newY] = board[x][y]; // move target piece
     board[x][y] = nullptr;
 
     board[newX][newY]->setPos(Position{newX, newY});
+}
+
+bool Board::checkPawnPromotion(int newX, int newY) {
+    if (board[newX][newY]->getType() == Type::PAWN &&
+        ((board[newX][newY]->getSide() == Colour::WHITE &&
+        newY == BOARD_MAX_HEIGHT - 1) ||
+        (board[newX][newY]->getSide() == Colour::BLACK &&
+        newY == BOARD_MIN_HEIGHT))) {
+            return true;
+        }
+    return false;
+}
+
+void Board::promptPawnPromotion(int newX, int newY) {
+    std::cout << "~ It is Pawn Promotion time ~" << std::endl;
+    Piece *newPiece = nullptr;
+    char type;
+
+    while (newPiece == nullptr) {
+        std::cout << "Enter piece type (Q, R, B, N): ";
+        std::cin >> type;
+
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid Input. Try again." << std::endl;
+        }
+        switch (type) {
+            case 'Q': newPiece = new Queen; break;
+            case 'R': newPiece = new Rook; break;
+            case 'B': newPiece = new Bishop; break;
+            case 'N': newPiece = new Knight; break;
+            default:
+            std::cout << "Invalid type. Try again." << std::endl;
+                continue;
+        }
+    }
+    std::cout << "Promoted!" << std::endl;
+    newPiece->setSide(board[newX][newY]->getSide());
+    newPiece->setPos(Position{newX, newY});
+    capture(board[newX][newY]);
+    board[newX][newY] = newPiece;
+    switch (newPiece->getSide()) {
+        case Colour::BLACK: blackPieces.push_back(newPiece); break;
+        case Colour::WHITE: whitePieces.push_back(newPiece); break;
+        default:
+            throw std::invalid_argument("Invalid side when placing piece");
+    }
+}
+
+void Board::promote(int newX, int newY, Type t) {
+    Piece * newPiece = nullptr;
+    switch (t) {
+        case Type::QUEEN: newPiece = new Queen; break;
+        case Type::ROOK: newPiece = new Rook; break;
+        case Type::BISHOP: newPiece = new Bishop; break;
+        case Type::KNIGHT: newPiece = new Knight; break;
+        default:
+            throw std::invalid_argument("invalid promote");
+    }
+    newPiece->setSide(board[newX][newY]->getSide());
+    newPiece->setPos(Position{newX, newY});
+    capture(board[newX][newY]);
+    board[newX][newY] = newPiece;
+    switch (newPiece->getSide()) {
+        case Colour::BLACK: blackPieces.push_back(newPiece); break;
+        case Colour::WHITE: whitePieces.push_back(newPiece); break;
+        default:
+            throw std::invalid_argument("Invalid side when placing piece");
+    }
 }
 
 void Board::forcePlayMove(const Move & m) {
     int x = m.getOldPosition().getX();
     int y = m.getOldPosition().getY();
     int newX = m.getNewPosition().getX();
-    int newY = m.getNewPosition().getY();    
-    if (m.getCapture()) { // has a target
-        if (board[newX][newY] != nullptr) capture(board[newX][newY]); // delete captured piece               
+    int newY = m.getNewPosition().getY(); 
+
+    if (board[x][y] == nullptr) {
+        throw std::logic_error("NO PIECE TO MOVE");
     }
+
+    if (m.getCapture()) { // has a target
+        int captureX = m.getCapture()->getPos().getX();
+        int captureY = m.getCapture()->getPos().getY();
+        if (board[captureX][captureY] != nullptr) {
+            capture(board[captureX][captureY]); // delete captured piece
+            board[captureX][captureY] = nullptr;
+        }
+    }
+
     board[newX][newY] = board[x][y]; // move target piece
     board[x][y] = nullptr;
     board[newX][newY]->setPos(Position{newX, newY});
 }
 
 void Board::playMove(Position oldPos, Position newPos, Colour turn) {
-    Piece *capture = board[newPos.getX()][newPos.getY()];
     Piece *target = board[oldPos.getX()][oldPos.getY()];
+    // std::cout << "PLAYING MOVE: " << oldPos.getX() << "," << oldPos.getY() << " " << newPos.getX() << "," << newPos.getY()  << std::endl;
     if (target == nullptr) {
         throw std::logic_error("No piece to move");
     }
@@ -138,6 +223,13 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     if (tryCastling(Move(oldPos, newPos, target, capture))) return;
 
     playMove(Move(oldPos, newPos, target, capture));
+    Piece *capture = board[newPos.getX()][oldPos.getY()]; // En Passant Case
+    if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN
+        && target->getType() == Type::PAWN) {
+        playMove(Move(oldPos, newPos, target, capture)); 
+    } else { // Normal case
+        playMove(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()])); 
+    }
 }
 
 bool Board::checkCastling(const Move & m) {
@@ -249,7 +341,7 @@ bool Board::isCheck(Colour side) {
 
     for (auto p : pieces) { // check opposing pieces
         std::vector<Move> captures = p->getPossibleCaptures(board);
-        if (captures.empty()) break;
+        if (captures.empty()) continue;
         for (auto cap : captures) {
             if (cap.getCapture()->getType() == Type::KING) return true;
         }
@@ -264,7 +356,7 @@ bool Board::isCheckmate(Colour side) {
 
     for (auto p : pieces) {
         std::vector<Move> moves = p->getPossibleMoves(board);
-        if (moves.empty()) break;
+        if (moves.empty()) continue;
         for (auto m : moves) {
             if (isValidMove(m)) return false;
         }
@@ -280,13 +372,19 @@ bool Board::isStalemate(Colour side)  {
     
     for (auto p : pieces) {
         std::vector<Move> moves = p->getPossibleMoves(board);
-        if (moves.empty()) break;
+        if (moves.empty()) continue;
         for (auto m : moves) {
             if (isValidMove(m)) return false;
         }
     }
 
     return true;
+}
+
+bool Board::isInsufficientMaterial() const {
+    return whitePieces.size() == 1 && blackPieces.size() == 1
+        && whitePieces[0]->getType() == Type::KING
+        && blackPieces[0]->getType() == Type::KING;
 }
 
 const Board::BoardType& Board::getBoard() const {
@@ -326,7 +424,7 @@ std::vector<Move> Board::getCheckMoves(Colour side) {
     if (captures.empty()) return captures;
     for (auto cap : captures) {
         if (cap.getCapture()->getType() == Type::KING) {
-            checkMoves.emplace_back(cap);
+            checkMoves.push_back(cap);
         }
     }
     
@@ -334,48 +432,38 @@ std::vector<Move> Board::getCheckMoves(Colour side) {
 }
 
 std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
-    std::vector<Piece *> pieces;
+    std::vector<Piece *> opponentPieces = getPieces(side == Colour::WHITE ? Colour::BLACK : Colour::WHITE);
+    std::vector<Piece *> friendlyPieces;
     std::vector<Move> avoidCaptureMoves;
-    std::vector<Move> opponentCaptureMoves;
-    std::vector<Move> potenialMoves;
+    std::vector<Move> threatenedPieceMoves;
+    std::vector<Move> potentialMoves;
 
-    if (side == Colour::WHITE) { 
-        opponentCaptureMoves = getCaptureMoves(side);
-    }
-    else {
-        opponentCaptureMoves = getCaptureMoves(side);
-    }
-
-    for (auto m : opponentCaptureMoves) {
-        pieces.emplace_back(m.getCapture());
+    // Get all potential capture moves by the opponent
+    for (auto p : opponentPieces) {
+        std::vector<Move> captures = p->getPossibleCaptures(board);
+        threatenedPieceMoves.insert(threatenedPieceMoves.end(), captures.begin(), captures.end());
     }
 
-    // this could be made shorter possibly and cleaner 
-    // but as of now done like this to prioritze capture moves first 
-    for (auto p : pieces) {
-        for (auto m : p->getPossibleCaptures(board)) {
-            potenialMoves.emplace_back(m);
+    if (threatenedPieceMoves.empty()) return {};
+
+    // Collect all friendly pieces that are under threat
+    for (auto m : threatenedPieceMoves) {
+        Piece * threatenedPiece = m.getCapture();
+        if (threatenedPiece && threatenedPiece->getSide() == side) {
+            friendlyPieces.push_back(m.getCapture());
         }
     }
 
-    for (auto m : potenialMoves) {
-        if (isValidMove(m)) avoidCaptureMoves.emplace_back(m);
+    // Collect all possible moves for those friendly pieces to give bot 3 edge
+    for (auto p : friendlyPieces) {
+        std::vector<Move> captures = p->getPossibleCaptures(board);
+        std::vector<Move> moves = p->getPossibleMoves(board);
+        potentialMoves.insert(potentialMoves.end(), captures.begin(), captures.end());
+        potentialMoves.insert(potentialMoves.end(), moves.begin(), moves.end());
     }
 
-    if (!avoidCaptureMoves.empty()) return avoidCaptureMoves;
-
-    //clear potenial moves already deemed not legal
-    // because if any of the moves were legal we would have already returned
-    potenialMoves.clear();
-    
-    for (auto p : pieces) {
-        for (auto m : p->getPossibleMoves(board)) {
-            potenialMoves.emplace_back(m);
-        }
-    }
-
-    for (auto m : potenialMoves) {
-        if (isValidMove(m)) avoidCaptureMoves.emplace_back(m);
+    for (auto m : potentialMoves) {
+        if (isValidMove(m)) avoidCaptureMoves.push_back(m);
     }
 
     return avoidCaptureMoves;
@@ -388,12 +476,12 @@ std::vector<Move> Board::getCaptureMoves(Colour side) {
 
     for (auto p : pieces) {
         for (auto m : p->getPossibleCaptures(board)) {
-            moves.emplace_back(m);
+            moves.push_back(m);
         }
     }
 
     for (auto m : moves) {
-        if (isValidMove(m)) captureMoves.emplace_back(m);
+        if (isValidMove(m)) captureMoves.push_back(m);
     }
 
     return captureMoves;
@@ -406,15 +494,15 @@ std::vector<Move> Board::getLegalMoves(Colour side) {
 
     for (auto p : pieces) {
         for (auto m : p->getPossibleMoves(board)) {
-            moves.emplace_back(m);
+            moves.push_back(m);
         }
         for (auto m : p->getPossibleCaptures(board)) {
-            moves.emplace_back(m);
+            moves.push_back(m);
         }
     }
 
     for (auto m : moves) {
-        if (isValidMove(m)) legalMoves.emplace_back(m);
+        if (isValidMove(m)) legalMoves.push_back(m);
     }
 
     return legalMoves;

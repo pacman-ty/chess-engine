@@ -2,7 +2,8 @@
 #include "pawn.h"
 // Implementation of Controller class
 
-Controller::Controller(Board *b): board{b}, setupMode{false}, turn{Colour::WHITE} {}
+Controller::Controller(Board *b): setupMode{false},
+    done{false}, turn{Colour::WHITE}, board{b} {}
 
 void Controller::initBoard() {
 
@@ -54,13 +55,15 @@ void Controller::switchTurn(Colour val) {
 }
 
 bool Controller::isStalemate() const {
-    board->isStalemate(turn);
+    return board->isStalemate(turn);
 }
 
 void Controller::startGame(Player *whitePlayer, Player *blackPlayer) {
+    done = false;
+    board->clear();
     this->whitePlayer = whitePlayer;
     this->blackPlayer = blackPlayer;
-    
+    switchTurn(Colour::WHITE);
     initBoard();
 }
 
@@ -73,7 +76,9 @@ void Controller::resign() {
         case Colour::WHITE:
             std::cout << "Black wins!" << std::endl;
             addScore(Colour::BLACK);
-            break;        
+            break;  
+        default:
+            throw std::invalid_argument("Invalid Colour");      
     }
 }
 
@@ -84,14 +89,45 @@ void Controller::restartGame() {
     startGame(whitePlayer, blackPlayer);
 }
 
-void Controller::move(Position oldPos, Position newPos, Piece *promotion) {
+void Controller::move(Position oldPos, Position newPos) {
     board->playMove(oldPos, newPos, turn);
-    switchTurn();
-    if (promotion != nullptr) {
-        // promotes
+    board->notifyAll();
+    if (board->checkPawnPromotion(newPos.getX(), newPos.getY())) {
+        if (turn == Colour::WHITE) {
+            if (whitePlayer) { // if AI
+                board->promote(newPos.getX(), newPos.getY(), Type::QUEEN);
+            } else { // if player
+                board->promptPawnPromotion(newPos.getX(), newPos.getY());
+            }
+        } else if (turn == Colour::BLACK) {
+            if (blackPlayer) { // if AI
+                board->promote(newPos.getX(), newPos.getY(), Type::QUEEN);
+            } else { // if player
+                board->promptPawnPromotion(newPos.getX(), newPos.getY());
+            }
+        }
+        board->notifyAll();
     }
+    switchTurn();
     if (isCheck()) { // in check but not checkmate
         std::cout << getTurn() << " is in check." << std::endl;
+    }
+    if (isStalemate()) { // Stalemate
+        std::cout << "Stalemate!" << std::endl;
+        restartGame(); // Restart Game   
+        done = true; 
+    }
+    else if (isCheckmate()) { // Checkmate
+        switchTurn();
+        std::cout << "Checkmate! " << getTurn() << " wins!" << std::endl;
+        addScore(getTurn());
+        restartGame(); // Restart Game
+        done = true;
+    }
+    else if (board->isInsufficientMaterial()) {
+        std::cout << "Insufficient Material!" << std::endl;
+        restartGame();
+        done = true;
     }
 }
 
@@ -105,6 +141,10 @@ void Controller::setBoard(Board * b) {
 
 void Controller::enterSetup() {
     setupMode = true;
+}
+
+bool Controller::getGameState() const {
+    return done;
 }
 
 bool Controller::inSetup() const {
