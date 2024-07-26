@@ -348,7 +348,8 @@ std::vector<Move> Board::getCheckMoves(Colour side) {
 }
 
 std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
-    std::vector<Piece *> pieces;
+    std::vector<Piece *> opponentPieces;
+    std::vector<Piece *> friendlyPieces;
     std::vector<Move> avoidCaptureMoves;
     std::vector<Move> opponentCaptureMoves;
     std::vector<Move> potenialMoves;
@@ -361,12 +362,12 @@ std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
     }
 
     for (auto m : opponentCaptureMoves) {
-        pieces.emplace_back(m.getCapture());
+        friendlyPieces.emplace_back(m.getCapture());
     }
 
-    // this could be made shorter possibly and cleaner 
-    // but as of now done like this to prioritze capture moves first 
-    for (auto p : pieces) {
+    // could put getPossibleCaptures in this for loop as well make things a lot smaller
+    // but i want to first consider capture moves before other moves to give bot 3 edge
+    for (auto p : friendlyPieces) {
         for (auto m : p->getPossibleCaptures(board)) {
             potenialMoves.emplace_back(m);
         }
@@ -382,8 +383,8 @@ std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
     // because if any of the moves were legal we would have already returned
     potenialMoves.clear();
     
-    for (auto p : pieces) {
-        for (auto m : p->getPossibleMoves(board)) {
+    for (auto p : friendlyPieces) {
+        for (auto m : p->getPossibleCaptures(board)) {
             potenialMoves.emplace_back(m);
         }
     }
