@@ -2,6 +2,14 @@
 
 Piece::Piece(Type t) : t{t} {}
 
+bool Piece::getHasMoved() {
+    return hasMoved;
+}
+
+void Piece::didMove() {
+    hasMoved = true;
+}
+
 int Piece::getValue() const {
     switch(t) {
         case Type::PAWN: return 1;

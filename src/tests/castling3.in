@@ -1,0 +1,11 @@
+setup
++ R h1 
++ K e1 
++ k a8
++ b c4
++ P d2
+done
+move e1 g1
+move d2 d3
+move a8 b8
+move e1 g1 

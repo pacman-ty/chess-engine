@@ -99,6 +99,10 @@ void Board::playMove(const Move & m) {
         return;
     }
 
+    if (m.getTarget()->getType() == Type::KING || m.getTarget()->getType() == Type::KING) {
+        board[x][y]->didMove();
+    }
+
     if (m.getCapture()) { // has a target
         int captureX = m.getCapture()->getPos().getX();
         int captureY = m.getCapture()->getPos().getY();
@@ -218,13 +222,78 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
         throw std::logic_error("Not your turn");
     }
 
-    Piece *capture = board[newPos.getX()][oldPos.getY()]; // En Passant Case
+
+
+    Piece * capture = board[newPos.getX()][oldPos.getY()]; // En Passant Case
     if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN
         && target->getType() == Type::PAWN) {
         playMove(Move(oldPos, newPos, target, capture)); 
-    } else { // Normal case
+    } 
+    else if (checkCastling(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()]))) {
+        return;
+    }
+    else { // Normal case
         playMove(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()])); 
     }
+}
+
+bool Board::checkCastling(const Move & m) {
+    int x = m.getOldPosition().getX();
+    int y = m.getOldPosition().getY();
+
+    if (m.getTarget()->getType() != Type::KING) return false;
+    if (board[x][y]->getHasMoved()) return false;
+    if (m.getCapture() != nullptr) return false;
+    
+    if (m.getOldPosition() == Position(4, 0) && m.getNewPosition() == Position(6, 0)) {
+        return tryCastling(m, board[4][0], board[5][0], board[7][0], Position(6, 0), Position(5, 0));
+    }
+    else if (m.getOldPosition() == Position(4, 0) && m.getNewPosition() == Position(2, 0)) {
+        return tryCastling(m, board[4][0], board[3][0], board[0][0], Position(2, 0), Position(3, 0));
+    }
+    else if (m.getOldPosition() == Position(4, 7) && m.getNewPosition() == Position(6, 7)) {
+        return tryCastling(m, board[4][7], board[5][7], board[7][7], Position(6, 7), Position(5, 7));
+    }
+    else if (m.getOldPosition() == Position(4, 7) && m.getNewPosition() == Position(2, 7)) {
+        return tryCastling(m, board[4][7], board[3][7], board[0][7], Position(2, 7), Position(3, 7));
+    }
+    else {
+        return false;
+    }
+
+}
+
+bool Board::tryCastling(const Move & m, Piece* k, Piece* besideKing, Piece* r, Position newKingPosn, Position newRookPosn) {
+    if (besideKing != nullptr || r == nullptr) return false;
+    if (r->getType() != Type::ROOK) return false;
+    if (r->getHasMoved()) return false;
+
+    std::vector<Piece *> pieces;
+
+    if (m.getTarget()->getSide() == Colour::WHITE) {
+        pieces = getPieces(Colour::BLACK);
+    }
+    else {
+        pieces = getPieces(Colour::WHITE);
+    }
+
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleMoves(board)) {
+            if (m.getNewPosition() == newRookPosn || m.getNewPosition() == newKingPosn) return false;
+        }
+    }
+
+    // if we get to this part of the code that means there should be no problem with castling 
+    board[newKingPosn.getX()][newKingPosn.getY()] = k;
+    board[k->getPos().getX()][k->getPos().getY()] = nullptr;
+    // change king position
+    k->setPos(newKingPosn);
+    //change rook position  
+    board[newRookPosn.getX()][newRookPosn.getY()] = r;
+    board[r->getPos().getX()][r->getPos().getY()] = nullptr;
+    r->setPos(newRookPosn);
+
+    return true;
 }
 
 void Board::cloneBoard(const Board & b) {

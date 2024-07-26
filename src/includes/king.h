@@ -4,9 +4,6 @@
 #include "piece.h"
 
 class King : public Piece {
-protected:
-    // keeps track if the king has moved yet for castling purposes
-    bool hasMoved = false;
 public:
     King();
     // return list of possible moves (does not mean that moves are legal)

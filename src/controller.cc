@@ -92,6 +92,7 @@ void Controller::restartGame() {
 void Controller::move(Position oldPos, Position newPos) {
     board->playMove(oldPos, newPos, turn);
     board->notifyAll();
+    
     if (board->checkPawnPromotion(newPos.getX(), newPos.getY())) {
         if (turn == Colour::WHITE) {
             if (whitePlayer) { // if AI
@@ -108,6 +109,7 @@ void Controller::move(Position oldPos, Position newPos) {
         }
         board->notifyAll();
     }
+        
     switchTurn();
     if (isCheck()) { // in check but not checkmate
         std::cout << getTurn() << " is in check." << std::endl;
