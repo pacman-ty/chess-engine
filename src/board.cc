@@ -278,17 +278,47 @@ std::vector<Move> Board::getCheckMoves(Colour side) {
 std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
     std::vector<Piece *> pieces;
     std::vector<Move> avoidCaptureMoves;
-    std::vector<Move> moves;
+    std::vector<Move> opponentCaptureMoves;
+    std::vector<Move> potenialMoves;
 
     if (side == Colour::WHITE) { 
-        pieces = getPieces(Colour::BLACK);
+        opponentCaptureMoves = getCaptureMoves(side);
     }
     else {
-        pieces = getPieces(Colour::WHITE);
+        opponentCaptureMoves = getCaptureMoves(side);
     }
 
-    
+    for (auto m : opponentCaptureMoves) {
+        pieces.emplace_back(m.getCapture());
+    }
 
+    // this could be made shorter possibly and cleaner 
+    // but as of now done like this to prioritze capture moves first 
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleCaptures(board)) {
+            potenialMoves.emplace_back(m);
+        }
+    }
+
+    for (auto m : potenialMoves) {
+        if (isValidMove(m)) avoidCaptureMoves.emplace_back(m);
+    }
+
+    if (!avoidCaptureMoves.empty()) return avoidCaptureMoves;
+
+    //clear potenial moves already deemed not legal
+    // because if any of the moves were legal we would have already returned
+    potenialMoves.clear();
+    
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleMoves(board)) {
+            potenialMoves.emplace_back(m);
+        }
+    }
+
+    for (auto m : potenialMoves) {
+        if (isValidMove(m)) avoidCaptureMoves.emplace_back(m);
+    }
 
     return avoidCaptureMoves;
 }
