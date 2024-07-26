@@ -40,6 +40,7 @@ public:
     std::vector<Move> getLegalMoves(Colour side);
     std::vector<Move> getCheckMoves(Colour side);
     std::vector<Move> getCaptureMoves(Colour side);
+    std::vector<Move> getAvoidCaptureMoves(Colour side);
     Move getRandomMove(const std::vector<Move> m);
     std::vector<Piece *> getPieces(const Colour & side);
 };
