@@ -105,6 +105,7 @@ void Board::playMove(const Move & m) {
         int captureY = m.getCapture()->getPos().getY();
         if (board[captureX][captureY] != nullptr) {
             capture(board[captureX][captureY]); // delete captured piece
+            board[captureX][captureY] = nullptr;
         }               
     }
 
@@ -118,12 +119,25 @@ void Board::forcePlayMove(const Move & m) {
     int x = m.getOldPosition().getX();
     int y = m.getOldPosition().getY();
     int newX = m.getNewPosition().getX();
-    int newY = m.getNewPosition().getY();    
-    if (m.getCapture()) { // has a target
-        if (board[newX][newY] != nullptr) capture(board[newX][newY]); // delete captured piece               
+    int newY = m.getNewPosition().getY(); 
+
+    if (board[x][y] == nullptr) {
+        std::cerr << "No piece to move" << std::endl;
+        return;
     }
+
+    if (m.getCapture()) { // has a target
+        int captureX = m.getCapture()->getPos().getX();
+        int captureY = m.getCapture()->getPos().getY();
+        if (board[captureX][captureY] != nullptr) {
+            capture(board[captureX][captureY]); // delete captured piece
+            board[captureX][captureY] = nullptr;
+        }               
+    }
+
     board[newX][newY] = board[x][y]; // move target piece
     board[x][y] = nullptr;
+
     board[newX][newY]->setPos(Position{newX, newY});
 }
 
