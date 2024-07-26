@@ -38,7 +38,7 @@ std::vector<Move> King::getPossibleCaptures(const Board::BoardType & board) cons
     auto addMove = [&](int newX, int newY) {
         if (newX >= BOARD_MIN_WIDTH && newX < BOARD_MAX_WIDTH &&
             newY >= BOARD_MIN_HEIGHT && newY < BOARD_MAX_HEIGHT) {
-            if (board[newX][newY] != nullptr) {
+            if (board[newX][newY] != nullptr && board[newX][newY]->getSide() != side) {
                 output.emplace_back(currPosition, Position{newX, newY}, this, board[newX][newY]);
             }
         }
