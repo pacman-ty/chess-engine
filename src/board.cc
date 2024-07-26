@@ -86,6 +86,7 @@ void Board::removePiece(Position p) {
 }
 
 void Board::playMove(const Move & m) {
+    std::cout << "PLAYING MOVE: " << m.getOldPosition().getX() << "," << m.getOldPosition().getY() << " " << m.getNewPosition().getX() << "," << m.getNewPosition().getY()  << std::endl;
     if (!isValidMove(m)) {
         throw std::logic_error("Invalid move");
     }
@@ -147,11 +148,11 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
         throw std::logic_error("Not your turn");
     }
 
-    Piece *capture = board[newPos.getX()][oldPos.getY()];
+    Piece *capture = board[newPos.getX()][oldPos.getY()]; // En Passant Case
     if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN
         && target->getType() == Type::PAWN) {
         playMove(Move(oldPos, newPos, target, capture)); 
-    } else {
+    } else { // Normal case
         playMove(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()])); 
     }
 }
@@ -250,6 +251,12 @@ bool Board::isStalemate(Colour side)  {
     }
 
     return true;
+}
+
+bool Board::isInsufficientMaterial() {
+    return whitePieces.size() == 1 && blackPieces.size() == 1
+        && whitePieces[0]->getType() == Type::KING
+        && blackPieces[0]->getType() == Type::KING;
 }
 
 const Board::BoardType& Board::getBoard() const {

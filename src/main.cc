@@ -172,6 +172,7 @@ int main(int argc, char* argv[]) {
                         if (whitePlayer != nullptr) {
                             Move m = whitePlayer->move();
                             controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                            std::cout << "PLAYING MOVE: " << m.getOldPosition().getX() << "," << m.getOldPosition().getY() << " " << m.getNewPosition().getX() << "," << m.getNewPosition().getY()  << std::endl;
                         }
                     } else if (controller.getTurn() == Colour::BLACK) {
                         if (blackPlayer != nullptr) {
@@ -190,6 +191,11 @@ int main(int argc, char* argv[]) {
                         controller.addScore(controller.getTurn());
                         controller.restartGame();
                         break;
+                    }
+                    else if (board->isInsufficientMaterial()) {
+                        cout << "Insufficient Material!" << endl;
+                    controller.restartGame();
+                    continue;
                     }
                     board->notifyAll();
                 }
@@ -229,6 +235,11 @@ int main(int argc, char* argv[]) {
                 controller.restartGame(); // Restart Game
                 continue;
             }
+            else if (board->isInsufficientMaterial()) {
+                cout << "Insufficient Material!" << endl;
+                controller.restartGame();
+                continue;
+            }
             board->notifyAll();
             if (controller.getTurn() == Colour::WHITE) {
                 if (!whitePlayer) continue;
@@ -249,6 +260,11 @@ int main(int argc, char* argv[]) {
                 cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
                 controller.addScore(controller.getTurn());
                 controller.restartGame(); // Restart Game
+                continue;
+            }
+            else if (board->isInsufficientMaterial()) {
+                cout << "Insufficient Material!" << endl;
+                controller.restartGame();
                 continue;
             }
             board->notifyAll();

@@ -34,6 +34,7 @@ public:
     bool isCheck(Colour side);
     bool isStalemate(Colour side);
     bool isCheckmate(Colour side);
+    bool isInsufficientMaterial();
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
     void clear();
