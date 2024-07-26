@@ -92,9 +92,9 @@ void Controller::restartGame() {
 void Controller::move(Position oldPos, Position newPos) {
     board->playMove(oldPos, newPos, turn);
     board->notifyAll();
-    // if (board->checkPawnPromotion(newPos.getX(), newPos.getY())) {
-    //     board->notifyAll();
-    // }
+    if (board->checkPawnPromotion(newPos.getX(), newPos.getY())) {
+        board->notifyAll();
+    }
     switchTurn();
     if (isCheck()) { // in check but not checkmate
         std::cout << getTurn() << " is in check." << std::endl;
