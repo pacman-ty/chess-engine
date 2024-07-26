@@ -2,6 +2,16 @@
 
 Piece::Piece(Type t) : t{t} {}
 
+int Piece::getValue(Type t) {
+    switch(t) {
+        case Type::PAWN: return 1;
+        case Type::BISHOP: return 3;
+        case Type::KNIGHT: return 3;
+        case Type::ROOK: return 5;
+        case Type::QUEEN: return 9;
+    }
+}
+
 Colour Piece::getSide() const {
     return side;
 }
