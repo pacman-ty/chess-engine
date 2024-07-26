@@ -304,48 +304,36 @@ std::vector<Move> Board::getCheckMoves(Colour side) {
 }
 
 std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
-    std::vector<Piece *> opponentPieces;
+    std::vector<Piece *> opponentPieces = getPieces(side == Colour::WHITE ? Colour::BLACK : Colour::WHITE);
     std::vector<Piece *> friendlyPieces;
     std::vector<Move> avoidCaptureMoves;
     std::vector<Move> opponentCaptureMoves;
-    std::vector<Move> potenialMoves;
+    std::vector<Move> potentialMoves;
 
-    if (side == Colour::WHITE) { 
-        opponentCaptureMoves = getCaptureMoves(side);
-    }
-    else {
-        opponentCaptureMoves = getCaptureMoves(side);
+    // Get all potential capture moves by the opponent
+    for (auto p : opponentPieces) {
+        std::vector<Move> captures = p->getPossibleCaptures(board);
+        opponentCaptureMoves.insert(opponentCaptureMoves.end(), captures.begin(), captures.end());
     }
 
+    if (opponentCaptureMoves.empty()) return avoidCaptureMoves;
+
+    // Collect all friendly pieces that are under threat
     for (auto m : opponentCaptureMoves) {
-        friendlyPieces.emplace_back(m.getCapture());
-    }
-
-    // could put getPossibleCaptures in this for loop as well make things a lot smaller
-    // but i want to first consider capture moves before other moves to give bot 3 edge
-    for (auto p : friendlyPieces) {
-        for (auto m : p->getPossibleCaptures(board)) {
-            potenialMoves.emplace_back(m);
+        if (m.getCapture()) {
+            friendlyPieces.emplace_back(m.getCapture());
         }
     }
 
-    for (auto m : potenialMoves) {
-        if (isValidMove(m)) avoidCaptureMoves.emplace_back(m);
-    }
-
-    if (!avoidCaptureMoves.empty()) return avoidCaptureMoves;
-
-    //clear potenial moves already deemed not legal
-    // because if any of the moves were legal we would have already returned
-    potenialMoves.clear();
-    
+    // Collect all possible moves for those friendly piecesves to give bot 3 edge
     for (auto p : friendlyPieces) {
-        for (auto m : p->getPossibleCaptures(board)) {
-            potenialMoves.emplace_back(m);
-        }
+        std::vector<Move> captures = p->getPossibleCaptures(board);
+        std::vector<Move> moves = p->getPossibleMoves(board);
+        potentialMoves.insert(potentialMoves.end(), captures.begin(), captures.end());
+        potentialMoves.insert(potentialMoves.end(), moves.begin(), moves.end());
     }
 
-    for (auto m : potenialMoves) {
+    for (auto m : potentialMoves) {
         if (isValidMove(m)) avoidCaptureMoves.emplace_back(m);
     }
 
