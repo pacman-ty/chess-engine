@@ -13,5 +13,6 @@ protected:
 public:
     Player(Colour side, Board * b);
     virtual Move move() = 0;
+    virtual ~Player() = default;
 };
 #endif
