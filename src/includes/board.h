@@ -28,11 +28,8 @@ public:
     void removePiece(Position p);
     void playMove(const Move & m);
     void playMove(Position oldPos, Position newPos, Colour turn);
-    bool tryCastling(const Move & m);
-    bool tryCastlingWhiteRight(const Move & m);
-    bool tryCastlingWhiteLeft(const Move & m);
-    bool tryCastlingBlackRight(const Move & m);
-    bool tryCastlingBlackLeft(const Move & m);
+    bool checkCastling(const Move & m);
+    bool tryCastling(const Move & m, Piece* k, Piece* besideKing, Piece* r, Position newKingPosn, Position newRookPosn);
     void forcePlayMove(const Move & m);
     bool isValidMove(const Move & m) const;
     void capture(Piece * p);
