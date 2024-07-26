@@ -140,8 +140,8 @@ int main() {
             continue;
         } // - Setup Mode End -
         if (command == "game") {
-            delete whitePlayer;
-            delete blackPlayer;
+            if (whitePlayer) delete whitePlayer;
+            if (blackPlayer) delete blackPlayer;
             string white, black;
             cin >> white >> black; // read in types of players
 

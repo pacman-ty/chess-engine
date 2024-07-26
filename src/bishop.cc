@@ -35,7 +35,6 @@ std::vector<Move> Bishop::getPossibleCaptures(const Board::BoardType & board) co
     int curX = currPosition.getX();
     int curY = currPosition.getY();
 
-    // Helper lambda to check captures in a given direction
     auto checkDirection = [&](int dx, int dy) {
         int x = curX + dx;
         int y = curY + dy;
@@ -45,14 +44,13 @@ std::vector<Move> Bishop::getPossibleCaptures(const Board::BoardType & board) co
                 if (board[x][y]->getSide() != this->getSide()) {
                     output.emplace_back(currPosition, Position(x, y), this, board[x][y]);
                 }
-                break; // Stop scanning in this direction after a capture or obstacle
+                break;
             }
             x += dx;
             y += dy;
         }
     };
 
-    // Check all four diagonal directions
     checkDirection(1, 1);   // Moving up-right
     checkDirection(1, -1);  // Moving down-right
     checkDirection(-1, 1);  // Moving up-left

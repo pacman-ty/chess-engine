@@ -3,6 +3,7 @@
 #include <cstring>
 #include <random>
 #include <ctime>
+#include <algorithm>
 #include "board.h"
 #include "piece.h"
 #include "king.h"
@@ -27,22 +28,24 @@ Board::~Board() {
 
 void Board::capture(Piece *p) {
     switch (p->getSide()) {
-        case Colour::WHITE:
-            for (auto it = whitePieces.begin(); it != whitePieces.end(); ++it) {
-                if (p == *it) {
-                    whitePieces.erase(it);
-                    break;
-                }
+        case Colour::WHITE: {
+            auto it = std::find(whitePieces.begin(), whitePieces.end(), p);
+            if (it != whitePieces.end()) {
+                whitePieces.erase(it);
+            } else {
+                std::cerr << "COULD NOT ERASE " << p->getPos().getX() + 1 << "," << p->getPos().getY() + 1 << std::endl;
             }
             break;
-        case Colour::BLACK:
-            for (auto it = blackPieces.begin(); it != blackPieces.end(); ++it) {
-                if (p == *it) {
-                    blackPieces.erase(it);
-                    break;
-                }
+        }
+        case Colour::BLACK: {
+            auto it = std::find(blackPieces.begin(), blackPieces.end(), p);
+            if (it != blackPieces.end()) {
+                blackPieces.erase(it);
+            } else {
+                std::cerr << "COULD NOT ERASE " << p->getPos().getX() + 1 << "," << p->getPos().getY() + 1 << std::endl;
             }
             break;
+        }
         default:
             throw std::invalid_argument("Invalid colour when capturing");
     }
@@ -101,7 +104,12 @@ void Board::playMove(const Move & m) {
     }
 
     if (m.getCapture()) { // has a target
-        if (board[newX][newY] != nullptr) capture(board[newX][newY]); // delete captured piece               
+        int captureX = m.getCapture()->getPos().getX();
+        int captureY = m.getCapture()->getPos().getY();
+        if (board[captureX][captureY] != nullptr) {
+            capture(board[captureX][captureY]); // delete captured piece
+            board[captureX][captureY] = nullptr;
+        }
     }
 
     board[newX][newY] = board[x][y]; // move target piece
@@ -114,17 +122,27 @@ void Board::forcePlayMove(const Move & m) {
     int x = m.getOldPosition().getX();
     int y = m.getOldPosition().getY();
     int newX = m.getNewPosition().getX();
-    int newY = m.getNewPosition().getY();    
-    if (m.getCapture()) { // has a target
-        if (board[newX][newY] != nullptr) capture(board[newX][newY]); // delete captured piece               
+    int newY = m.getNewPosition().getY(); 
+
+    if (board[x][y] == nullptr) {
+        throw std::logic_error("NO PIECE TO MOVE");
     }
+
+    if (m.getCapture()) { // has a target
+        int captureX = m.getCapture()->getPos().getX();
+        int captureY = m.getCapture()->getPos().getY();
+        if (board[captureX][captureY] != nullptr) {
+            capture(board[captureX][captureY]); // delete captured piece
+            board[captureX][captureY] = nullptr;
+        }
+    }
+
     board[newX][newY] = board[x][y]; // move target piece
     board[x][y] = nullptr;
     board[newX][newY]->setPos(Position{newX, newY});
 }
 
 void Board::playMove(Position oldPos, Position newPos, Colour turn) {
-    Piece *capture = board[newPos.getX()][newPos.getY()];
     Piece *target = board[oldPos.getX()][oldPos.getY()];
     if (target == nullptr) {
         throw std::logic_error("No piece to move");
@@ -132,7 +150,15 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     if (target->getSide() != turn) {
         throw std::logic_error("Not your turn");
     }
-    playMove(Move(oldPos, newPos, target, capture));
+
+    Piece *capture = board[newPos.getX()][oldPos.getY()];
+    if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN
+        && target->getType() == Type::PAWN) {
+        std::cout << "ENTERING EP BLOCK" << std::endl;
+        playMove(Move(oldPos, newPos, target, capture)); 
+    } else {
+        playMove(Move(oldPos, newPos, target, board[newPos.getX()][newPos.getY()])); 
+    }
 }
 
 void Board::cloneBoard(const Board & b) {

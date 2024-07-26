@@ -58,10 +58,21 @@ std::vector<Move> Pawn::getPossibleCaptures(const Board::BoardType & b) const {
 
     auto checkAndAddCapture = [&](int targetX, int targetY, Colour enemyColour) {
         if (targetX >= BOARD_MIN_WIDTH && targetX < BOARD_MAX_WIDTH && 
-            targetY >= BOARD_MIN_HEIGHT && targetY < BOARD_MAX_HEIGHT && // Ensure targetY is within bounds
-            b[targetX][targetY] != nullptr && 
-            b[targetX][targetY]->getSide() == enemyColour) {
+            targetY >= BOARD_MIN_HEIGHT && targetY < BOARD_MAX_HEIGHT &&
+            b[targetX][targetY] && b[targetX][targetY]->getSide() == enemyColour) {
             out.emplace_back(currPosition, Position{targetX, targetY}, this, b[targetX][targetY]);
+        }
+    };
+
+    auto checkAndAddEnPassant = [&](int targetX, int targetY, int captureY, Colour enemyColour) {
+        if (targetX >= BOARD_MIN_WIDTH && targetX < BOARD_MAX_WIDTH &&
+            targetY >= BOARD_MIN_HEIGHT && targetY < BOARD_MAX_HEIGHT &&
+            captureY >= BOARD_MIN_HEIGHT && captureY < BOARD_MAX_HEIGHT) {
+            if (!b[targetX][targetY] && b[targetX][captureY] &&
+                b[targetX][captureY]->getType() == Type::PAWN &&
+                b[targetX][captureY]->getSide() == enemyColour) {
+                out.emplace_back(currPosition, Position{targetX, targetY}, this, b[targetX][captureY]);
+            }
         }
     };
 
@@ -69,10 +80,14 @@ std::vector<Move> Pawn::getPossibleCaptures(const Board::BoardType & b) const {
         case Colour::BLACK:
             checkAndAddCapture(leftCaptureX, curY - 1, Colour::WHITE);
             checkAndAddCapture(rightCaptureX, curY - 1, Colour::WHITE);
+            checkAndAddEnPassant(leftCaptureX, curY - 1, curY, Colour::WHITE);
+            checkAndAddEnPassant(rightCaptureX, curY - 1, curY, Colour::WHITE);
             break;
         case Colour::WHITE:
             checkAndAddCapture(leftCaptureX, curY + 1, Colour::BLACK);
             checkAndAddCapture(rightCaptureX, curY + 1, Colour::BLACK);
+            checkAndAddEnPassant(leftCaptureX, curY + 1, curY, Colour::BLACK);
+            checkAndAddEnPassant(rightCaptureX, curY + 1, curY, Colour::BLACK);
             break;
         default:
             std::cerr << "Invalid side (error initializing pawn)" << std::endl;
