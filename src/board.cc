@@ -140,7 +140,7 @@ void Board::forcePlayMove(const Move & m) {
 
 void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     Piece *target = board[oldPos.getX()][oldPos.getY()];
-    std::cout << "PLAYING MOVE: " << oldPos.getX() << "," << oldPos.getY() << " " << newPos.getX() << "," << newPos.getY()  << std::endl;
+    // std::cout << "PLAYING MOVE: " << oldPos.getX() << "," << oldPos.getY() << " " << newPos.getX() << "," << newPos.getY()  << std::endl;
     if (target == nullptr) {
         throw std::logic_error("No piece to move");
     }
