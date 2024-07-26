@@ -284,10 +284,13 @@ bool Board::tryCastling(const Move & m, Piece* k, Piece* besideKing, Piece* r, P
     }
 
     // if we get to this part of the code that means there should be no problem with castling 
-    
+    board[newKingPosn.getX()][newKingPosn.getY()] = k;
+    board[k->getPos().getX()][k->getPos().getY()] = nullptr;
     // change king position
     k->setPos(newKingPosn);
     //change rook position  
+    board[newRookPosn.getX()][newRookPosn.getY()] = r;
+    board[r->getPos().getX()][r->getPos().getY()] = nullptr;
     r->setPos(newRookPosn);
 
     return true;
