@@ -166,7 +166,7 @@ int main(int argc, char* argv[]) {
             board->notifyAll();
 
             // Game loop for Computer v Computer
-            if (!whitePlayer && !blackPlayer) {
+            if (whitePlayer && blackPlayer) {
                 while (true) {
                     if (controller.getTurn() == Colour::WHITE) {
                         if (whitePlayer != nullptr) {
