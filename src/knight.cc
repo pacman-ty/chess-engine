@@ -15,8 +15,10 @@ std::vector<Move> Knight::getPossibleMoves(const Board::BoardType & board) const
     for (const auto& move : knightMoves) {
         int newX = curX + move[0];
         int newY = curY + move[1];
-
-        if (newX >= BOARD_MIN_WIDTH && newX < BOARD_MAX_WIDTH && newY >= BOARD_MIN_HEIGHT && newY < BOARD_MAX_HEIGHT) {
+        // bounds check
+        if (newX >= BOARD_MIN_WIDTH && newX < BOARD_MAX_WIDTH &&
+            newY >= BOARD_MIN_HEIGHT && newY < BOARD_MAX_HEIGHT) {
+            // ensure slot is empty
             if (board[newX][newY] == nullptr) {
                 output.emplace_back(currPosition, Position(newX, newY), this, nullptr);
             }
@@ -40,7 +42,10 @@ std::vector<Move> Knight::getPossibleCaptures(const Board::BoardType & board) co
         int newX = curX + move[0];
         int newY = curY + move[1];
 
-        if (newX >= BOARD_MIN_WIDTH && newX < BOARD_MAX_WIDTH && newY >= BOARD_MIN_HEIGHT && newY < BOARD_MAX_HEIGHT) {
+        // ensure slot is empty
+        if (newX >= BOARD_MIN_WIDTH && newX < BOARD_MAX_WIDTH &&
+           newY >= BOARD_MIN_HEIGHT && newY < BOARD_MAX_HEIGHT) {
+            // ensure slot is not empty and the piece is not on the same side
             if (board[newX][newY] != nullptr && board[newX][newY]->getSide() != side) {
                 output.emplace_back(currPosition, Position(newX, newY), this, board[newX][newY]);
             }

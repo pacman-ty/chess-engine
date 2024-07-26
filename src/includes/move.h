@@ -12,6 +12,7 @@ private:
     const Piece* target;
     Piece* capture; 
 public:
+    Move() = default;
     Move(Position oldPos, Position newPos, const Piece *target, Piece *capture);
     Position getOldPosition() const;
     Position getNewPosition() const;

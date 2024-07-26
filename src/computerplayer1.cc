@@ -4,5 +4,8 @@ ComputerPlayer1::ComputerPlayer1(Colour colour, Board *board) : Player(colour, b
 
 Move ComputerPlayer1::move() {
     std::vector<Move> legalMoves = board->getLegalMoves(side);
-    return board->getRandomMove(legalMoves);
+    // generate random move
+    Move out = board->getRandomMove(legalMoves);
+    if (!isLegalMove(out)) return move();
+    return out;
 }

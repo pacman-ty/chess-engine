@@ -9,9 +9,10 @@ std::vector<Move> King::getPossibleMoves(const Board::BoardType & board) const {
     int curY = currPosition.getY();
 
     auto addMove = [&](int newX, int newY) {
+        // Bounds check
         if (newX >= BOARD_MIN_WIDTH && newX < BOARD_MAX_WIDTH &&
             newY >= BOARD_MIN_HEIGHT && newY < BOARD_MAX_HEIGHT) {
-            if (board[newX][newY] == nullptr) {
+            if (board[newX][newY] == nullptr) { // ensure slot is empty
                 output.emplace_back(currPosition, Position{newX, newY}, this, nullptr);
             }
         }
@@ -36,8 +37,10 @@ std::vector<Move> King::getPossibleCaptures(const Board::BoardType & board) cons
     int curY = currPosition.getY();
 
     auto addMove = [&](int newX, int newY) {
+        // bounds check
         if (newX >= BOARD_MIN_WIDTH && newX < BOARD_MAX_WIDTH &&
             newY >= BOARD_MIN_HEIGHT && newY < BOARD_MAX_HEIGHT) {
+            // ensure slot is not empty and the piece is not on the same side
             if (board[newX][newY] != nullptr && board[newX][newY]->getSide() != side) {
                 output.emplace_back(currPosition, Position{newX, newY}, this, board[newX][newY]);
             }

@@ -10,6 +10,7 @@ protected:
     Board *board;
 public:
     Player(Colour side, Board * b);
+    bool isLegalMove(Move m);
     virtual Move move() = 0;
     virtual ~Player() = default;
 };

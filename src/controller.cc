@@ -91,7 +91,7 @@ void Controller::restartGame() {
 
 void Controller::move(Position oldPos, Position newPos) {
     board->playMove(oldPos, newPos, turn);
-    board->notifyAll();
+    board->notifyAll(); // Display board
     if (board->checkPawnPromotion(newPos.getX(), newPos.getY())) {
         if (turn == Colour::WHITE) {
             if (whitePlayer) { // if AI

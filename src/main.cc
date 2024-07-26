@@ -53,6 +53,8 @@ int main(int argc, char* argv[]) {
         string arg = argv[i];
         if (arg == "-nogui") nogui = true;
     }
+
+    /* Display Observers */
     Observer* text = new TextView(board.get());
     obs.push_back(text);
     board.get()->subscribe(text);
@@ -82,7 +84,7 @@ int main(int argc, char* argv[]) {
                     continue;
                 }
 
-                switch (piece) {
+                switch (piece) { // piece selection decider
                     case 'K': t = Type::KING; c = Colour::WHITE; break;
                     case 'Q': t = Type::QUEEN; c = Colour::WHITE; break;
                     case 'R': t = Type::ROOK; c = Colour::WHITE; break;
@@ -211,17 +213,20 @@ int main(int argc, char* argv[]) {
             board->notifyAll();
         }
         else if (command == "cvc") {
+            // Computer VS Computer
             if (whitePlayer && blackPlayer) {
                 while (true) {
                     if (controller.getGameState()) break; // toggles game done state and escapes loop
                     if (controller.getTurn() == Colour::WHITE) {
                         if (whitePlayer != nullptr) {
                             Move m = whitePlayer->move();
+                            // create move from AI
                             controller.move(m.getOldPosition(), m.getNewPosition());
                         }
                     } else if (controller.getTurn() == Colour::BLACK) {
                         if (blackPlayer != nullptr) {
                             Move m = blackPlayer->move();
+                            // create move from AI
                             controller.move(m.getOldPosition(), m.getNewPosition());
                         }
                     }
@@ -236,8 +241,10 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    // Print scoreboard when reaching EOF
     controller.printScore();
 
+    // Freeing used heap memory
     for (auto it : obs) {
         delete it;
     }

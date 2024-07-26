@@ -31,14 +31,14 @@ void Board::capture(Piece *p) {
         case Colour::WHITE: {
             auto it = std::find(whitePieces.begin(), whitePieces.end(), p);
             if (it != whitePieces.end()) {
-                whitePieces.erase(it);
+                whitePieces.erase(it); // remove from white Vector
             }
             break;
         }
         case Colour::BLACK: {
             auto it = std::find(blackPieces.begin(), blackPieces.end(), p);
             if (it != blackPieces.end()) {
-                blackPieces.erase(it);
+                blackPieces.erase(it); // remove from black Vector
             }
             break;
         }
@@ -64,6 +64,7 @@ void Board::placePiece(Colour side, Type t, const Position & pos) {
         default:
             throw std::invalid_argument("Invalid type when placing piece");
     }
+    // initialize the piece
     toAdd->setSide(side);
     toAdd->setPos(Position{pos.getX(), pos.getY()});
     switch (side) {
@@ -81,6 +82,7 @@ void Board::removePiece(Position p) {
     if (board[p.getX()][p.getY()] == nullptr) {
         throw std::logic_error("No piece to remove");
     }
+    // delete and set as nullptr
     capture(board[p.getX()][p.getY()]);
     board[p.getX()][p.getY()] = nullptr;
 }
@@ -115,6 +117,7 @@ void Board::playMove(const Move & m) {
 }
 
 bool Board::checkPawnPromotion(int newX, int newY) {
+    // If it is a pawn and it reaches the end of the board
     if (board[newX][newY]->getType() == Type::PAWN &&
         ((board[newX][newY]->getSide() == Colour::WHITE &&
         newY == BOARD_MAX_HEIGHT - 1) ||
@@ -129,7 +132,7 @@ void Board::promptPawnPromotion(int newX, int newY) {
     std::cout << "~ It is Pawn Promotion time ~" << std::endl;
     Piece *newPiece = nullptr;
     char type;
-
+    // Prompt user for piece type
     while (newPiece == nullptr) {
         std::cout << "Enter piece type (Q, R, B, N): ";
         std::cin >> type;
@@ -150,10 +153,12 @@ void Board::promptPawnPromotion(int newX, int newY) {
         }
     }
     std::cout << "Promoted!" << std::endl;
+    // Initialize piece
     newPiece->setSide(board[newX][newY]->getSide());
     newPiece->setPos(Position{newX, newY});
     capture(board[newX][newY]);
     board[newX][newY] = newPiece;
+    // add to underlying vector
     switch (newPiece->getSide()) {
         case Colour::BLACK: blackPieces.push_back(newPiece); break;
         case Colour::WHITE: whitePieces.push_back(newPiece); break;
@@ -164,6 +169,7 @@ void Board::promptPawnPromotion(int newX, int newY) {
 
 void Board::promote(int newX, int newY, Type t) {
     Piece * newPiece = nullptr;
+    // create pormotion
     switch (t) {
         case Type::QUEEN: newPiece = new Queen; break;
         case Type::ROOK: newPiece = new Rook; break;
@@ -172,11 +178,13 @@ void Board::promote(int newX, int newY, Type t) {
         default:
             throw std::invalid_argument("invalid promote");
     }
+    // initialize promoted piece
     newPiece->setSide(board[newX][newY]->getSide());
     newPiece->setPos(Position{newX, newY});
+    // remove old piece
     capture(board[newX][newY]);
-    board[newX][newY] = newPiece;
-    switch (newPiece->getSide()) {
+    board[newX][newY] = newPiece; // delete new piece
+    switch (newPiece->getSide()) { // add to vector
         case Colour::BLACK: blackPieces.push_back(newPiece); break;
         case Colour::WHITE: whitePieces.push_back(newPiece); break;
         default:
@@ -185,6 +193,7 @@ void Board::promote(int newX, int newY, Type t) {
 }
 
 void Board::forcePlayMove(const Move & m) {
+    // force the play to stimulate game
     int x = m.getOldPosition().getX();
     int y = m.getOldPosition().getY();
     int newX = m.getNewPosition().getX();
@@ -210,7 +219,6 @@ void Board::forcePlayMove(const Move & m) {
 
 void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     Piece *target = board[oldPos.getX()][oldPos.getY()];
-    // std::cout << "PLAYING MOVE: " << oldPos.getX() << "," << oldPos.getY() << " " << newPos.getX() << "," << newPos.getY()  << std::endl;
     if (target == nullptr) {
         throw std::logic_error("No piece to move");
     }
@@ -231,7 +239,7 @@ void Board::cloneBoard(const Board & b) {
     for (int y = BOARD_MIN_HEIGHT; y < BOARD_MAX_HEIGHT; ++y) {
         for (int x = BOARD_MIN_WIDTH; x < BOARD_MAX_WIDTH; ++x) {
             const Piece* curItem = b.getItem(x, y);
-            if (!curItem) continue;
+            if (!curItem) continue; // if invalid do not add
             placePiece(curItem->getSide(), curItem->getType(), curItem->getPos());     
         }
     }
@@ -285,6 +293,7 @@ bool Board::isCheck(Colour side) {
         std::vector<Move> captures = p->getPossibleCaptures(board);
         if (captures.empty()) continue;
         for (auto cap : captures) {
+            // Check if any enemy pieces' capture contain your king
             if (cap.getCapture()->getType() == Type::KING) return true;
         }
     }
@@ -295,7 +304,7 @@ bool Board::isCheck(Colour side) {
 
 bool Board::isCheckmate(Colour side) {
     std::vector<Piece *> pieces = getPieces(side);
-
+    // check if no moves possible
     for (auto p : pieces) {
         std::vector<Move> moves = p->getPossibleMoves(board);
         if (moves.empty()) continue;
@@ -309,9 +318,11 @@ bool Board::isCheckmate(Colour side) {
 
 bool Board::isStalemate(Colour side)  {
     std::vector<Piece *> pieces = getPieces(side);
-            
+    
+    // check it is not in check
     if (isCheck(side)) return false;
     
+    // check no moves possible
     for (auto p : pieces) {
         std::vector<Move> moves = p->getPossibleMoves(board);
         if (moves.empty()) continue;
@@ -324,6 +335,7 @@ bool Board::isStalemate(Colour side)  {
 }
 
 bool Board::isInsufficientMaterial() const {
+    // Check if the board only contains 2 kings
     return whitePieces.size() == 1 && blackPieces.size() == 1
         && whitePieces[0]->getType() == Type::KING
         && blackPieces[0]->getType() == Type::KING;
@@ -348,7 +360,7 @@ void Board::clear() {
     whitePieces.clear();    
 }
 
-std::vector<Piece* > Board::getPieces(const Colour & side) {
+std::vector<Piece *> Board::getPieces(const Colour & side) {
     if (side == Colour::WHITE) {
         return whitePieces;
     }
@@ -361,9 +373,9 @@ std::vector<Move> Board::getCheckMoves(Colour side) {
     std::vector<Piece *> pieces = getPieces(side);
     std::vector<Move> captures = getCaptureMoves(side);
     std::vector<Move> checkMoves;
-    
-    
+
     if (captures.empty()) return captures;
+    // get all the moves that lead to a check
     for (auto cap : captures) {
         if (cap.getCapture()->getType() == Type::KING) {
             checkMoves.push_back(cap);
@@ -417,6 +429,7 @@ std::vector<Move> Board::getCaptureMoves(Colour side) {
     std::vector<Move> captureMoves;
     std::vector<Move> moves;
 
+    // Get moves that will lead to a capture
     for (auto p : pieces) {
         for (auto m : p->getPossibleCaptures(board)) {
             moves.push_back(m);
@@ -435,6 +448,7 @@ std::vector<Move> Board::getLegalMoves(Colour side) {
     std::vector<Move> legalMoves;
     std::vector<Move> moves;
 
+    // Combine everything to get all possible legal moves
     for (auto p : pieces) {
         for (auto m : p->getPossibleMoves(board)) {
             moves.push_back(m);
