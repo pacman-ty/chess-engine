@@ -3,7 +3,7 @@
 // Implementation of Controller class
 
 Controller::Controller(Board *b): setupMode{false},
-    turn{Colour::WHITE}, board{b} {}
+    done{false}, turn{Colour::WHITE}, board{b} {}
 
 void Controller::initBoard() {
 
@@ -59,6 +59,7 @@ bool Controller::isStalemate() const {
 }
 
 void Controller::startGame(Player *whitePlayer, Player *blackPlayer) {
+    done = false;
     board->clear();
     this->whitePlayer = whitePlayer;
     this->blackPlayer = blackPlayer;
@@ -88,29 +89,32 @@ void Controller::restartGame() {
     startGame(whitePlayer, blackPlayer);
 }
 
-void Controller::move(Position oldPos, Position newPos, Piece *promotion) {
+void Controller::move(Position oldPos, Position newPos) {
     board->playMove(oldPos, newPos, turn);
     board->notifyAll();
-    if (board->checkPawnPromotion(newPos.getX(), newPos.getY())) {
-        board->notifyAll();
-    }
+    // if (board->checkPawnPromotion(newPos.getX(), newPos.getY())) {
+    //     board->notifyAll();
+    // }
     switchTurn();
     if (isCheck()) { // in check but not checkmate
         std::cout << getTurn() << " is in check." << std::endl;
     }
     if (isStalemate()) { // Stalemate
         std::cout << "Stalemate!" << std::endl;
-        restartGame(); // Restart Game    
+        restartGame(); // Restart Game   
+        done = true; 
     }
     else if (isCheckmate()) { // Checkmate
         switchTurn();
         std::cout << "Checkmate! " << getTurn() << " wins!" << std::endl;
         addScore(getTurn());
         restartGame(); // Restart Game
+        done = true;
     }
     else if (board->isInsufficientMaterial()) {
         std::cout << "Insufficient Material!" << std::endl;
         restartGame();
+        done = true;
     }
 }
 
@@ -124,6 +128,10 @@ void Controller::setBoard(Board * b) {
 
 void Controller::enterSetup() {
     setupMode = true;
+}
+
+bool Controller::getGameState() const {
+    return done;
 }
 
 bool Controller::inSetup() const {

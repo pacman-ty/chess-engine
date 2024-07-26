@@ -1,7 +1,6 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <map>
 
 #include "controller.h"
 #include "textview.h"
@@ -168,22 +167,22 @@ int main(int argc, char* argv[]) {
             // Game loop for Computer v Computer
             if (whitePlayer && blackPlayer) {
                 while (true) {
+                    if (controller.getGameState()) break; // toggles game done state and escapes loop
                     if (controller.getTurn() == Colour::WHITE) {
                         if (whitePlayer != nullptr) {
                             Move m = whitePlayer->move();
-                            controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
-                            std::cout << "PLAYING MOVE: " << m.getOldPosition().getX() << "," << m.getOldPosition().getY() << " " << m.getNewPosition().getX() << "," << m.getNewPosition().getY()  << std::endl;
+                            controller.move(m.getOldPosition(), m.getNewPosition());
                         }
                     } else if (controller.getTurn() == Colour::BLACK) {
                         if (blackPlayer != nullptr) {
                             Move m = blackPlayer->move();
-                            controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                            controller.move(m.getOldPosition(), m.getNewPosition());
                         }
                     }
                 }
             } else if (whitePlayer && !blackPlayer) { // When White: Computer, Black: Human (Starting move)
                 Move m = whitePlayer->move();
-                controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                controller.move(m.getOldPosition(), m.getNewPosition());
             }
 
         }
@@ -199,7 +198,7 @@ int main(int argc, char* argv[]) {
                 continue;
             }
             try { // Attempts move
-                controller.move(oldPos, newPos, nullptr);
+                controller.move(oldPos, newPos);
             } catch (std::logic_error & e) {
                 cerr << "Move Error: " << e.what() << std::endl;
                 continue;
@@ -208,11 +207,11 @@ int main(int argc, char* argv[]) {
             if (controller.getTurn() == Colour::WHITE) {
                 if (!whitePlayer) continue;
                 Move m = whitePlayer->move();
-                controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                controller.move(m.getOldPosition(), m.getNewPosition());
             } else if (controller.getTurn() == Colour::BLACK) {
                 if (!blackPlayer) continue;
                 Move m = blackPlayer->move();
-                controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
+                controller.move(m.getOldPosition(), m.getNewPosition());
             }
         }
         else if (command == "setup") {

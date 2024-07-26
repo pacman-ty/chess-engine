@@ -18,6 +18,7 @@ const int R_ROOK = 7;
 
 class Controller {
     bool setupMode;
+    bool done;
     Colour turn;
     Board* board;
     Scoreboard scoreboard;
@@ -32,7 +33,7 @@ public:
     Controller(Board *);
     void startGame(Player *whitePlayer, Player *blackPlayer);
     void resign();
-    void move(Position oP, Position nP, Piece *promotion);
+    void move(Position oP, Position nP);
     void switchTurn(Colour val = Colour::EMPTY);
     bool inSetup() const;
     void enterSetup();
@@ -44,6 +45,7 @@ public:
     bool isCheckmate() const;
     bool isStalemate() const;
     bool isCheck() const;
+    bool getGameState() const;
     Colour getTurn() const;
 };
 
