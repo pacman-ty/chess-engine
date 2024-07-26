@@ -8,48 +8,23 @@ std::vector<Move> King::getPossibleMoves(const Board::BoardType & board) const {
     int curX = currPosition.getX();
     int curY = currPosition.getY();
 
-    if (curX + 1 < BOARD_MAX_WIDTH && curY + 1 < BOARD_MAX_HEIGHT) {
-        if (board[curX + 1][curY + 1] == nullptr) {
-            output.emplace_back(currPosition, Position(curX + 1, curY + 1), this, nullptr);
+    auto addMove = [&](int newX, int newY) {
+        if (newX >= BOARD_MIN_WIDTH && newX < BOARD_MAX_WIDTH &&
+            newY >= BOARD_MIN_HEIGHT && newY < BOARD_MAX_HEIGHT) {
+            if (board[newX][newY] == nullptr) {
+                output.emplace_back(currPosition, Position{newX, newY}, this, nullptr);
+            }
         }
-    }
-    if (curX + 1 < BOARD_MAX_WIDTH && curY - 1 >= BOARD_MIN_HEIGHT) {
-        if (board[curX + 1][curY - 1] == nullptr) {
-            output.emplace_back(currPosition, Position(curX + 1, curY - 1), this, nullptr);
-        }
-    }
-    if (curX + 1 < BOARD_MAX_WIDTH) {
-        if (board[curX + 1][curY] == nullptr) {
-            output.emplace_back(currPosition, Position(curX + 1, curY), this, nullptr);
-        }
-    }
-    
-    if (curX - 1 < BOARD_MAX_WIDTH && curY + 1 < BOARD_MAX_HEIGHT) {
-        if (board[curX - 1][curY + 1] == nullptr) {
-            output.emplace_back(currPosition, Position(curX - 1, curY + 1), this, nullptr);
-        }
-    }
-    if (curX - 1 < BOARD_MAX_WIDTH && curY - 1 >= BOARD_MIN_HEIGHT) {
-        if (board[curX - 1][curY - 1] == nullptr) {
-            output.emplace_back(currPosition, Position(curX - 1, curY - 1), this, nullptr);
-        }
-    }
-    if (curX - 1 < BOARD_MAX_WIDTH) {
-        if (board[curX - 1][curY] == nullptr) {
-            output.emplace_back(currPosition, Position(curX - 1, curY), this, nullptr);
-        }
-    }
+    };
 
-    if (curY + 1 < BOARD_MAX_HEIGHT) {
-        if (board[curX][curY + 1] == nullptr) {
-            output.emplace_back(currPosition, Position(curX, curY + 1), this, nullptr);
-        }
-    }
-    if (curY - 1 < BOARD_MIN_HEIGHT) {
-        if (board[curX][curY - 1] == nullptr) {
-            output.emplace_back(currPosition, Position(curX, curY - 1), this, nullptr);
-        }
-    }
+    addMove(curX + 1, curY + 1); // Move diagonally right-up
+    addMove(curX + 1, curY - 1); // Move diagonally right-down
+    addMove(curX + 1, curY);     // Move right
+    addMove(curX - 1, curY + 1); // Move diagonally left-up
+    addMove(curX - 1, curY - 1); // Move diagonally left-down
+    addMove(curX - 1, curY);     // Move left
+    addMove(curX, curY + 1);     // Move up
+    addMove(curX, curY - 1);     // Move down
 
     return output;
 }
@@ -60,65 +35,23 @@ std::vector<Move> King::getPossibleCaptures(const Board::BoardType & board) cons
     int curX = currPosition.getX();
     int curY = currPosition.getY();
 
-    if (curX + 1 < BOARD_MAX_WIDTH && curY + 1 < BOARD_MAX_HEIGHT) {
-        if (board[curX + 1][curY + 1] != nullptr) {
-            if (board[curX + 1][curY + 1]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX + 1, curY + 1), this, board[curX + 1][curY + 1]);
+    auto addMove = [&](int newX, int newY) {
+        if (newX >= BOARD_MIN_WIDTH && newX < BOARD_MAX_WIDTH &&
+            newY >= BOARD_MIN_HEIGHT && newY < BOARD_MAX_HEIGHT) {
+            if (board[newX][newY] != nullptr) {
+                output.emplace_back(currPosition, Position{newX, newY}, this, board[newX][newY]);
             }
         }
-    }
-    if (curX + 1 < BOARD_MAX_WIDTH && curY - 1 >= BOARD_MIN_HEIGHT) {
-        if (board[curX + 1][curY - 1] != nullptr) {
-            if (board[curX + 1][curY - 1]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX + 1, curY - 1), this, board[curX + 1][curY - 1]);
-            }
-        }
-    }
-    if (curX + 1 < BOARD_MAX_WIDTH) {
-        if (board[curX + 1][curY] != nullptr) {
-            if (board[curX + 1][curY]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX + 1, curY), this, board[curX + 1][curY]);
-            }
-        }
-    }
+    };
 
-    if (curX - 1 >= BOARD_MIN_WIDTH && curY + 1 < BOARD_MAX_HEIGHT) {
-        if (board[curX - 1][curY + 1] != nullptr) {
-            if (board[curX - 1][curY + 1]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX - 1, curY + 1), this, board[curX - 1][curY + 1]);
-            }
-        }
-    }
-    if (curX - 1 >= BOARD_MIN_WIDTH && curY - 1 >= BOARD_MIN_HEIGHT) {
-        if (board[curX - 1][curY - 1] != nullptr) {
-            if (board[curX - 1][curY - 1]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX - 1, curY - 1), this, board[curX - 1][curY - 1]);
-            }
-        }
-    }
-    if (curX - 1 >= BOARD_MIN_WIDTH) {
-        if (board[curX - 1][curY] != nullptr) {
-            if (board[curX - 1][curY]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX - 1, curY), this, board[curX - 1][curY]);
-            }
-        }
-    }
-
-    if (curY + 1 < BOARD_MAX_WIDTH) {
-        if (board[curX][curY + 1] != nullptr) {
-            if (board[curX][curY + 1]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX, curY + 1), this, board[curX][curY + 1]);
-            }
-        }
-    }
-    if (curY - 1 >= BOARD_MIN_WIDTH) {
-        if (board[curX][curY - 1] != nullptr) {
-            if (board[curX][curY - 1]->getSide() != this->getSide()) {
-                output.emplace_back(currPosition, Position(curX, curY - 1), this, board[curX][curY - 1]);
-            }
-        }
-    }
-    
+    addMove(curX + 1, curY + 1); // Move diagonally right-up
+    addMove(curX + 1, curY - 1); // Move diagonally right-down
+    addMove(curX + 1, curY);     // Move right
+    addMove(curX - 1, curY + 1); // Move diagonally left-up
+    addMove(curX - 1, curY - 1); // Move diagonally left-down
+    addMove(curX - 1, curY);     // Move left
+    addMove(curX, curY + 1);     // Move up
+    addMove(curX, curY - 1);     // Move down
 
     return output;
 }
