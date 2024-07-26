@@ -32,8 +32,6 @@ void Board::capture(Piece *p) {
             auto it = std::find(whitePieces.begin(), whitePieces.end(), p);
             if (it != whitePieces.end()) {
                 whitePieces.erase(it);
-            } else {
-                std::cerr << "COULD NOT ERASE " << p->getPos().getX() + 1 << "," << p->getPos().getY() + 1 << std::endl;
             }
             break;
         }
@@ -41,8 +39,6 @@ void Board::capture(Piece *p) {
             auto it = std::find(blackPieces.begin(), blackPieces.end(), p);
             if (it != blackPieces.end()) {
                 blackPieces.erase(it);
-            } else {
-                std::cerr << "COULD NOT ERASE " << p->getPos().getX() + 1 << "," << p->getPos().getY() + 1 << std::endl;
             }
             break;
         }

@@ -9,6 +9,9 @@ int Piece::getValue(Type t) {
         case Type::KNIGHT: return 3;
         case Type::ROOK: return 5;
         case Type::QUEEN: return 9;
+        case Type::KING: return 1000;
+        default:
+            return 0;
     }
 }
 
