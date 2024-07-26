@@ -59,6 +59,7 @@ bool Controller::isStalemate() const {
 }
 
 void Controller::startGame(Player *whitePlayer, Player *blackPlayer) {
+    board->clear();
     this->whitePlayer = whitePlayer;
     this->blackPlayer = blackPlayer;
     switchTurn(Colour::WHITE);
