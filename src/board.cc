@@ -191,7 +191,7 @@ bool Board::isCheck(Colour side) {
 
     for (auto p : pieces) { // check opposing pieces
         std::vector<Move> captures = p->getPossibleCaptures(board);
-        if (captures.empty()) break;
+        if (captures.empty()) continue;
         for (auto cap : captures) {
             if (cap.getCapture()->getType() == Type::KING) return true;
         }
@@ -206,7 +206,7 @@ bool Board::isCheckmate(Colour side) {
 
     for (auto p : pieces) {
         std::vector<Move> moves = p->getPossibleMoves(board);
-        if (moves.empty()) break;
+        if (moves.empty()) continue;
         for (auto m : moves) {
             if (isValidMove(m)) return false;
         }
@@ -222,7 +222,7 @@ bool Board::isStalemate(Colour side)  {
     
     for (auto p : pieces) {
         std::vector<Move> moves = p->getPossibleMoves(board);
-        if (moves.empty()) break;
+        if (moves.empty()) continue;
         for (auto m : moves) {
             if (isValidMove(m)) return false;
         }
