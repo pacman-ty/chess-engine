@@ -86,7 +86,6 @@ void Board::removePiece(Position p) {
 }
 
 void Board::playMove(const Move & m) {
-    std::cout << "PLAYING MOVE: " << m.getOldPosition().getX() << "," << m.getOldPosition().getY() << " " << m.getNewPosition().getX() << "," << m.getNewPosition().getY()  << std::endl;
     if (!isValidMove(m)) {
         throw std::logic_error("Invalid move");
     }
@@ -141,6 +140,7 @@ void Board::forcePlayMove(const Move & m) {
 
 void Board::playMove(Position oldPos, Position newPos, Colour turn) {
     Piece *target = board[oldPos.getX()][oldPos.getY()];
+    std::cout << "PLAYING MOVE: " << oldPos.getX() << "," << oldPos.getY() << " " << newPos.getX() << "," << newPos.getY()  << std::endl;
     if (target == nullptr) {
         throw std::logic_error("No piece to move");
     }
@@ -296,7 +296,7 @@ std::vector<Move> Board::getCheckMoves(Colour side) {
     if (captures.empty()) return captures;
     for (auto cap : captures) {
         if (cap.getCapture()->getType() == Type::KING) {
-            checkMoves.emplace_back(cap);
+            checkMoves.push_back(cap);
         }
     }
     
@@ -307,25 +307,26 @@ std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
     std::vector<Piece *> opponentPieces = getPieces(side == Colour::WHITE ? Colour::BLACK : Colour::WHITE);
     std::vector<Piece *> friendlyPieces;
     std::vector<Move> avoidCaptureMoves;
-    std::vector<Move> opponentCaptureMoves;
+    std::vector<Move> threatenedPieceMoves;
     std::vector<Move> potentialMoves;
 
     // Get all potential capture moves by the opponent
     for (auto p : opponentPieces) {
         std::vector<Move> captures = p->getPossibleCaptures(board);
-        opponentCaptureMoves.insert(opponentCaptureMoves.end(), captures.begin(), captures.end());
+        threatenedPieceMoves.insert(threatenedPieceMoves.end(), captures.begin(), captures.end());
     }
 
-    if (opponentCaptureMoves.empty()) return avoidCaptureMoves;
+    if (threatenedPieceMoves.empty()) return {};
 
     // Collect all friendly pieces that are under threat
-    for (auto m : opponentCaptureMoves) {
-        if (m.getCapture()) {
-            friendlyPieces.emplace_back(m.getCapture());
+    for (auto m : threatenedPieceMoves) {
+        Piece * threatenedPiece = m.getCapture();
+        if (threatenedPiece && threatenedPiece->getSide() == side) {
+            friendlyPieces.push_back(m.getCapture());
         }
     }
 
-    // Collect all possible moves for those friendly piecesves to give bot 3 edge
+    // Collect all possible moves for those friendly pieces to give bot 3 edge
     for (auto p : friendlyPieces) {
         std::vector<Move> captures = p->getPossibleCaptures(board);
         std::vector<Move> moves = p->getPossibleMoves(board);
@@ -334,7 +335,7 @@ std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
     }
 
     for (auto m : potentialMoves) {
-        if (isValidMove(m)) avoidCaptureMoves.emplace_back(m);
+        if (isValidMove(m)) avoidCaptureMoves.push_back(m);
     }
 
     return avoidCaptureMoves;
@@ -347,12 +348,12 @@ std::vector<Move> Board::getCaptureMoves(Colour side) {
 
     for (auto p : pieces) {
         for (auto m : p->getPossibleCaptures(board)) {
-            moves.emplace_back(m);
+            moves.push_back(m);
         }
     }
 
     for (auto m : moves) {
-        if (isValidMove(m)) captureMoves.emplace_back(m);
+        if (isValidMove(m)) captureMoves.push_back(m);
     }
 
     return captureMoves;
@@ -365,15 +366,15 @@ std::vector<Move> Board::getLegalMoves(Colour side) {
 
     for (auto p : pieces) {
         for (auto m : p->getPossibleMoves(board)) {
-            moves.emplace_back(m);
+            moves.push_back(m);
         }
         for (auto m : p->getPossibleCaptures(board)) {
-            moves.emplace_back(m);
+            moves.push_back(m);
         }
     }
 
     for (auto m : moves) {
-        if (isValidMove(m)) legalMoves.emplace_back(m);
+        if (isValidMove(m)) legalMoves.push_back(m);
     }
 
     return legalMoves;
