@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <cstring>
 #include <map>
 
 #include "controller.h"
@@ -49,14 +50,28 @@ void handleComputerMove(Controller& controller, Player* player) {
     }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     std::shared_ptr<Board> board = std::make_shared<Board>();
     Controller controller{board.get()};
     Player *whitePlayer;
     Player *blackPlayer;
+    vector<Observer *> obs;
 
-    board.get()->subscribe(new TextView(board.get()));
-    board.get()->subscribe(new WindowView(board.get()));
+    bool nogui = false;
+
+    for (int i = 1; i < argc; ++i) {
+        string arg = argv[i];
+        if (arg == "-nogui") nogui = true;
+    }
+    Observer* text = new TextView(board.get());
+    obs.push_back(text);
+    board.get()->subscribe(text);
+    if (!nogui) {
+        Observer* window = new WindowView(board.get());
+        obs.push_back(window);
+        board.get()->subscribe(window);
+    }
+
     board->notifyAll();
 
     // Interpret user commands
@@ -225,9 +240,11 @@ int main() {
         }
     }
 
-
-
     controller.printScore();
+
+    for (auto it : obs) {
+        delete it;
+    }
 
     delete whitePlayer;
     delete blackPlayer;
