@@ -17,7 +17,7 @@ int Piece::getValue() const {
         case Type::KNIGHT: return 3;
         case Type::ROOK: return 5;
         case Type::QUEEN: return 9;
-        case Type::KING: return 1000;
+        case Type::KING: return KING_VALUE;
         default:
             return 0;
     }

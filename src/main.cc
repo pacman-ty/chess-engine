@@ -10,6 +10,7 @@
 #include "computerplayer2.h"
 #include "computerplayer3.h"
 #include "computerplayer4.h"
+#include "computerplayer5.h"
 
 using namespace std;
 
@@ -29,6 +30,9 @@ Player* createPlayer(string name, Colour c, Board * b) {
     }
     else if (name == "computer4") {
         return new ComputerPlayer4(c, b);
+    }
+    else if (name == "computer5") {
+        return new ComputerPlayer5(c, b);
     }
     else {
         throw std::invalid_argument("Invalid player type");

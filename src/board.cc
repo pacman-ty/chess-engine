@@ -459,11 +459,10 @@ std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
 
     // Collect all friendly pieces that are under threat
     for (auto m : threatenedPieceMoves) {
-        int x = m.getOldPosition().getX();
-        int y = m.getOldPosition().getY();
-        Piece * threatenedPiece = board[x][y];
+        Position pos = m.getTarget()->getPos();
+        Piece * threatenedPiece = board[pos.getX()][pos.getY()];
         if (threatenedPiece && threatenedPiece->getSide() == side) {
-            friendlyPieces.push_back(board[x][y]);
+            friendlyPieces.push_back(threatenedPiece);
         }
     }
 
