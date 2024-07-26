@@ -36,6 +36,8 @@ public:
     bool isCheckmate(Colour side);
     bool isInsufficientMaterial() const;
     bool checkPawnPromotion(int newX, int newY);
+    void promptPawnPromotion(int newX, int newY);
+    void promote(int newX, int newY, Type t);
     const BoardType& getBoard() const;
     const Piece* getItem(int x, int y) const;
     void clear();

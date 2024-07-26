@@ -115,48 +115,73 @@ void Board::playMove(const Move & m) {
 }
 
 bool Board::checkPawnPromotion(int newX, int newY) {
-    if (board[newX][newY]->getType() == Type::PAWN) {
-        if (board[newX][newY]->getSide() == Colour::WHITE &&
-            newY != BOARD_MAX_HEIGHT - 1) return false;
-        if (board[newX][newY]->getSide() == Colour::BLACK &&
-            newY != BOARD_MIN_HEIGHT) return false;
-        std::cout << "~ It is Pawn Promotion time ~" << std::endl;
-        Piece *newPiece = nullptr;
-        char type;
-
-        while (newPiece == nullptr) {
-            std::cout << "Enter piece type (Q, R, B, N): ";
-            std::cin >> type;
-
-            if (std::cin.fail()) {
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cout << "Invalid Input. Try again." << std::endl;
-            }
-            switch (type) {
-                case 'Q': newPiece = new Queen; break;
-                case 'R': newPiece = new Rook; break;
-                case 'B': newPiece = new Bishop; break;
-                case 'N': newPiece = new Knight; break;
-                default:
-                std::cout << "Invalid type. Try again." << std::endl;
-                    continue;
-            }
+    if (board[newX][newY]->getType() == Type::PAWN &&
+        ((board[newX][newY]->getSide() == Colour::WHITE &&
+        newY == BOARD_MAX_HEIGHT - 1) ||
+        (board[newX][newY]->getSide() == Colour::BLACK &&
+        newY == BOARD_MIN_HEIGHT))) {
+            return true;
         }
-        std::cout << "Promoted!" << std::endl;
-        newPiece->setSide(board[newX][newY]->getSide());
-        newPiece->setPos(Position{newX, newY});
-        capture(board[newX][newY]);
-        board[newX][newY] = newPiece;
-        switch (newPiece->getSide()) {
-            case Colour::BLACK: blackPieces.push_back(newPiece); break;
-            case Colour::WHITE: whitePieces.push_back(newPiece); break;
-            default:
-                throw std::invalid_argument("Invalid side when placing piece");
-        }
-        return true;
-    }
     return false;
+}
+
+void Board::promptPawnPromotion(int newX, int newY) {
+    std::cout << "~ It is Pawn Promotion time ~" << std::endl;
+    Piece *newPiece = nullptr;
+    char type;
+
+    while (newPiece == nullptr) {
+        std::cout << "Enter piece type (Q, R, B, N): ";
+        std::cin >> type;
+
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid Input. Try again." << std::endl;
+        }
+        switch (type) {
+            case 'Q': newPiece = new Queen; break;
+            case 'R': newPiece = new Rook; break;
+            case 'B': newPiece = new Bishop; break;
+            case 'N': newPiece = new Knight; break;
+            default:
+            std::cout << "Invalid type. Try again." << std::endl;
+                continue;
+        }
+    }
+    std::cout << "Promoted!" << std::endl;
+    newPiece->setSide(board[newX][newY]->getSide());
+    newPiece->setPos(Position{newX, newY});
+    capture(board[newX][newY]);
+    board[newX][newY] = newPiece;
+    switch (newPiece->getSide()) {
+        case Colour::BLACK: blackPieces.push_back(newPiece); break;
+        case Colour::WHITE: whitePieces.push_back(newPiece); break;
+        default:
+            throw std::invalid_argument("Invalid side when placing piece");
+    }
+}
+
+void Board::promote(int newX, int newY, Type t) {
+    Piece * newPiece = nullptr;
+    switch (t) {
+        case Type::QUEEN: newPiece = new Queen; break;
+        case Type::ROOK: newPiece = new Rook; break;
+        case Type::BISHOP: newPiece = new Bishop; break;
+        case Type::KNIGHT: newPiece = new Knight; break;
+        default:
+            throw std::invalid_argument("invalid promote");
+    }
+    newPiece->setSide(board[newX][newY]->getSide());
+    newPiece->setPos(Position{newX, newY});
+    capture(board[newX][newY]);
+    board[newX][newY] = newPiece;
+    switch (newPiece->getSide()) {
+        case Colour::BLACK: blackPieces.push_back(newPiece); break;
+        case Colour::WHITE: whitePieces.push_back(newPiece); break;
+        default:
+            throw std::invalid_argument("Invalid side when placing piece");
+    }
 }
 
 void Board::forcePlayMove(const Move & m) {

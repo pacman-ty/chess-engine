@@ -93,6 +93,19 @@ void Controller::move(Position oldPos, Position newPos) {
     board->playMove(oldPos, newPos, turn);
     board->notifyAll();
     if (board->checkPawnPromotion(newPos.getX(), newPos.getY())) {
+        if (turn == Colour::WHITE) {
+            if (whitePlayer) { // if AI
+                board->promote(newPos.getX(), newPos.getY(), Type::QUEEN);
+            } else { // if player
+                board->promptPawnPromotion(newPos.getX(), newPos.getY());
+            }
+        } else if (turn == Colour::BLACK) {
+            if (blackPlayer) { // if AI
+                board->promote(newPos.getX(), newPos.getY(), Type::QUEEN);
+            } else { // if player
+                board->promptPawnPromotion(newPos.getX(), newPos.getY());
+            }
+        }
         board->notifyAll();
     }
     switchTurn();
