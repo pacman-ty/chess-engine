@@ -147,7 +147,7 @@ void Board::playMove(Position oldPos, Position newPos, Colour turn) {
         throw std::logic_error("Not your turn");
     }
 
-    Piece *capture = board[newPos.getX()][oldPos.getY()];
+    Piece *capture = board[newPos.getX()][newPos.getY()];
     if (capture && capture->getSide() != turn && capture->getType() == Type::PAWN
         && target->getType() == Type::PAWN) {
         playMove(Move(oldPos, newPos, target, capture)); 
