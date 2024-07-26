@@ -275,6 +275,24 @@ std::vector<Move> Board::getCheckMoves(Colour side) {
     return checkMoves;
 }
 
+std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
+    std::vector<Piece *> pieces;
+    std::vector<Move> avoidCaptureMoves;
+    std::vector<Move> moves;
+
+    if (side == Colour::WHITE) { 
+        pieces = getPieces(Colour::BLACK);
+    }
+    else {
+        pieces = getPieces(Colour::WHITE);
+    }
+
+    
+
+
+    return avoidCaptureMoves;
+}
+
 std::vector<Move> Board::getCaptureMoves(Colour side) {
     std::vector<Piece *> pieces = getPieces(side);
     std::vector<Move> captureMoves;
