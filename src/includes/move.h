@@ -10,12 +10,12 @@ private:
     Position oldPos;
     Position newPos;
     const Piece* target;
-    const Piece* capture; 
+    Piece* capture; 
 public:
-    Move(Position oldPos, Position newPos, const Piece *target, const Piece *capture);
+    Move(Position oldPos, Position newPos, const Piece *target, Piece *capture);
     Position getOldPosition() const;
     Position getNewPosition() const;
-    const Piece* getCapture() const;
+    Piece* getCapture() const;
     const Piece* getTarget() const;
 };
 

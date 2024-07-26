@@ -5,6 +5,7 @@
 
 #include "controller.h"
 #include "textview.h"
+#include "windowview.h"
 #include "position.h"
 #include "computerplayer1.h"
 #include "computerplayer2.h"
@@ -55,6 +56,8 @@ int main() {
     Player *blackPlayer;
 
     board.get()->subscribe(new TextView(board.get()));
+    board.get()->subscribe(new WindowView(board.get()));
+    board->notifyAll();
 
     // Interpret user commands
     string command;

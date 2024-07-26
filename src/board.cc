@@ -195,6 +195,7 @@ bool Board::isValidMove(const Move & m) const {
             }
     }
     }
+
     if (!found) return false;
     // simulate move
     std::unique_ptr<Board> temp_board{new Board};
@@ -204,86 +205,55 @@ bool Board::isValidMove(const Move & m) const {
     return !temp_board->isCheck(target->getSide());
 }
 
-bool Board::isCheck(Colour side) const {
-    switch(side) {
-        case Colour::BLACK:
-            for (auto p : whitePieces) { // check opposing pieces
-                std::vector<Move> captures = p->getPossibleCaptures(board);
-                if (captures.empty()) continue;
-                for (auto cap : captures) {
-                    if (cap.getCapture()->getType() == Type::KING) return true;
-                }
-            }
-            break;
-        case Colour::WHITE:
-            for (auto p : blackPieces) {
-                std::vector<Move> captures = p->getPossibleCaptures(board);
-                if (captures.empty()) continue;
-                for (auto cap : captures) {
-                    if (cap.getCapture()->getType() == Type::KING) return true;
-                }
-            }
-            break;
-        default:
-            throw std::invalid_argument("Invalid Colour when performing check");
-            return false;
+bool Board::isCheck(Colour side) {
+    std::vector<Piece *> pieces;
+
+    if (side == Colour::WHITE) {
+        pieces = getPieces(Colour::BLACK);
     }
+    else{
+        pieces = getPieces(Colour::WHITE);
+    }
+
+    for (auto p : pieces) { // check opposing pieces
+        std::vector<Move> captures = p->getPossibleCaptures(board);
+        if (captures.empty()) break;
+        for (auto cap : captures) {
+            if (cap.getCapture()->getType() == Type::KING) return true;
+        }
+    }
+
     return false;
+
 }
 
-bool Board::isCheckmate(Colour side) const {
-    switch(side) {
-        case Colour::BLACK:
-            for (auto p : blackPieces) {
-                std::vector<Move> moves = p->getPossibleMoves(board);
-                if (moves.empty()) continue;
-                for (auto m : moves) {
-                    if (isValidMove(m)) return false;
-                }
-            }
-            break;
-        case Colour::WHITE:
-            for (auto p : whitePieces) {
-                std::vector<Move> moves = p->getPossibleMoves(board);
-                if (moves.empty()) continue;
-                for (auto m : moves) {
-                    if (isValidMove(m)) return false;
-                }
-            }
-            break;
-        default:
-            throw std::invalid_argument("Invalid Colour when checking for checkmate");
-            return false;
+bool Board::isCheckmate(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+
+    for (auto p : pieces) {
+        std::vector<Move> moves = p->getPossibleMoves(board);
+        if (moves.empty()) break;
+        for (auto m : moves) {
+            if (isValidMove(m)) return false;
+        }
     }
+
     return true;
 }
 
-bool Board::isStalemate(Colour side) const {
-    switch (side) {
-        case Colour::BLACK:
-            if (isCheck(Colour::BLACK)) return false;
-            for (auto p : blackPieces) {
-                std::vector<Move> moves = p->getPossibleMoves(board);
-                if (moves.empty()) continue;
-                for (auto m : moves) {
-                    if (isValidMove(m)) return false;
-                }
-            }
-            break;
-        case Colour::WHITE:
-            if (isCheck(Colour::WHITE)) return false;
-            for (auto p : whitePieces) {
-                std::vector<Move> moves = p->getPossibleMoves(board);
-                if (moves.empty()) continue;
-                for (auto m : moves) {
-                    if (isValidMove(m)) return false;
-                }
-            }
-            break;
-        default:
-            throw std::invalid_argument("Invalid Colour when checking for stalemate");
-            return false;
+bool Board::isStalemate(Colour side)  {
+    std::vector<Piece *> pieces = getPieces(side);
+            
+    if (isCheck(side)) return false;
+    
+    for (auto p : pieces) {
+        std::vector<Move> moves = p->getPossibleMoves(board);
+        if (moves.empty()) break;
+        for (auto m : moves) {
+            if (isValidMove(m)) return false;
+        }
     }
+
     return true;
 }
 
@@ -306,7 +276,7 @@ void Board::clear() {
     whitePieces.clear();    
 }
 
-std::vector<Piece* > Board::getPieces(Colour side) {
+std::vector<Piece* > Board::getPieces(const Colour & side) {
     if (side == Colour::WHITE) {
         return whitePieces;
     }
@@ -314,12 +284,101 @@ std::vector<Piece* > Board::getPieces(Colour side) {
         return blackPieces; 
     }
 }
-std::vector<Move> Board::getLegalMoves(const Piece & p) {
-    std::vector<Move> moves = p.getPossibleMoves(board);
-    std::vector<Move> legalMoves;
 
-    for (auto m : p.getPossibleCaptures(board)) {
-        moves.emplace_back(m);
+std::vector<Move> Board::getCheckMoves(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+    std::vector<Move> captures = getCaptureMoves(side);
+    std::vector<Move> checkMoves;
+    
+    
+    if (captures.empty()) return captures;
+    for (auto cap : captures) {
+        if (cap.getCapture()->getType() == Type::KING) {
+            checkMoves.emplace_back(cap);
+        }
+    }
+    
+    return checkMoves;
+}
+
+std::vector<Move> Board::getAvoidCaptureMoves(Colour side) {
+    std::vector<Piece *> pieces;
+    std::vector<Move> avoidCaptureMoves;
+    std::vector<Move> opponentCaptureMoves;
+    std::vector<Move> potenialMoves;
+
+    if (side == Colour::WHITE) { 
+        opponentCaptureMoves = getCaptureMoves(side);
+    }
+    else {
+        opponentCaptureMoves = getCaptureMoves(side);
+    }
+
+    for (auto m : opponentCaptureMoves) {
+        pieces.emplace_back(m.getCapture());
+    }
+
+    // this could be made shorter possibly and cleaner 
+    // but as of now done like this to prioritze capture moves first 
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleCaptures(board)) {
+            potenialMoves.emplace_back(m);
+        }
+    }
+
+    for (auto m : potenialMoves) {
+        if (isValidMove(m)) avoidCaptureMoves.emplace_back(m);
+    }
+
+    if (!avoidCaptureMoves.empty()) return avoidCaptureMoves;
+
+    //clear potenial moves already deemed not legal
+    // because if any of the moves were legal we would have already returned
+    potenialMoves.clear();
+    
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleMoves(board)) {
+            potenialMoves.emplace_back(m);
+        }
+    }
+
+    for (auto m : potenialMoves) {
+        if (isValidMove(m)) avoidCaptureMoves.emplace_back(m);
+    }
+
+    return avoidCaptureMoves;
+}
+
+std::vector<Move> Board::getCaptureMoves(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+    std::vector<Move> captureMoves;
+    std::vector<Move> moves;
+
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleCaptures(board)) {
+            moves.emplace_back(m);
+        }
+    }
+
+    for (auto m : moves) {
+        if (isValidMove(m)) captureMoves.emplace_back(m);
+    }
+
+    return captureMoves;
+}
+
+std::vector<Move> Board::getLegalMoves(Colour side) {
+    std::vector<Piece *> pieces = getPieces(side);
+    std::vector<Move> legalMoves;
+    std::vector<Move> moves;
+
+    for (auto p : pieces) {
+        for (auto m : p->getPossibleMoves(board)) {
+            moves.emplace_back(m);
+        }
+        for (auto m : p->getPossibleCaptures(board)) {
+            moves.emplace_back(m);
+        }
     }
 
     for (auto m : moves) {
@@ -329,41 +388,8 @@ std::vector<Move> Board::getLegalMoves(const Piece & p) {
     return legalMoves;
 }
 
-Piece* Board::getRandomPiece(Colour side) {
-    // generate seed for random number generator 
-    std::srand(static_cast<unsigned int>(std::time(0)));
-    Piece* randPiece = nullptr;
-    // Random number generator
-    std::default_random_engine generator1(std::random_device{}());
-    std::uniform_int_distribution<std::size_t> distribution1(0, whitePieces.size() - 1);
-    // Random number generator
-    std::default_random_engine generator2(std::random_device{}());
-    std::uniform_int_distribution<std::size_t> distribution2(0, blackPieces.size() - 1);
-    int randIndex;
 
-    switch(side) { 
-        case Colour::WHITE:
-            // select a random piece
-            randIndex = distribution1(generator1);
-            randPiece = whitePieces[randIndex];
-            break;
-        case Colour::BLACK:
-            // select a random piece
-            randIndex = distribution2(generator2);
-            randPiece = blackPieces[randIndex];
-            break;
-        default:
-            // should never get here not possible piece always has colour 
-            // could potenially break program otherwise
-            std::cerr << "Invalid Colour" << std::endl;
-    }
-
-    return randPiece;
-}
-
-Move Board::getRandomMove(const Piece & p) {
-    std::vector<Move> legalMoves = getLegalMoves(p);
-
+Move Board::getRandomMove(const std::vector<Move> legalMoves) {
     // generate seed for random number generator 
     std::srand(static_cast<unsigned int>(std::time(0)));
     // Random number generator
