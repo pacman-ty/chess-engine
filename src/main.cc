@@ -180,23 +180,6 @@ int main(int argc, char* argv[]) {
                             controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
                         }
                     }
-                    if (controller.isStalemate()) { // Stalemate
-                        cout << "Stalemate!" << endl;
-                        controller.restartGame(); // Restart Game 
-                        break;
-                    }
-                    else if (controller.isCheckmate()) {
-                        controller.switchTurn();
-                        cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
-                        controller.addScore(controller.getTurn());
-                        controller.restartGame();
-                        break;
-                    }
-                    else if (board->isInsufficientMaterial()) {
-                        cout << "Insufficient Material!" << endl;
-                    controller.restartGame();
-                    continue;
-                    }
                 }
             } else if (whitePlayer && !blackPlayer) { // When White: Computer, Black: Human (Starting move)
                 Move m = whitePlayer->move();
@@ -221,24 +204,7 @@ int main(int argc, char* argv[]) {
                 cerr << "Move Error: " << e.what() << std::endl;
                 continue;
             }
-            if (controller.isStalemate()) { // Stalemate
-                cout << "Stalemate!" << endl;
-                controller.restartGame(); // Restart Game 
-                continue;    
-            }
-            else if (controller.isCheckmate()) { // Checkmate
-                controller.switchTurn();
-                cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
-                controller.addScore(controller.getTurn());
-                controller.restartGame(); // Restart Game
-                continue;
-            }
-            else if (board->isInsufficientMaterial()) {
-                cout << "Insufficient Material!" << endl;
-                controller.restartGame();
-                continue;
-            }
-
+            // Check if Computer is playing and generate move if necessary
             if (controller.getTurn() == Colour::WHITE) {
                 if (!whitePlayer) continue;
                 Move m = whitePlayer->move();
@@ -248,24 +214,6 @@ int main(int argc, char* argv[]) {
                 Move m = blackPlayer->move();
                 controller.move(m.getOldPosition(), m.getNewPosition(), nullptr);
             }
-            if (controller.isStalemate()) { // Stalemate
-                cout << "Stalemate!" << endl;
-                controller.restartGame(); // Restart Game 
-                continue;    
-            }
-            else if (controller.isCheckmate()) { // Checkmate
-                controller.switchTurn();
-                cout << "Checkmate! " << controller.getTurn() << " wins!" << endl;
-                controller.addScore(controller.getTurn());
-                controller.restartGame(); // Restart Game
-                continue;
-            }
-            else if (board->isInsufficientMaterial()) {
-                cout << "Insufficient Material!" << endl;
-                controller.restartGame();
-                continue;
-            }
-
         }
         else if (command == "setup") {
             /* Available Commands */

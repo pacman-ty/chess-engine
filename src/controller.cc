@@ -2,7 +2,8 @@
 #include "pawn.h"
 // Implementation of Controller class
 
-Controller::Controller(Board *b): board{b}, setupMode{false}, turn{Colour::WHITE} {}
+Controller::Controller(Board *b): setupMode{false},
+    turn{Colour::WHITE}, board{b} {}
 
 void Controller::initBoard() {
 
@@ -54,7 +55,7 @@ void Controller::switchTurn(Colour val) {
 }
 
 bool Controller::isStalemate() const {
-    board->isStalemate(turn);
+    return board->isStalemate(turn);
 }
 
 void Controller::startGame(Player *whitePlayer, Player *blackPlayer) {
@@ -73,7 +74,9 @@ void Controller::resign() {
         case Colour::WHITE:
             std::cout << "Black wins!" << std::endl;
             addScore(Colour::BLACK);
-            break;        
+            break;  
+        default:
+            throw std::invalid_argument("Invalid Colour");      
     }
 }
 
@@ -93,6 +96,20 @@ void Controller::move(Position oldPos, Position newPos, Piece *promotion) {
     switchTurn();
     if (isCheck()) { // in check but not checkmate
         std::cout << getTurn() << " is in check." << std::endl;
+    }
+    if (isStalemate()) { // Stalemate
+        std::cout << "Stalemate!" << std::endl;
+        restartGame(); // Restart Game    
+    }
+    else if (isCheckmate()) { // Checkmate
+        switchTurn();
+        std::cout << "Checkmate! " << getTurn() << " wins!" << std::endl;
+        addScore(getTurn());
+        restartGame(); // Restart Game
+    }
+    else if (board->isInsufficientMaterial()) {
+        std::cout << "Insufficient Material!" << std::endl;
+        restartGame();
     }
 }
 

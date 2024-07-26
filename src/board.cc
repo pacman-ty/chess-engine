@@ -86,7 +86,6 @@ void Board::removePiece(Position p) {
 }
 
 void Board::playMove(const Move & m) {
-    std::cout << "PLAYING MOVE: " << m.getOldPosition().getX() << "," << m.getOldPosition().getY() << " " << m.getNewPosition().getX() << "," << m.getNewPosition().getY()  << std::endl;
     if (!isValidMove(m)) {
         throw std::logic_error("Invalid move");
     }
@@ -116,7 +115,7 @@ void Board::playMove(const Move & m) {
 }
 
 bool Board::checkPawnPromotion(int newX, int newY) {
-        if (board[newX][newY]->getType() == Type::PAWN) {
+    if (board[newX][newY]->getType() == Type::PAWN) {
         if (board[newX][newY]->getSide() == Colour::WHITE &&
             newY != BOARD_MAX_HEIGHT - 1) return false;
         if (board[newX][newY]->getSide() == Colour::BLACK &&
@@ -155,8 +154,9 @@ bool Board::checkPawnPromotion(int newX, int newY) {
             default:
                 throw std::invalid_argument("Invalid side when placing piece");
         }
+        return true;
     }
-    return true;
+    return false;
 }
 
 void Board::forcePlayMove(const Move & m) {
