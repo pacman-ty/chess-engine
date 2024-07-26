@@ -192,7 +192,6 @@ int main(int argc, char* argv[]) {
                     break;
                 }
                 board->notifyAll();
-                controller.switchTurn();
             }
         }
         else if (command == "resign") {
