@@ -173,7 +173,8 @@ int main(int argc, char* argv[]) {
             Player *currPlayer = controller.getTurn() == Colour::WHITE ? whitePlayer : blackPlayer;
             if (currPlayer) { // if current player is AI
                 Move m = currPlayer->move();
-                controller.move(m.getOldPosition(), m.getNewPosition());
+                oldPos = m.getOldPosition();
+                newPos = m.getNewPosition();
             } else {
                 try { // Read in move from user
                     cin >> oldPos >> newPos;
@@ -181,12 +182,12 @@ int main(int argc, char* argv[]) {
                     cerr << "Move Error: " << e.what() << std::endl;
                     continue;
                 }
-                try { // Attempts move
-                    controller.move(oldPos, newPos);
-                } catch (std::logic_error & e) {
-                    cerr << "Move Error: " << e.what() << std::endl;
-                    continue;
-                }
+            }
+            try { // Attempts move
+                controller.move(oldPos, newPos);
+            } catch (std::logic_error & e) {
+                cerr << "Move Error: " << e.what() << std::endl;
+                continue;
             }
         }
         else if (command == "setup") {
