@@ -43,9 +43,37 @@ Upon completion of setup mode, the board verifies that it contains exactly one w
 
 ## Running the Program
 
-compile 
-```sh make```
+compile
+
+```sh 
+make
+```
 
 run
 
-```sh./chess```
+```sh
+./chess
+```
+
+or for no gui 
+
+```sh
+./chess -nogui
+```
+
+
+### Tips for Graphics
+
+#### Linux Systems
+
+- If you are not using the X system display protocol, we highly recommend using the `-nogui` option.
+- We do not currently have a Wayland-compatible display solution.
+
+#### macOS
+
+- Use XQuartz if you want a graphical display: [XQuartz](https://www.xquartz.org/)
+
+#### Windows
+
+- Good luck!
+
