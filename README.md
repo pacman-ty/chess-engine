@@ -80,7 +80,7 @@ Upon completion of setup mode, the board verifies that it contains exactly one w
 
 ## Running the Program
 
-cd into src
+First `cd` into the `src` folder 
 
 compile
 
