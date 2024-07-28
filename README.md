@@ -1,6 +1,6 @@
 # Chess Engine
 
-A chess engine built from scratch for CS246.
+A chess engine built from scratch for CS 246 (Object Oriented Programming). The engine strictly adheres to OOP principles and implements advance design patterns.
 
 ## A Quick Overview
 
