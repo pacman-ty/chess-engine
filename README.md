@@ -103,7 +103,7 @@ or for no gui
 
 ## Chess Engine Examined
 
-The chess engine incorporates a series of progressively sophisticated bots, each building on the capabilities of the previous level. Central to the functionality of each bot is the getRandomMove() function. This function generates a seed and uses the standard library's algorithm to get a uniform probability distribution for move selection provided vector of moves. This is used for Check moves caputring moves and avoid capturing moves.
+The chess engine incorporates a series of progressively sophisticated bots, each building on the capabilities of the previous level.
 
 ### Bot Levels
 
