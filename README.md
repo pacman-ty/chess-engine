@@ -157,7 +157,7 @@ Implementing a minimax algorithm with adjustable depth and alpha-beta pruning wo
 ### Linux Systems
 
 - If you are not using the X system display protocol, we highly recommend using the `-nogui` option.
-- We do not currently have a Wayland-compatible display solution.
+- We do not currently have a Wayland compatible display solution.
 
 ### macOS
 
