@@ -110,14 +110,14 @@ The chess engine incorporates a series of progressively sophisticated bots, each
 ### Level 1: Basic Random Bot
 The Level 1 bot is the most straightforward to implement. It compiles a list of all possible legal moves, including both captures and regular moves, and selects one at random with no preference. This bot operates purely on randomness, without any strategic consideration.
 
-#### Level 2: Check and Capture Preference Bot
+### Level 2: Check and Capture Preference Bot
 The Level 2 bot introduces a rudimentary strategy by prioritizing moves that put the opponent in check. It operates as follows:
 1. **Check Moves**: It filters for capturing moves that would attack the opponent's king.
 2. **Capturing Moves**: If no check moves are available, it considers all capturing moves.
 3. **Random Moves**: If neither check nor capturing moves are possible, it defaults to a random legal move.
 Despite its simplicity, the Level 2 bot consistently outperforms the Level 1 bot due to its basic strategic considerations.
 
-#### Level 3: Avoid Capture Bot
+### Level 3: Avoid Capture Bot
 The Level 3 bot builds on the strategy of the Level 2 bot with an additional layer of complexity: avoiding capture. Its decision-making process is:
 1. **Check Moves**: Prioritize moves that put the opponent in check.
 2. **Avoid Capturing Moves**: Identify pieces that are under threat from the opponent and prioritize moves that either retaliate (capture the threatening piece) or move out of danger.
@@ -125,7 +125,7 @@ The Level 3 bot builds on the strategy of the Level 2 bot with an additional lay
 4. **Random Moves**: Default to a random legal move if no other preferred moves are available.
 This bot improves over Level 2 by incorporating defensive tactics, ensuring pieces under attack respond or evade before considering other moves.
 
-#### Level 4: Piece Value-Based Bot
+### Level 4: Piece Value-Based Bot
 The Level 4 bot introduces intrinsic piece values to its decision-making process. It builds on the logic of the Level 2 bot but prioritizes moves based on the value of the pieces involved. The assigned values are:
 - Pawn: 1
 - Knight/Bishop: 3
@@ -139,7 +139,7 @@ The decision process for Level 4 is:
 3. **Capturing Moves**: Default to capturing moves if no higher priority moves are available.
 4. **Random Moves**: If no other criteria are met, select a random legal move.
 
-#### Level 5: Enhanced Piece Value and Avoid Capture Bot
+### Level 5: Enhanced Piece Value and Avoid Capture Bot
 The Level 5 bot, akin to a "Magnus Carlsen" in our chess engine, combines the strategies of Levels 3 and 4. It incorporates both the avoidance of capture and the value of pieces into its decision-making:
 1. **Highest Value Avoid Capture**: Avoid capture, prioritizing moves that save higher value pieces.
 2. **Highest Value Capture**: Among capturing moves, select the one that captures the piece with the highest value.
